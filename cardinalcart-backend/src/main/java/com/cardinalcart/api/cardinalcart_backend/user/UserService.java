@@ -20,7 +20,6 @@ public class UserService {
 
     // create user account
     public User createUser(User user) {
-
         return userRepository.save(user);
     }
 
@@ -38,8 +37,6 @@ public class UserService {
     public Optional<User> findUserBySchoolEmail(String schoolEmail) {
         return userRepository.findBySchoolEmail(schoolEmail);
     }
-
-    // 
 
     /*
      * ADMIN ONLY
