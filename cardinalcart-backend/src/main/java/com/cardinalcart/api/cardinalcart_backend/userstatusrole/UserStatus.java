@@ -1,4 +1,4 @@
-package com.cardinalcart.api.cardinalcart_backend.userstatus;
+package com.cardinalcart.api.cardinalcart_backend.userstatusrole;
 
 public enum UserStatus {
     ACTIVE,

@@ -1,7 +1,7 @@
 package com.cardinalcart.api.cardinalcart_backend.user;
 
-import com.cardinalcart.api.cardinalcart_backend.role.Role; 
-import com.cardinalcart.api.cardinalcart_backend.userstatus.UserStatus;
+import com.cardinalcart.api.cardinalcart_backend.userstatusrole.Role;
+import com.cardinalcart.api.cardinalcart_backend.userstatusrole.UserStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
