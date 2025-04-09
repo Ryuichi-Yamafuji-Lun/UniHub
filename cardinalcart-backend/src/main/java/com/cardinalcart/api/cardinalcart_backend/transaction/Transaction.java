@@ -1,5 +1,5 @@
-package com.cardinalcart.api.cardinalcart_backend.transaction;
+// package com.cardinalcart.api.cardinalcart_backend.transaction;
 
-public class Transaction {
+// public class Transaction {
 
-}
+// }

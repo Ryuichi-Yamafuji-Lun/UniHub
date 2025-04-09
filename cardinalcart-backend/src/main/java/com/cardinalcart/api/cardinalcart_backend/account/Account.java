@@ -1,10 +1,10 @@
-package com.cardinalcart.api.cardinalcart_backend.user;
-
-import com.cardinalcart.api.cardinalcart_backend.userstatusrole.Role;
-import com.cardinalcart.api.cardinalcart_backend.userstatusrole.UserStatus;
+package com.cardinalcart.api.cardinalcart_backend.account;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
+import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -14,10 +14,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class User {
+public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     // User private information 
@@ -37,14 +37,14 @@ public class User {
     private Role role;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private AccountStatus accountStatus;
 
     // For JPA
-    public User(){}
+    public Account(){}
 
     // Set User
-    public User(String firstName, String lastName, LocalDate dateOfBirth, String schoolEmail, LocalDateTime createdAt,
-            LocalDateTime updatedAt, Role role, UserStatus userStatus) {
+    public Account(String firstName, String lastName, LocalDate dateOfBirth, String schoolEmail, LocalDateTime createdAt,
+            LocalDateTime updatedAt, Role role, AccountStatus accountStatus) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -52,7 +52,7 @@ public class User {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.role = role;
-        this.userStatus = userStatus;
+        this.accountStatus = accountStatus;
     }
 
     // Getter & Setter
@@ -112,12 +112,12 @@ public class User {
         this.role = role;
     }
 
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
     }
 
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setAccountStatus(AccountStatus accountStatus) {
+        this.accountStatus = accountStatus;
     }
 
     // Return user information in string format
@@ -132,7 +132,7 @@ public class User {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", role=" + role +
-                ", userStatus=" + userStatus +
+                ", accountStatus=" + accountStatus +
                 '}';
     }
 
