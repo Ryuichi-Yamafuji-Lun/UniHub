@@ -1,5 +1,9 @@
 package com.cardinalcart.api.cardinalcart_backend.listing;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,7 +21,10 @@ public class ListingController {
         this.accountService = accountService;
     }
 
-    
-  
+    @PostMapping
+    public ResponseEntity<Listing> createListing(@RequestBody Listing listing, @PathVariable Long accountId) {
+        Listing createdListing = listingService.createListing(listing, accountId);
+        return ResponseEntity.status(201).body(createdListing);
+    }
 
 }
