@@ -103,7 +103,7 @@ public class ListingService {
 
     // retrieve all listing ordered by date
     @Transactional(readOnly = true)
-    public List<Listing> getAllListing() {
+    public List<Listing> getAllListings() {
         return listingRepository.findAllByOrderByDatePostedDesc();
     }
 
