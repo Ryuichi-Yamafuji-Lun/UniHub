@@ -1,12 +1,12 @@
 package com.cardinalcart.api.cardinalcart_backend.listing;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.cardinalcart.api.cardinalcart_backend.account.Account;
 import com.cardinalcart.api.cardinalcart_backend.account.AccountRepository;
+import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
 
 @Service
 public class ListingService {
@@ -22,6 +22,8 @@ public class ListingService {
 
     // create listing
     public Listing createListing(Listing listing, Account account) {
+        validateAccount(account);
+
         // Do a double take on account and date posted
         listing.setAccount(account);
         listing.setDatePosted(LocalDateTime.now());
@@ -31,16 +33,14 @@ public class ListingService {
 
     // delete listing
     public void deleteListing(Long listingId, Account account) {
-        Optional<Listing> listingOpt = listingRepository.findById(listingId);
-
-        if (!listingOpt.isPresent()) {
-            throw new IllegalArgumentException("Listing not found");
-        }
-
-        Listing listing = listingOpt.get();
+        Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
 
         if (!isOwnerOfListing(listing, account)) {
             throw new IllegalArgumentException("You are not authorized to delete this listing");
+        }
+
+        if (listing.getIsSold()) {
+            throw new IllegalArgumentException("Cannot delete sold listing");
         }
 
         listingRepository.delete(listing);
@@ -48,16 +48,14 @@ public class ListingService {
 
     // update listing
     public Listing updateListing(Long listingId, Listing updatedlisting, Account account) {
-        Optional<Listing> listingOpt = listingRepository.findById(listingId);
-
-        if (!listingOpt.isPresent()) {
-            throw new IllegalArgumentException("Listing not found");
-        }
-
-        Listing listing = listingOpt.get();
+        Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing is not found"));
 
         if (!isOwnerOfListing(listing, account)) {
             throw new IllegalArgumentException("You are not authorized to update this listing");
+        }
+
+        if (listing.getIsSold()) {
+            throw new IllegalArgumentException("Cannot update sold listing");
         }
 
         listing.setListingName(updatedlisting.getListingName());
@@ -73,6 +71,13 @@ public class ListingService {
         return accountRepository.findById(account.getId()).isPresent();
     }
 
+    // check if account exists and is active
+    private void validateAccount(Account account) {
+        if (!isValidAccount(account) || !account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
+            throw new IllegalArgumentException("Account is invalid or not active");
+        }
+    }
+    
     // check if user is the owner of the listing
     public boolean isOwnerOfListing(Listing listing, Account account) {
         return listing.getAccount().equals(account);
