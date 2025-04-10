@@ -23,15 +23,10 @@ public class ListingService {
         this.accountRepository = accountRepository;
     }
 
-    // check if account exists in the database
-    public boolean isValidAccount(Account account) {
-        return accountRepository.findById(account.getId()).isPresent();
-    }
-
-    // check if account exists and is active
+    // check if account is active
     private void validateAccount(Account account) {
-        if (!isValidAccount(account) || !account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
-            throw new IllegalArgumentException("Account is invalid or not active");
+        if (!account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
+            throw new IllegalArgumentException("Account is invalid");
         }
     }
     
@@ -42,7 +37,9 @@ public class ListingService {
 
     // create listing
     @Transactional
-    public Listing createListing(Listing listing, Account account) {
+    public Listing createListing(Listing listing, Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Create Listing: account not found"));
+
         validateAccount(account);
 
         // Do a double take on account and date posted
@@ -54,8 +51,10 @@ public class ListingService {
 
     // delete listing
     @Transactional
-    public void deleteListing(Long listingId, Account account) {
+    public void deleteListing(Long listingId, Long accountId) {
         Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
+
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Delete Listing: account not found"));
 
         if (!isOwnerOfListing(listing, account)) {
             throw new IllegalArgumentException("You are not authorized to delete this listing");
@@ -70,8 +69,10 @@ public class ListingService {
 
     // update listing
     @Transactional
-    public Listing updateListing(Long listingId, Listing updatedlisting, Account account) {
+    public Listing updateListing(Long listingId, Listing updatedlisting, Long accountId) {
         Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing is not found"));
+
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Update Listing: account not found"));
 
         if (!isOwnerOfListing(listing, account)) {
             throw new IllegalArgumentException("You are not authorized to update this listing");
@@ -123,13 +124,15 @@ public class ListingService {
 
     // get all listings for an account sorted by sold status
     @Transactional(readOnly = true)
-    public List<Listing> getListingByAccountSortedBySold(Account account) {
+    public List<Listing> getListingByAccountSortedBySold(Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get All Owned Listing: account not found"));
         return listingRepository.findByAccountOrderByIsSold(account);
     }
 
     // get only active (unsold) listing for an account, sorted by date posted
     @Transactional(readOnly = true)
-    public List<Listing> getActiveListingsByAccount(Account account) {
+    public List<Listing> getActiveListingsByAccount(Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get All Owned Unsold Listing: account not found"));
         return listingRepository.findByAccountAndIsSoldFalseOrderByDatePostedDesc(account);
     }
 }
