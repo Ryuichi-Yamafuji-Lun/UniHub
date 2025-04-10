@@ -89,7 +89,9 @@ public class ListingService {
         return listingRepository.save(listing);
     }
     /*
-     * Any User Access
+     * PUBLIC USER ACCESS
+     * findListingById (finds specific listing by listing id)
+     * searchListing (finds listings with criterias)
      */
 
     // find listing by id
@@ -114,7 +116,9 @@ public class ListingService {
     }
 
     /*
-     * Listing Owner Access
+     * OWNER LISTING ACCESS
+     * getListingByAccountSortedBySold (get all listings including sold ones for owners)
+     * getActiveListingsByAccount (get unsold listings for owners)
      */
 
     // get all listings for an account sorted by sold status
