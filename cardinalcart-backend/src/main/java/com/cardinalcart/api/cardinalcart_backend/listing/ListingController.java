@@ -14,23 +14,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cardinalcart.api.cardinalcart_backend.account.AccountService;
-
 @RestController
 @RequestMapping(path = "api/v1/listing")
 public class ListingController {
 
     private final ListingService listingService;
-    private final AccountService accountService;
 
-    public ListingController(ListingService listingService, AccountService accountService) {
+    public ListingController(ListingService listingService) {
         this.listingService = listingService;
-        this.accountService = accountService;
     }
 
     @PostMapping("/{accountId}")
-    public ResponseEntity<Listing> createListing(@RequestBody Listing listing, @PathVariable Long accountId) {
-        Listing createdListing = listingService.createListing(listing, accountId);
+    public ResponseEntity<Listing> createListing(@RequestBody Listing newlisting, @PathVariable Long accountId) {
+        Listing createdListing = listingService.createListing(newlisting, accountId);
         return ResponseEntity.status(201).body(createdListing);
     }
 
@@ -45,9 +41,9 @@ public class ListingController {
     }
 
     @PutMapping("/{accountId}/{listingId}")
-    public ResponseEntity<Listing> updateListing(@PathVariable Long accountId, @PathVariable Long listingId, @RequestBody Listing updateListing) {
+    public ResponseEntity<Listing> updateListing(@PathVariable Long accountId, @PathVariable Long listingId, @RequestBody Listing updatedListing) {
         try {
-            Listing updated = listingService.updateListing(listingId, updateListing, accountId);
+            Listing updated = listingService.updateListing(listingId, updatedListing, accountId);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
@@ -87,5 +83,21 @@ public class ListingController {
      * OWNER LISTING ACCESS
      */
 
-     
+     @GetMapping("/myListings/{accountId}")
+     public ResponseEntity<List<Listing>> searchOwnListing(@PathVariable Long accountId) {
+        List<Listing> listings = listingService.getListingByAccountSortedBySold(accountId);
+        if (listings.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(listings);
+     }
+
+     @GetMapping("/myUnsoldListing/{accountId}")
+     public ResponseEntity<List<Listing>> searchOwnActiveListing(@PathVariable Long accountId) {
+        List<Listing> listings = listingService.getActiveListingsByAccount(accountId);
+        if (listings.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(listings);
+     }
 }
