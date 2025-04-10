@@ -1,7 +1,22 @@
-// package com.cardinalcart.api.cardinalcart_backend.listing;
+package com.cardinalcart.api.cardinalcart_backend.listing;
 
-// import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
 
-// public interface ListingRepository extends JpaRepository<Listing, Long> {
+import org.springframework.data.jpa.repository.JpaRepository;
 
-// }
+import com.cardinalcart.api.cardinalcart_backend.account.Account;
+
+public interface ListingRepository extends JpaRepository<Listing, Long> {
+    List<Listing> findByListingNameContainingIgnoreCaseAndListingPriceBetween(
+        String listName,
+        Double minPrice,
+        Double maxPrice
+    );
+
+    List<Listing> findByAccountOrderByIsSold(Account account);
+
+    List<Listing> findByAccountAndIsSoldFalseOrderByDatePostedDesc(Account account);
+
+    List<Listing> findAllByOrderByDatePostedDesc();
+
+}

@@ -53,6 +53,10 @@ public class Listing {
         return account;
     }
 
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
     public Long getVersion() {
         return version;
     }
@@ -97,6 +101,10 @@ public class Listing {
         return datePosted;
     }
 
+    public void setDatePosted(LocalDateTime datePosted) {
+        this.datePosted = datePosted;
+    }
+
     public Boolean getIsSold() {
         return isSold;
     }
@@ -111,7 +119,7 @@ public class Listing {
         return "Listing {" +
                 "id=" + id +
                 ", listingName='" + listingName + '\'' +
-                ", account='" + account + '\'' +
+                ", account='" + account.getFirstName() + '\'' +
                 ", version=" + version +
                 ", listingDescription='" + listingDescription + '\'' +
                 ", listingPrice=" + listingPrice +
