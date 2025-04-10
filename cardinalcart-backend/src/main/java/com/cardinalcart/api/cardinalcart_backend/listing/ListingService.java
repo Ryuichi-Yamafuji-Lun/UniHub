@@ -3,6 +3,7 @@ package com.cardinalcart.api.cardinalcart_backend.listing;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cardinalcart.api.cardinalcart_backend.account.Account;
 import com.cardinalcart.api.cardinalcart_backend.account.AccountRepository;
@@ -20,7 +21,25 @@ public class ListingService {
         this.accountRepository = accountRepository;
     }
 
+    // check if account exists in the database
+    public boolean isValidAccount(Account account) {
+        return accountRepository.findById(account.getId()).isPresent();
+    }
+
+    // check if account exists and is active
+    private void validateAccount(Account account) {
+        if (!isValidAccount(account) || !account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
+            throw new IllegalArgumentException("Account is invalid or not active");
+        }
+    }
+    
+    // check if user is the owner of the listing
+    public boolean isOwnerOfListing(Listing listing, Account account) {
+        return listing.getAccount().equals(account);
+    }
+
     // create listing
+    @Transactional
     public Listing createListing(Listing listing, Account account) {
         validateAccount(account);
 
@@ -32,6 +51,7 @@ public class ListingService {
     }
 
     // delete listing
+    @Transactional
     public void deleteListing(Long listingId, Account account) {
         Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
 
@@ -47,6 +67,7 @@ public class ListingService {
     }
 
     // update listing
+    @Transactional
     public Listing updateListing(Long listingId, Listing updatedlisting, Account account) {
         Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing is not found"));
 
@@ -66,20 +87,6 @@ public class ListingService {
         return listingRepository.save(listing);
     }
 
-    // check if account exists in the database
-    public boolean isValidAccount(Account account) {
-        return accountRepository.findById(account.getId()).isPresent();
-    }
+    // find listing by id
 
-    // check if account exists and is active
-    private void validateAccount(Account account) {
-        if (!isValidAccount(account) || !account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
-            throw new IllegalArgumentException("Account is invalid or not active");
-        }
-    }
-    
-    // check if user is the owner of the listing
-    public boolean isOwnerOfListing(Listing listing, Account account) {
-        return listing.getAccount().equals(account);
-    }
 }

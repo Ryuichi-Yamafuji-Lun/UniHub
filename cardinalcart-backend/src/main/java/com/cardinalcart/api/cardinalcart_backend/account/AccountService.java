@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
@@ -19,21 +20,25 @@ public class AccountService {
     }
 
     // create account account
+    @Transactional
     public Account createAccount(Account account) {
         return accountRepository.save(account);
     }
 
     // delete account account
+    @Transactional
     public void deleteAccount(Long id) {
         accountRepository.deleteById(id);
     }
 
     // find account by id
+    @Transactional(readOnly = true)
     public Optional<Account> findAccountById(Long id) {
         return accountRepository.findById(id);
     }
 
     // find account by school email
+    @Transactional(readOnly = true)
     public Optional<Account> findAccountBySchoolEmail(String schoolEmail) {
         return accountRepository.findBySchoolEmail(schoolEmail);
     }
@@ -46,6 +51,7 @@ public class AccountService {
      */
 
     // get account role and status
+    @Transactional(readOnly = true)
     public AccountStatusRoleResponse getAccountRoleAndStatus(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("account not found"));
         
@@ -53,6 +59,7 @@ public class AccountService {
     }
 
     // update account role
+    @Transactional
     public Account updateAccountRole(Long id, Role newRole) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("account not found"));
 
@@ -63,6 +70,7 @@ public class AccountService {
     }
 
     // update account status
+    @Transactional
     public Account updateAccountStatus(Long id, AccountStatus newaccountStatus) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("account not found"));
 
