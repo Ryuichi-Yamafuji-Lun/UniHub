@@ -46,6 +46,28 @@ public class ListingService {
         listingRepository.delete(listing);
     }
 
+    // update listing
+    public Listing updateListing(Long listingId, Listing updatedlisting, Account account) {
+        Optional<Listing> listingOpt = listingRepository.findById(listingId);
+
+        if (!listingOpt.isPresent()) {
+            throw new IllegalArgumentException("Listing not found");
+        }
+
+        Listing listing = listingOpt.get();
+
+        if (!isOwnerOfListing(listing, account)) {
+            throw new IllegalArgumentException("You are not authorized to update this listing");
+        }
+
+        listing.setListingName(updatedlisting.getListingName());
+        listing.setListingPrice(updatedlisting.getListingPrice());
+        listing.setListingDescription(updatedlisting.getListingDescription());
+        listing.setListingImages(updatedlisting.getListingImages());
+
+        return listingRepository.save(listing);
+    }
+
     // check if account exists in the database
     public boolean isValidAccount(Account account) {
         return accountRepository.findById(account.getId()).isPresent();
