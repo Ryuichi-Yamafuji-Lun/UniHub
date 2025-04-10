@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import com.cardinalcart.api.cardinalcart_backend.account.Account;
 import com.cardinalcart.api.cardinalcart_backend.account.AccountRepository;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
+import com.cardinalcart.api.cardinalcart_backend.listing.Listing;
+import com.cardinalcart.api.cardinalcart_backend.listing.ListingRepository;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
 
 @SpringBootApplication
@@ -21,7 +23,7 @@ public class CardinalcartBackendApplication {
     }
 
     @Bean
-    public CommandLineRunner loadData(AccountRepository accountRepository) {
+    public CommandLineRunner loadData(AccountRepository accountRepository, ListingRepository listingRepository) {
         return args -> {
             try {
                 Account account = new Account(
@@ -35,6 +37,15 @@ public class CardinalcartBackendApplication {
                     AccountStatus.ACTIVE
                 );
                 accountRepository.save(account);  
+                Listing listing = new Listing();
+                listing.setListingName("Iphone");
+                listing.setListingDescription("Apple Iphone used");
+                listing.setListingPrice(300.14);
+                listing.setDatePosted(LocalDateTime.now());
+                listing.setAccount(account);
+                listing.setIsSold(false);
+
+                listingRepository.save(listing);
             } catch (Exception e) {
                 e.printStackTrace();
             }

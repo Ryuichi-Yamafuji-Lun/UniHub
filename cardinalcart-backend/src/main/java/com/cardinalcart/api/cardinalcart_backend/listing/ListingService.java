@@ -45,6 +45,7 @@ public class ListingService {
         // Do a double take on account and date posted
         listing.setAccount(account);
         listing.setDatePosted(LocalDateTime.now());
+        listing.setIsSold(false);
 
         return listingRepository.save(listing);
     }
