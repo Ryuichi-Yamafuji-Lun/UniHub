@@ -1,6 +1,8 @@
 package com.cardinalcart.api.cardinalcart_backend.listing;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,7 +88,44 @@ public class ListingService {
 
         return listingRepository.save(listing);
     }
+    /*
+     * Any User Access
+     */
 
     // find listing by id
+    @Transactional(readOnly = true)
+    public Optional<Listing> findListingById(Long id) {
+        return listingRepository.findById(id);
+    }
 
+    // retrieve all listing ordered by date
+    @Transactional(readOnly = true)
+    public List<Listing> getAllListing() {
+        return listingRepository.findAllByOrderByDatePostedDesc();
+    }
+
+    // retrieve all listing with name and price range
+    @Transactional(readOnly = true)
+    public List<Listing> searchListing(String listName, Double minPrice, Double maxPrice) {
+        if (minPrice == null) minPrice = 0.0;
+        if (maxPrice == null) maxPrice = Double.MAX_VALUE;
+
+        return listingRepository.findByListingNameContainingIgnoreCaseAndListingPriceBetween(listName, minPrice, maxPrice);
+    }
+
+    /*
+     * Listing Owner Access
+     */
+
+    // get all listings for an account sorted by sold status
+    @Transactional(readOnly = true)
+    public List<Listing> getListingByAccountSortedBySold(Account account) {
+        return listingRepository.findByAccountOrderByIsSold(account);
+    }
+
+    // get only active (unsold) listing for an account, sorted by date posted
+    @Transactional(readOnly = true)
+    public List<Listing> getActiveListingsByAccount(Account account) {
+        return listingRepository.findByAccountAndIsSoldFalseOrderByDatePostedDesc(account);
+    }
 }
