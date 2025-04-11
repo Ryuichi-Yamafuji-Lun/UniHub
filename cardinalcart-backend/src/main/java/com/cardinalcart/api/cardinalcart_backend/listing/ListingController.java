@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingCategory;
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
 
 @RestController
 @RequestMapping(path = "api/v1/listing")
@@ -70,14 +74,21 @@ public class ListingController {
         return ResponseEntity.ok(listings);
     }
 
-    @GetMapping("/search/{listingName}/{minPrice}/{maxPrice}")
-    public ResponseEntity<List<Listing>> searchListing(@PathVariable String listingName, @PathVariable Double minPrice, @PathVariable Double maxPrice) {
-        List<Listing> listings = listingService.searchListing(listingName, minPrice, maxPrice);
+    @GetMapping("/search")
+    public ResponseEntity<List<Listing>> searchListing(
+            @RequestParam(required = false) String listingName,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) ListingSchools school,
+            @RequestParam(required = false) ListingCategory category
+    ) {
+        List<Listing> listings = listingService.searchListing(listingName, minPrice, maxPrice, school, category);
         if (listings.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(listings);
     }
+
 
     /*
      * OWNER LISTING ACCESS

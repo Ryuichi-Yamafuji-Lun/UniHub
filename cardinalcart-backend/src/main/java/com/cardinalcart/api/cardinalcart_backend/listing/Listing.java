@@ -7,6 +7,8 @@ import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingCategory;
 import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,7 +33,9 @@ public class Listing {
     private LocalDateTime datePosted;
     private Boolean isSold;
     private String listingName; 
+    @Enumerated(EnumType.STRING)
     private ListingSchools listingSchool;
+    @Enumerated(EnumType.STRING)
     private ListingCategory listingCategory;
     private Double listingPrice;
     private String listingImages;    

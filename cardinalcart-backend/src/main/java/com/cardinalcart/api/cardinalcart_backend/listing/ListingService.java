@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cardinalcart.api.cardinalcart_backend.account.Account;
 import com.cardinalcart.api.cardinalcart_backend.account.AccountRepository;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingCategory;
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
 
 @Service
 public class ListingService {
@@ -110,11 +112,11 @@ public class ListingService {
 
     // retrieve all listing with name and price range
     @Transactional(readOnly = true)
-    public List<Listing> searchListing(String listName, Double minPrice, Double maxPrice) {
+    public List<Listing> searchListing(String listName, Double minPrice, Double maxPrice, ListingSchools school, ListingCategory category) {
         if (minPrice == null) minPrice = 0.0;
         if (maxPrice == null) maxPrice = Double.MAX_VALUE;
 
-        return listingRepository.findByListingNameContainingIgnoreCaseAndListingPriceBetween(listName, minPrice, maxPrice);
+        return listingRepository.searchListings(listName, minPrice, maxPrice, school, category);
     }
 
     /*

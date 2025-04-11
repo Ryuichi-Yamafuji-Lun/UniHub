@@ -13,6 +13,8 @@ import com.cardinalcart.api.cardinalcart_backend.account.AccountRepository;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
 import com.cardinalcart.api.cardinalcart_backend.listing.Listing;
 import com.cardinalcart.api.cardinalcart_backend.listing.ListingRepository;
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingCategory;
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
 
 @SpringBootApplication
@@ -44,6 +46,8 @@ public class CardinalcartBackendApplication {
                 listing.setDatePosted(LocalDateTime.now());
                 listing.setAccount(account);
                 listing.setIsSold(false);
+                listing.setListingCategory(ListingCategory.ELECTRONICS);
+                listing.setListingSchool(ListingSchools.USC);
 
                 listingRepository.save(listing);
             } catch (Exception e) {
