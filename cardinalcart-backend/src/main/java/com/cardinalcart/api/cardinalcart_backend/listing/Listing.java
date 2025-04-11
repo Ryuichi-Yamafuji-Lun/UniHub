@@ -3,6 +3,8 @@ package com.cardinalcart.api.cardinalcart_backend.listing;
 import java.time.LocalDateTime;
 
 import com.cardinalcart.api.cardinalcart_backend.account.Account;
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingCategory;
+import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -26,24 +28,32 @@ public class Listing {
     @Version
     private Long version;
 
-    private String listingName; 
-    private Double listingPrice;   
-    private String listingDescription;  
-    private String listingImages; 
     private LocalDateTime datePosted;
     private Boolean isSold;
-
+    private String listingName; 
+    private ListingSchools listingSchool;
+    private ListingCategory listingCategory;
+    private Double listingPrice;
+    private String listingImages;    
+    private String listingDescription;  
+    
     public Listing(){}
 
-    public Listing(Account account, String listingName, Double listingPrice, String listingDescription, String listingImages, LocalDateTime datePosted, Boolean isSold) {
+    public Listing(Account account, Long version, LocalDateTime datePosted, Boolean isSold, String listingName,
+            ListingSchools listingSchool, ListingCategory listingCategory, Double listingPrice, String listingImages,
+            String listingDescription) {
         this.account = account;
-        this.listingName = listingName;
-        this.listingPrice = listingPrice;
-        this.listingDescription = listingDescription;
-        this.listingImages = listingImages;
+        this.version = version;
         this.datePosted = datePosted;
         this.isSold = isSold;
+        this.listingName = listingName;
+        this.listingSchool = listingSchool;
+        this.listingCategory = listingCategory;
+        this.listingPrice = listingPrice;
+        this.listingImages = listingImages;
+        this.listingDescription = listingDescription;
     }
+
 
     public Long getId() {
         return id;
@@ -64,39 +74,6 @@ public class Listing {
     public void setVersion(Long version) {
         this.version = version;
     }
-
-    public String getListingName() {
-        return listingName;
-    }
-
-    public void setListingName(String listingName) {
-        this.listingName = listingName;
-    }
-
-    public Double getListingPrice() {
-        return listingPrice;
-    }
-
-    public void setListingPrice(Double listingPrice) {
-        this.listingPrice = listingPrice;
-    }
-
-    public String getListingDescription() {
-        return listingDescription;
-    }
-
-    public void setListingDescription(String listingDescription) {
-        this.listingDescription = listingDescription;
-    }
-
-    public String getListingImages() {
-        return listingImages;
-    }
-
-    public void setListingImages(String listingImages) {
-        this.listingImages = listingImages;
-    }
-
     public LocalDateTime getDatePosted() {
         return datePosted;
     }
@@ -113,19 +90,69 @@ public class Listing {
         this.isSold = isSold;
     }
 
+    public String getListingName() {
+        return listingName;
+    }
+
+    public void setListingName(String listingName) {
+        this.listingName = listingName;
+    }
+
+    public ListingSchools getListingSchool() {
+        return listingSchool;
+    }
+
+    public void setListingSchool(ListingSchools listingSchool) {
+        this.listingSchool = listingSchool;
+    }
+
+    public ListingCategory getListingCategory() {
+        return listingCategory;
+    }
+
+    public void setListingCategory(ListingCategory listingCategory) {
+        this.listingCategory = listingCategory;
+    }
+
+    public Double getListingPrice() {
+        return listingPrice;
+    }
+
+    public void setListingPrice(Double listingPrice) {
+        this.listingPrice = listingPrice;
+    }
+
+    public String getListingImages() {
+        return listingImages;
+    }
+
+    public void setListingImages(String listingImages) {
+        this.listingImages = listingImages;
+    }
+
+    public String getListingDescription() {
+        return listingDescription;
+    }
+
+    public void setListingDescription(String listingDescription) {
+        this.listingDescription = listingDescription;
+    }
+
     // Return listing information in string format
     @Override
     public String toString() {
         return "Listing {" +
                 "id=" + id +
-                ", listingName='" + listingName + '\'' +
-                ", account='" + account.getFirstName() + '\'' +
-                ", version=" + version +
-                ", listingDescription='" + listingDescription + '\'' +
-                ", listingPrice=" + listingPrice +
-                ", listingImage" + listingImages +
                 ", isSold" + isSold +
                 ", datePosted=" + datePosted +
+                ", listingName='" + listingName + '\'' +
+                ", listingSchool='" + listingSchool + '\'' +
+                ", listingCategory='" + listingCategory + '\'' +
+                ", account='" + account.getFirstName() + '\'' +
+                ", version=" + version +
+                ", listingPrice=" + listingPrice +
+                ", listingImage" + listingImages +
+                ", listingDescription='" + listingDescription + '\'' + 
                 '}';
     }
 }

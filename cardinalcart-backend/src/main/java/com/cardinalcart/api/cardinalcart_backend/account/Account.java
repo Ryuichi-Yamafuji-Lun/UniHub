@@ -58,7 +58,7 @@ public class Account {
     }
 
     // Getter & Setter
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
