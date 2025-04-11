@@ -1,5 +1,14 @@
-// package com.cardinalcart.api.cardinalcart_backend.transaction;
+package com.cardinalcart.api.cardinalcart_backend.transaction;
 
-// public class Transaction {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
-// }
+@Entity
+public class Transaction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+}

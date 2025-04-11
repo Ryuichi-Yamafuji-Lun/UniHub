@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,6 +27,7 @@ public class Account {
     private LocalDate dateOfBirth;
 
     // User school email
+    @Column(unique = true, nullable = false)
     private String schoolEmail;
 
     // User account track
