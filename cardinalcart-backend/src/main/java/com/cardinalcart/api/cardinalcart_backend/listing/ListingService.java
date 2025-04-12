@@ -16,8 +16,8 @@ import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
 @Service
 public class ListingService {
 
-    public final ListingRepository listingRepository;
-    public final AccountRepository accountRepository;
+    private final ListingRepository listingRepository;
+    private final AccountRepository accountRepository;
 
 
     public ListingService(ListingRepository listingRepository, AccountRepository accountRepository) {
