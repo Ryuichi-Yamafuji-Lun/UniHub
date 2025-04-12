@@ -25,7 +25,11 @@ public class Account {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
+    private String profilePicture;
 
+    private Float sumOfRatings = 5.0f;
+    private Integer numberOfRatings = 1;
+    
     // User school email
     @Column(unique = true, nullable = false)
     private String schoolEmail;
@@ -41,25 +45,37 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
 
+    // check for suspension
+    private Byte unsafeFlag = 0;
+    private Byte suspensionCount = 0;
+    
     // For JPA
     public Account(){}
 
     // Set User
-    public Account(String firstName, String lastName, LocalDate dateOfBirth, String schoolEmail, LocalDateTime createdAt,
-            LocalDateTime updatedAt, Role role, AccountStatus accountStatus) {
+    
+
+    // Getter & Setter
+    public Long getId() {
+        return id;
+    }
+
+    public Account(String firstName, String lastName, LocalDate dateOfBirth, String profilePicture, Float sumOfRatings,
+            Integer numberOfRatings, String schoolEmail, LocalDateTime createdAt, LocalDateTime updatedAt, Role role,
+            AccountStatus accountStatus, Byte unsafeFlag, Byte suspensionCount) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
+        this.profilePicture = profilePicture;
+        this.sumOfRatings = sumOfRatings;
+        this.numberOfRatings = numberOfRatings;
         this.schoolEmail = schoolEmail;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.role = role;
         this.accountStatus = accountStatus;
-    }
-
-    // Getter & Setter
-    public Long getId() {
-        return id;
+        this.unsafeFlag = unsafeFlag;
+        this.suspensionCount = suspensionCount;
     }
 
     public String getFirstName() {
@@ -114,12 +130,52 @@ public class Account {
         this.role = role;
     }
 
+    public Float getSumOfRatings() {
+        return sumOfRatings;
+    }
+
+    public void setSumOfRatings(Float sumOfRatings) {
+        this.sumOfRatings = sumOfRatings;
+    }
+    
+    public Integer getNumberOfRatings() {
+        return numberOfRatings;
+    }
+
+    public void setNumberOfRatings(Integer numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
+    }
+
     public AccountStatus getAccountStatus() {
         return accountStatus;
     }
 
     public void setAccountStatus(AccountStatus accountStatus) {
         this.accountStatus = accountStatus;
+    }
+
+    public Byte getUnsafeFlag() {
+        return unsafeFlag;
+    }
+
+    public void setUnsafeFlag(Byte unsafeFlag) {
+        this.unsafeFlag = unsafeFlag;
+    }
+
+    public Byte getSuspensionCount() {
+        return suspensionCount;
+    }
+
+    public void setSuspensionCount(Byte suspensionCount) {
+        this.suspensionCount = suspensionCount;
     }
 
     // Return user information in string format
@@ -131,10 +187,15 @@ public class Account {
                 ", lastName='" + lastName + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", schoolEmail='" + schoolEmail + '\'' +
+                ", profilePicture='" + profilePicture + '\'' +
+                ", numberOfRatings=" + numberOfRatings +
+                ", sumOfRatings=" + sumOfRatings +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", role=" + role +
                 ", accountStatus=" + accountStatus +
+                ", unsafeFlag=" + unsafeFlag +
+                ", suspensionCount=" + suspensionCount +
                 '}';
     }
 
