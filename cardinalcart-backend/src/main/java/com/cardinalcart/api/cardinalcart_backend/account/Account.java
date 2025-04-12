@@ -53,16 +53,9 @@ public class Account {
     public Account(){}
 
     // Set User
-    
-
-    // Getter & Setter
-    public Long getId() {
-        return id;
-    }
-
     public Account(String firstName, String lastName, LocalDate dateOfBirth, String profilePicture, Float sumOfRatings,
-            Integer numberOfRatings, String schoolEmail, LocalDateTime createdAt, LocalDateTime updatedAt, Role role,
-            AccountStatus accountStatus, Byte unsafeFlag, Byte suspensionCount) {
+    Integer numberOfRatings, String schoolEmail, LocalDateTime createdAt, LocalDateTime updatedAt, Role role,
+    AccountStatus accountStatus, Byte unsafeFlag, Byte suspensionCount) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
@@ -76,6 +69,11 @@ public class Account {
         this.accountStatus = accountStatus;
         this.unsafeFlag = unsafeFlag;
         this.suspensionCount = suspensionCount;
+    }
+
+    // Getter & Setter
+    public Long getId() {
+        return id;
     }
 
     public String getFirstName() {

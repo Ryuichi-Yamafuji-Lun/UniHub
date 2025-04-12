@@ -32,12 +32,18 @@ public class CardinalcartBackendApplication {
                     "Warren",
                     "Buffet",
                     LocalDate.of(2000, 1, 1),
+                    "stonks",
+                    5.0f, // float
+                    1,
                     "test@gmail.com",
                     LocalDateTime.now(),
                     LocalDateTime.now(),
                     Role.USER,
-                    AccountStatus.ACTIVE
+                    AccountStatus.ACTIVE,
+                    (byte) 0, 
+                    (byte) 0  
                 );
+                
                 accountRepository.save(account);  
                 Listing listing = new Listing();
                 listing.setListingName("Iphone");

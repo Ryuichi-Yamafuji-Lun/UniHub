@@ -35,7 +35,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteaccount(@PathVariable Long id) {  
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {  
         try {
             accountService.deleteAccount(id);
             return ResponseEntity.noContent().build();
@@ -45,13 +45,13 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Account> getaccountById(@PathVariable Long id) {
+    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
         Optional<Account> account = accountService.findAccountById(id);
         return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/email/{schoolEmail}")
-    public ResponseEntity<Account> getaccountBySchoolEmail(@PathVariable String schoolEmail) {
+    public ResponseEntity<Account> getAccountBySchoolEmail(@PathVariable String schoolEmail) {
         Optional<Account> account = accountService.findAccountBySchoolEmail(schoolEmail);
         return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
