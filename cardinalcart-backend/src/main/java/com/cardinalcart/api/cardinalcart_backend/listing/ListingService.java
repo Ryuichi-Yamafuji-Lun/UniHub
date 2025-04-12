@@ -87,9 +87,13 @@ public class ListingService {
 
         listing.setListingName(updatedlisting.getListingName());
         listing.setListingPrice(updatedlisting.getListingPrice());
-        listing.setListingDescription(updatedlisting.getListingDescription());
+        listing.setIsSold(updatedlisting.getIsSold());
         listing.setListingImages(updatedlisting.getListingImages());
-
+        listing.setListingDescription(updatedlisting.getListingDescription());
+        listing.setListingCategory(updatedlisting.getListingCategory());
+        listing.setVersion(listing.getVersion() + 1);
+        listing.setListingSchool(updatedlisting.getListingSchool());
+        
         return listingRepository.save(listing);
     }
     /*
