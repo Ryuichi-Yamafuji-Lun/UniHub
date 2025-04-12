@@ -22,6 +22,8 @@ public class AccountService {
     // create account account
     @Transactional
     public Account createAccount(Account account) {
+        account.setCreatedAt(LocalDateTime.now());
+        account.setUpdatedAt(LocalDateTime.now());
         return accountRepository.save(account);
     }
 
