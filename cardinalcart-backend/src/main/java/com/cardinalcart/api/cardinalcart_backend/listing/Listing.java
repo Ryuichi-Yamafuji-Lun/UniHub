@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.cardinalcart.api.cardinalcart_backend.account.Account;
 import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingCategory;
 import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
+//import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -31,24 +32,28 @@ public class Listing {
     private Long version;
 
     private LocalDateTime datePosted;
+    private LocalDateTime boostedDate;
     private Boolean isSold;
     private String listingName; 
+
     @Enumerated(EnumType.STRING)
     private ListingSchools listingSchool;
     @Enumerated(EnumType.STRING)
     private ListingCategory listingCategory;
+
     private Double listingPrice;
     private String listingImages;    
     private String listingDescription;  
     
     public Listing(){}
 
-    public Listing(Account account, Long version, LocalDateTime datePosted, Boolean isSold, String listingName,
+    public Listing(Account account, Long version, LocalDateTime datePosted, LocalDateTime boostedDate, Boolean isSold, String listingName,
             ListingSchools listingSchool, ListingCategory listingCategory, Double listingPrice, String listingImages,
             String listingDescription) {
         this.account = account;
         this.version = version;
         this.datePosted = datePosted;
+        this.boostedDate = boostedDate;
         this.isSold = isSold;
         this.listingName = listingName;
         this.listingSchool = listingSchool;
@@ -84,6 +89,14 @@ public class Listing {
 
     public void setDatePosted(LocalDateTime datePosted) {
         this.datePosted = datePosted;
+    }
+
+    public LocalDateTime getBoostedDate() {
+        return boostedDate;
+    }
+
+    public void setBoostedDate(LocalDateTime boostedDate) {
+        this.boostedDate = boostedDate;
     }
 
     public Boolean getIsSold() {

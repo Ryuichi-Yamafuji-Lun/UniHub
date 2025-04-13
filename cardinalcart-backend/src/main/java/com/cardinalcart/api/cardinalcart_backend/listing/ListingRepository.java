@@ -26,8 +26,8 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
 
     List<Listing> findByAccountOrderByIsSold(Account account);
 
-    List<Listing> findByAccountAndIsSoldFalseOrderByDatePostedDesc(Account account);
+    List<Listing> findByAccountAndIsSoldFalseOrderByBoostedDateDesc(Account account);
 
-    List<Listing> findAllByOrderByDatePostedDesc();
+    List<Listing> findAllByOrderByBoostedDateDesc();
 
 }

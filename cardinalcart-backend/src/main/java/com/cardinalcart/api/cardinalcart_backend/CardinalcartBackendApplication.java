@@ -50,6 +50,7 @@ public class CardinalcartBackendApplication {
                 listing.setListingDescription("Apple Iphone used");
                 listing.setListingPrice(300.14);
                 listing.setDatePosted(LocalDateTime.now());
+                listing.setBoostedDate(LocalDateTime.now());
                 listing.setAccount(account);
                 listing.setIsSold(false);
                 listing.setListingCategory(ListingCategory.ELECTRONICS);

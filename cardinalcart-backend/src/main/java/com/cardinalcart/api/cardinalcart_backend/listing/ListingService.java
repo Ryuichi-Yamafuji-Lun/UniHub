@@ -111,7 +111,7 @@ public class ListingService {
     // retrieve all listing ordered by date
     @Transactional(readOnly = true)
     public List<Listing> getAllListings() {
-        return listingRepository.findAllByOrderByDatePostedDesc();
+        return listingRepository.findAllByOrderByBoostedDateDesc();
     }
 
     // retrieve all listing with name and price range
@@ -140,6 +140,6 @@ public class ListingService {
     @Transactional(readOnly = true)
     public List<Listing> getActiveListingsByAccount(Long accountId) {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get All Owned Unsold Listing: account not found"));
-        return listingRepository.findByAccountAndIsSoldFalseOrderByDatePostedDesc(account);
+        return listingRepository.findByAccountAndIsSoldFalseOrderByBoostedDateDesc(account);
     }
 }
