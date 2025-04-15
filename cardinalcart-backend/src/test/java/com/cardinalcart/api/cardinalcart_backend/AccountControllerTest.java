@@ -3,13 +3,13 @@ package com.cardinalcart.api.cardinalcart_backend;
 import com.cardinalcart.api.cardinalcart_backend.account.*;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
 import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
+import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatusRoleResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,16 +19,18 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AccountController.class)
 public class AccountControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
     private AccountService accountService;
-
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @BeforeEach
+    void setUp() {
+        accountService = mock(AccountService.class);
+        AccountController accountController = new AccountController(accountService);
+        mockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
+    }
 
     private Account getSampleAccount() {
         return new Account(
@@ -130,7 +132,7 @@ public class AccountControllerTest {
     @Test
     public void testGetAccountRoleAndStatus() throws Exception {
         when(accountService.getAccountRoleAndStatus(1L))
-                .thenReturn(new com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatusRoleResponse(Role.USER, AccountStatus.ACTIVE));
+                .thenReturn(new AccountStatusRoleResponse(Role.USER, AccountStatus.ACTIVE));
 
         mockMvc.perform(get("/api/v1/account/1/role-status"))
                 .andExpect(status().isOk())

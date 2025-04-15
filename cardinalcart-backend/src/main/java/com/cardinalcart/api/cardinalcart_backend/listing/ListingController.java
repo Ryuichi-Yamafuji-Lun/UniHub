@@ -76,11 +76,11 @@ public class ListingController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Listing>> searchListing(
-            @RequestParam(required = false) String listingName,
-            @RequestParam(required = false) Double minPrice,
-            @RequestParam(required = false) Double maxPrice,
-            @RequestParam(required = false) ListingSchools school,
-            @RequestParam(required = false) ListingCategory category
+        @RequestParam String listingName,
+        @RequestParam Double minPrice,
+        @RequestParam Double maxPrice,
+        @RequestParam ListingSchools school,
+        @RequestParam ListingCategory category
     ) {
         List<Listing> listings = listingService.searchListing(listingName, minPrice, maxPrice, school, category);
         if (listings.isEmpty()) {
@@ -88,7 +88,6 @@ public class ListingController {
         }
         return ResponseEntity.ok(listings);
     }
-
 
     /*
      * OWNER LISTING ACCESS
