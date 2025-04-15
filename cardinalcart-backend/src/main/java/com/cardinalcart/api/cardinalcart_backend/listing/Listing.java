@@ -2,6 +2,9 @@ package com.cardinalcart.api.cardinalcart_backend.listing;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.cardinalcart.api.cardinalcart_backend.account.Account;
 import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingCategory;
 import com.cardinalcart.api.cardinalcart_backend.listingstatus.ListingSchools;
@@ -26,6 +29,7 @@ public class Listing {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Account account;
 
     @Version

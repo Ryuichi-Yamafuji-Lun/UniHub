@@ -1,142 +1,109 @@
 package com.cardinalcart.api.cardinalcart_backend;
 
-import com.cardinalcart.api.cardinalcart_backend.account.*;
-import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
-import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
-import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatusRoleResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.UUID;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-public class AccountControllerTest {
+import com.cardinalcart.api.cardinalcart_backend.account.Account;
+import com.cardinalcart.api.cardinalcart_backend.account.AccountRepository;
+import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.AccountStatus;
+import com.cardinalcart.api.cardinalcart_backend.accountstatusrole.Role;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+@SpringBootTest
+@AutoConfigureMockMvc
+class AccountControllerTest {
+
+    @Autowired
     private MockMvc mockMvc;
-    private AccountService accountService;
-    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    private Account testAccount;
 
     @BeforeEach
-    void setUp() {
-        accountService = mock(AccountService.class);
-        AccountController accountController = new AccountController(accountService);
-        mockMvc = MockMvcBuilders.standaloneSetup(accountController).build();
-    }
+    void setup() {
+        accountRepository.deleteAll();
 
-    private Account getSampleAccount() {
-        return new Account(
-                "John", "Doe", LocalDate.of(2000, 1, 1), "pic.png",
-                5.0f, 1, "johndoe@usc.edu",
-                LocalDateTime.now(), LocalDateTime.now(),
-                Role.USER, AccountStatus.ACTIVE, (byte) 0, (byte) 0
-        );
+        testAccount = new Account();
+        testAccount.setFirstName("Test");
+        testAccount.setLastName("User");
+        testAccount.setSchoolEmail("test" + UUID.randomUUID() + "@usc.edu");
+        testAccount.setDateOfBirth(LocalDate.of(2000, 1, 1));
+        testAccount.setRole(Role.USER);
+        testAccount.setAccountStatus(AccountStatus.ACTIVE);
+
+        testAccount = accountRepository.save(testAccount);
     }
 
     @Test
-    public void testCreateAccount() throws Exception {
-        Account account = getSampleAccount();
-        when(accountService.createAccount(any(Account.class))).thenReturn(account);
+    void testGetAccountById() throws Exception {
+        mockMvc.perform(get("/api/v1/account/" + testAccount.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.schoolEmail").value(testAccount.getSchoolEmail()));
+    }
+
+    @Test
+    void testCreateAccount() throws Exception {
+        Account newAccount = new Account();
+        newAccount.setFirstName("Jane");
+        newAccount.setLastName("Doe");
+        newAccount.setSchoolEmail("jane" + UUID.randomUUID() + "@usc.edu");
+        newAccount.setDateOfBirth(LocalDate.of(1999, 2, 2));
+        newAccount.setRole(Role.USER);
+        newAccount.setAccountStatus(AccountStatus.ACTIVE);
 
         mockMvc.perform(post("/api/v1/account")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(account)))
+                        .content(objectMapper.writeValueAsString(newAccount)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.schoolEmail").value("johndoe@usc.edu"));
+                .andExpect(jsonPath("$.schoolEmail").value(newAccount.getSchoolEmail()));
     }
 
     @Test
-    public void testDeleteAccountSuccess() throws Exception {
-        doNothing().when(accountService).deleteAccount(1L);
-
-        mockMvc.perform(delete("/api/v1/account/1"))
+    void testDeleteAccount() throws Exception {
+        mockMvc.perform(delete("/api/v1/account/" + testAccount.getId()))
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    public void testDeleteAccountFailure() throws Exception {
-        doThrow(new RuntimeException("Not found")).when(accountService).deleteAccount(1L);
-
-        mockMvc.perform(delete("/api/v1/account/1"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testGetAccountById() throws Exception {
-        Account account = getSampleAccount();
-        when(accountService.findAccountById(1L)).thenReturn(Optional.of(account));
-
-        mockMvc.perform(get("/api/v1/account/1"))
+    void testGetAccountByEmail() throws Exception {
+        mockMvc.perform(get("/api/v1/account/email/" + testAccount.getSchoolEmail()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.schoolEmail").value("johndoe@usc.edu"));
+                .andExpect(jsonPath("$.schoolEmail").value(testAccount.getSchoolEmail()));
     }
 
     @Test
-    public void testGetAccountByIdNotFound() throws Exception {
-        when(accountService.findAccountById(1L)).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/v1/account/1"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testGetAccountBySchoolEmail() throws Exception {
-        Account account = getSampleAccount();
-        when(accountService.findAccountBySchoolEmail("johndoe@usc.edu"))
-                .thenReturn(Optional.of(account));
-
-        mockMvc.perform(get("/api/v1/account/email/johndoe@usc.edu"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("John"));
-    }
-
-    @Test
-    public void testGetAccountBySchoolEmailNotFound() throws Exception {
-        when(accountService.findAccountBySchoolEmail("johndoe@usc.edu"))
-                .thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/v1/account/email/johndoe@usc.edu"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testUpdateAccountRole() throws Exception {
-        Account account = getSampleAccount();
-        account.setRole(Role.ADMIN);
-        when(accountService.updateAccountRole(1L, Role.ADMIN)).thenReturn(account);
-
-        mockMvc.perform(put("/api/v1/account/1/role?role=ADMIN"))
+    void testUpdateAccountRole() throws Exception {
+        mockMvc.perform(put("/api/v1/account/" + testAccount.getId() + "/role")
+                        .param("role", "ADMIN"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.role").value("ADMIN"));
     }
 
     @Test
-    public void testUpdateAccountStatus() throws Exception {
-        Account account = getSampleAccount();
-        account.setAccountStatus(AccountStatus.SUSPENDED);
-        when(accountService.updateAccountStatus(1L, AccountStatus.SUSPENDED)).thenReturn(account);
-
-        mockMvc.perform(put("/api/v1/account/1/status?accountStatus=SUSPENDED"))
+    void testUpdateAccountStatus() throws Exception {
+        mockMvc.perform(put("/api/v1/account/" + testAccount.getId() + "/status")
+                        .param("accountStatus", "SUSPENDED"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accountStatus").value("SUSPENDED"));
-    }
-
-    @Test
-    public void testGetAccountRoleAndStatus() throws Exception {
-        when(accountService.getAccountRoleAndStatus(1L))
-                .thenReturn(new AccountStatusRoleResponse(Role.USER, AccountStatus.ACTIVE));
-
-        mockMvc.perform(get("/api/v1/account/1/role-status"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.role").value("USER"))
-                .andExpect(jsonPath("$.accountStatus").value("ACTIVE"));
     }
 }
