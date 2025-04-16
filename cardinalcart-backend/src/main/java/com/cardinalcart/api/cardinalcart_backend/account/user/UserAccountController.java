@@ -21,8 +21,18 @@ public class UserAccountController {
     public UserAccountController(UserAccountService accountService) {
         this.accountService = accountService;
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
+        Optional<Account> account = accountService.findAccountById(id);
+        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+   
+    /*
+     * ADD updateAccount
+     */
     
-   @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {  
         try {
             accountService.deleteAccount(id);
@@ -31,11 +41,4 @@ public class UserAccountController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
-        Optional<Account> account = accountService.findAccountById(id);
-        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-   
 }
