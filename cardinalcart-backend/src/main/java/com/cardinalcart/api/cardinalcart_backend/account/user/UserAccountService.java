@@ -1,5 +1,6 @@
 package com.cardinalcart.api.cardinalcart_backend.account.user;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,19 @@ public class UserAccountService {
     @Transactional
     public void deleteAccount(Long id) {
         accountRepository.deleteById(id);
+    }
+
+    // update account
+    @Transactional
+    public Account updateAccount(Long id, Account updatedAccount) {
+        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account Not Found"));
+
+        account.setFirstName(updatedAccount.getFirstName());
+        account.setLastName(updatedAccount.getLastName());
+        account.setProfilePicture(updatedAccount.getProfilePicture());
+        account.setUpdatedAt(LocalDateTime.now());
+
+        return accountRepository.save(account);
     }
 
     // find account by id
