@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.listing.publicaccess;
+package com.unihub.api.unihub_backend.cardinalcart.listing.publicaccess;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unihub.api.unihub_backend.listing.Listing;
-import com.unihub.api.unihub_backend.listing.ListingService;
-import com.unihub.api.unihub_backend.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
+import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
 
 @RestController
 @RequestMapping(path = "api/v2/public/listing")

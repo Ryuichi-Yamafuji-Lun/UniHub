@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.listing;
+package com.unihub.api.unihub_backend.cardinalcart.listing;
 
 import java.time.LocalDateTime;
 
@@ -6,9 +6,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.unihub.api.unihub_backend.account.Account;
-import com.unihub.api.unihub_backend.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.listingstatus.ListingSchools;
-//import com.unihub.api.unihub_backend.listingstatus.ListingStatus;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

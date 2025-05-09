@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.listingstatus;
+package com.unihub.api.unihub_backend.cardinalcart.listingstatus;
 
 public enum ListingStatus {
     AVAILABLE,

@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.listing.owneraccess;
+package com.unihub.api.unihub_backend.cardinalcart.listing.owneraccess;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unihub.api.unihub_backend.listing.Listing;
-import com.unihub.api.unihub_backend.listing.ListingService;
+import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
+import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
 
 @RestController
 @RequestMapping(path = "api/v2/owner/listing")

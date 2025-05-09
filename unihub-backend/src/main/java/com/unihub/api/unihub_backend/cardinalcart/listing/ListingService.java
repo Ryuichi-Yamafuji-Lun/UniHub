@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.listing;
+package com.unihub.api.unihub_backend.cardinalcart.listing;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
-import com.unihub.api.unihub_backend.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
 
 @Service
 public class ListingService {

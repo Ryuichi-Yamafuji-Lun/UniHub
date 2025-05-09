@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.listing;
+package com.unihub.api.unihub_backend.cardinalcart.listing;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.unihub.api.unihub_backend.account.Account;
-import com.unihub.api.unihub_backend.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
+import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
 
 public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Query("SELECT l FROM Listing l " +
