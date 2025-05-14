@@ -11,7 +11,7 @@ import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.common.Schools;
 
 @Service
 public class ListingService {
@@ -116,7 +116,7 @@ public class ListingService {
 
     // retrieve all listing with name and price range
     @Transactional(readOnly = true)
-    public List<Listing> searchListing(String listName, Double minPrice, Double maxPrice, ListingSchools school, ListingCategory category) {
+    public List<Listing> searchListing(String listName, Double minPrice, Double maxPrice, Schools school, ListingCategory category) {
         if (minPrice == null) minPrice = 0.0;
         if (maxPrice == null) maxPrice = Double.MAX_VALUE;
 

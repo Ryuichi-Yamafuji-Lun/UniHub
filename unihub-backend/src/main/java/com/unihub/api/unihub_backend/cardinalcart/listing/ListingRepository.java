@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.common.Schools;
 
 public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Query("SELECT l FROM Listing l " +
@@ -20,7 +20,7 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
         @Param("listingName") String listingName,
         @Param("minPrice") Double minPrice,
         @Param("maxPrice") Double maxPrice,
-        @Param("school") ListingSchools school,
+        @Param("school") Schools school,
         @Param("category") ListingCategory category
     );
 

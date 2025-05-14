@@ -7,7 +7,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.common.Schools;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,7 +40,7 @@ public class Listing {
     private String listingName; 
 
     @Enumerated(EnumType.STRING)
-    private ListingSchools listingSchool;
+    private Schools listingSchool;
     @Enumerated(EnumType.STRING)
     private ListingCategory listingCategory;
 
@@ -51,7 +51,7 @@ public class Listing {
     public Listing(){}
 
     public Listing(Account account, Long version, LocalDateTime datePosted, LocalDateTime boostedDate, Boolean isSold, String listingName,
-            ListingSchools listingSchool, ListingCategory listingCategory, Double listingPrice, String listingImages,
+            Schools listingSchool, ListingCategory listingCategory, Double listingPrice, String listingImages,
             String listingDescription) {
         this.account = account;
         this.version = version;
@@ -118,11 +118,11 @@ public class Listing {
         this.listingName = listingName;
     }
 
-    public ListingSchools getListingSchool() {
+    public Schools getListingSchool() {
         return listingSchool;
     }
 
-    public void setListingSchool(ListingSchools listingSchool) {
+    public void setListingSchool(Schools listingSchool) {
         this.listingSchool = listingSchool;
     }
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
 import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.common.Schools;
 
 @RestController
 @RequestMapping(path = "api/v2/public/listing")
@@ -45,7 +45,7 @@ public class PublicListingController {
         @RequestParam String listingName,
         @RequestParam Double minPrice,
         @RequestParam Double maxPrice,
-        @RequestParam ListingSchools school,
+        @RequestParam Schools school,
         @RequestParam ListingCategory category
     ) {
         List<Listing> listings = listingService.searchListing(listingName, minPrice, maxPrice, school, category);
