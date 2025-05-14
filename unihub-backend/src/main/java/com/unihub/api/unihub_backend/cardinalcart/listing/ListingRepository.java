@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.common.Schools;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 
 public interface ListingRepository extends JpaRepository<Listing, Long> {
     @Query("SELECT l FROM Listing l " +

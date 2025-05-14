@@ -7,7 +7,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.common.Schools;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

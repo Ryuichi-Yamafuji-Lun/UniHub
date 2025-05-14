@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
 import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.common.Schools;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 
 @RestController
 @RequestMapping(path = "api/v2/public/listing")

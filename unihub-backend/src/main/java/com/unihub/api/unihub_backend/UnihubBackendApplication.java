@@ -15,7 +15,7 @@ import com.unihub.api.unihub_backend.accountstatusrole.Role;
 import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
 import com.unihub.api.unihub_backend.cardinalcart.listing.ListingRepository;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.common.Schools;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 
 @SpringBootApplication
 public class UnihubBackendApplication {

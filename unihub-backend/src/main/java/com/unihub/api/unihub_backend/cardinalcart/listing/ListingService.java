@@ -11,7 +11,7 @@ import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.common.Schools;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 
 @Service
 public class ListingService {
