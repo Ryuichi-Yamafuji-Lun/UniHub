@@ -15,7 +15,7 @@ import com.unihub.api.unihub_backend.accountstatusrole.Role;
 import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
 import com.unihub.api.unihub_backend.cardinalcart.listing.ListingRepository;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingSchools;
+import com.unihub.api.unihub_backend.common.Schools;
 
 @SpringBootApplication
 public class UnihubBackendApplication {
@@ -54,7 +54,7 @@ public class UnihubBackendApplication {
                 listing.setAccount(account);
                 listing.setIsSold(false);
                 listing.setListingCategory(ListingCategory.ELECTRONICS);
-                listing.setListingSchool(ListingSchools.USC);
+                listing.setListingSchool(Schools.USC);
 
                 listingRepository.save(listing);
             } catch (Exception e) {
