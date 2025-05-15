@@ -49,6 +49,7 @@ public class SubleaseService {
     }
 
     // delete sublease
+    @Transactional
     public void deleteSubLease(Long subleaseId, Long accountId) {
         Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
 
@@ -83,10 +84,9 @@ public class SubleaseService {
         sublease.setLeaseAddress(updatedSublease.getLeaseAddress());
         sublease.setLongitude(updatedSublease.getLongitude());
         sublease.setLatitude(updatedSublease.getLatitude());
-        sublease.setVersion(sublease.getVersion() + 1);
         sublease.setLeaseSchool(updatedSublease.getLeaseSchool());
 
         return subleaseRepository.save(sublease);
     }
-    
+
 }
