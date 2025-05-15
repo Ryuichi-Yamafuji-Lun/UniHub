@@ -54,6 +54,8 @@ public class Sublease {
     private String leaseImage;
     private String leaseDescription;
     private String leaseAddress;
+    private Double longitude;
+    private Double latitude;
 
     public Sublease(){}
 
@@ -183,6 +185,22 @@ public class Sublease {
         this.leaseAddress = leaseAddress;
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     // Return sublease information in string format
     @Override
     public String toString() {
@@ -199,6 +217,8 @@ public class Sublease {
                ", startDate=" + leaseStartDate +
                ", endDate=" + leaseEndDate +
                ", Address=" + leaseAddress +
+               ", Longitude=" + longitude +
+               ", Latitude=" + latitude +
                ", leaseDescription='" + leaseDescription + '\'' + 
                '}';
     }
