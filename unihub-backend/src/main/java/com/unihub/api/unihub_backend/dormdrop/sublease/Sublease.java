@@ -61,7 +61,8 @@ public class Sublease {
 
     public Sublease(Account account, Long version, LocalDateTime datePosted, LocalDateTime leaseStartDate,
             LocalDateTime leaseEndDate, String leaseName, Schools leaseSchool, Set<SubleaseAmenity> amenities,
-            Double leasePrice, String roomType, String leaseImage, String leaseDescription, String leaseAddress) {
+            Double leasePrice, String roomType, String leaseImage, String leaseDescription, String leaseAddress,
+            Double longitude, Double latitude) {
         this.account = account;
         this.version = version;
         this.datePosted = datePosted;
@@ -75,6 +76,8 @@ public class Sublease {
         this.leaseImage = leaseImage;
         this.leaseDescription = leaseDescription;
         this.leaseAddress = leaseAddress;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public Long getId() {
