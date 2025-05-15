@@ -50,7 +50,7 @@ public class SubleaseService {
 
     // delete sublease
     public void deleteSubLease(Long subleaseId, Long accountId) {
-        Sublease sublease = subleaseRepository.findById(accountId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
+        Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
 
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Delete Sublease: account not found"));
 
@@ -62,4 +62,31 @@ public class SubleaseService {
     }
 
     // update sublease
+    @Transactional
+    public Sublease updateSublease(Long subleaseId, Sublease updatedSublease, Long accountId) {
+        Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
+
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Delete Sublease: account not found"));
+
+        if (!isOwnerOfSublease(sublease, account)) {
+            throw new IllegalArgumentException("You are not authorized to update this sublease");
+        }
+
+        sublease.setLeaseName(updatedSublease.getLeaseName());
+        sublease.setLeaseStartDate(updatedSublease.getLeaseStartDate());
+        sublease.setLeaseEndDate(updatedSublease.getLeaseEndDate());
+        sublease.setAmenities(updatedSublease.getAmenities());
+        sublease.setLeasePrice(updatedSublease.getLeasePrice());
+        sublease.setRoomType(updatedSublease.getRoomType());
+        sublease.setLeaseImage(updatedSublease.getLeaseImage());
+        sublease.setLeaseDescription(updatedSublease.getLeaseDescription());
+        sublease.setLeaseAddress(updatedSublease.getLeaseAddress());
+        sublease.setLongitude(updatedSublease.getLongitude());
+        sublease.setLatitude(updatedSublease.getLatitude());
+        sublease.setVersion(sublease.getVersion() + 1);
+        sublease.setLeaseSchool(updatedSublease.getLeaseSchool());
+
+        return subleaseRepository.save(sublease);
+    }
+    
 }
