@@ -91,7 +91,6 @@ public class ListingService {
         listing.setListingImages(updatedlisting.getListingImages());
         listing.setListingDescription(updatedlisting.getListingDescription());
         listing.setListingCategory(updatedlisting.getListingCategory());
-        listing.setVersion(listing.getVersion() + 1);
         listing.setListingSchool(updatedlisting.getListingSchool());
         
         return listingRepository.save(listing);
