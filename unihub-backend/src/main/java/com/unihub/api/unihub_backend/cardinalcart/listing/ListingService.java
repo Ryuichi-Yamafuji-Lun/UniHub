@@ -116,8 +116,9 @@ public class ListingService {
     // retrieve all listing with name and price range
     @Transactional(readOnly = true)
     public List<Listing> searchListing(String listName, Double minPrice, Double maxPrice, Schools school, ListingCategory category) {
-        if (minPrice == null) minPrice = 0.0;
+        if (minPrice == null || minPrice < 0) minPrice = 0.0;
         if (maxPrice == null) maxPrice = Double.MAX_VALUE;
+        if (maxPrice < minPrice) maxPrice = minPrice;
 
         return listingRepository.searchListings(listName, minPrice, maxPrice, school, category);
     }

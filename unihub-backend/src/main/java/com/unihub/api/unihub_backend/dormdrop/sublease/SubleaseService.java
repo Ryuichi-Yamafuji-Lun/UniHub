@@ -1,15 +1,15 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
-import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class SubleaseService {
@@ -89,4 +89,25 @@ public class SubleaseService {
         return subleaseRepository.save(sublease);
     }
 
+    /*
+     * PUBLIC USER ACCESS
+     * findSubleaseById (finds specific sublease by sublease id)
+     * searchSublease (finds sublease within a perimeter)
+     */
+
+    @Transactional(readOnly = true)
+    public Optional<Sublease> findSubleaseById(Long id) {
+    return subleaseRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Sublease> searchSublease(Double maxPrice, Double latMin, Double latMax, Double lngMin, Double lngMax) {
+        if (maxPrice == null || maxPrice <= 0) maxPrice = Double.MAX_VALUE;
+        if (latMin == null) latMin = -90.0;
+        if (latMax == null) latMax = 90.0;
+        if (lngMin == null) lngMin = -180.0;
+        if (lngMax == null) lngMax = 180.0;
+
+        return subleaseRepository.findByLeasePriceLessThanEqualAndLatitudeBetweenAndLongitudeBetween(maxPrice, latMin, latMax, lngMin, lngMax);
+    }
 }

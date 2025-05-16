@@ -10,8 +10,13 @@ import com.unihub.api.unihub_backend.common.enums.Schools;
 public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
     List<Sublease> findByLeaseSchool(Schools leaseSchool);
 
-    List<Sublease> findByLeasePriceLessThanEqual(Double maxPrice);
+    List<Sublease> findByLeasePriceLessThanEqualAndLatitudeBetweenAndLongitudeBetween(
+    Double maxPrice,
+    Double latMin,
+    Double latMax,
+    Double lngMin,
+    Double lngMax
+);
 
-    List<Sublease> findByLatitudeBetweenAndLongitudeBetween(Double latMin, Double latMax, Double lngMin, Double lngMax);
 
 }
