@@ -17,7 +17,7 @@ import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
 import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseService;
 
 @RestController
-@RequestMapping(path = "api/v1/owner/sublease")
+@RequestMapping(path = "api/v1/owner/accounts")
 public class OwnerSubleaseController {
     
     private final SubleaseService subleaseService;
@@ -26,13 +26,13 @@ public class OwnerSubleaseController {
         this.subleaseService = subleaseService;
     }
 
-    @PostMapping("/{accountId}")
+    @PostMapping("/{accountId}/subleases")
     public ResponseEntity<Sublease> createSublease(@RequestBody Sublease newSublease, @PathVariable Long accountId) {
         Sublease createSublease = subleaseService.createSublease(newSublease, accountId);
         return ResponseEntity.status(201).body(createSublease);
     }
 
-    @DeleteMapping("/{accountId}/{subleaseId}")
+    @DeleteMapping("/{accountId}/subleases/{subleaseId}")
     public ResponseEntity<Void> deleteSublease(@PathVariable Long accountId, @PathVariable Long subleaseId) {
         try {
             subleaseService.deleteSubLease(subleaseId, accountId);
@@ -42,7 +42,7 @@ public class OwnerSubleaseController {
         }
     }
 
-    @PutMapping("/{accountId}/{subleaseId}")
+    @PutMapping("/{accountId}/subleases/{subleaseId}")
     public ResponseEntity<Sublease> updateSublease(@PathVariable Long accountId, @PathVariable Long subleaseId, @RequestBody Sublease updatedSublease) {
         try {
             Sublease updated = subleaseService.updateSublease(subleaseId, updatedSublease, accountId);
@@ -54,7 +54,7 @@ public class OwnerSubleaseController {
         }
     }
 
-    @GetMapping("/myListing/{accountId}")
+    @GetMapping("/{accountId}/subleases")
     public ResponseEntity<List<Sublease>> searchOwnSublease(@PathVariable Long accountId) {
         List<Sublease> subleases = subleaseService.getSubleaseByAccountOrderedByDate(accountId);
         if (subleases.isEmpty()) {
