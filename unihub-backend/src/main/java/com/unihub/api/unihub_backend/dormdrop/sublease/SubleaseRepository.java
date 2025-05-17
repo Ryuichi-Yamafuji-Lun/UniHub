@@ -1,7 +1,6 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -35,5 +34,6 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
     List<Sublease> findByLeaseName(String leaseName);
 
     List<Sublease> findByAccount(Account account);
-
+    
+    List<Sublease> findByAccountOrderByDatePostedDesc(Account account);
 }

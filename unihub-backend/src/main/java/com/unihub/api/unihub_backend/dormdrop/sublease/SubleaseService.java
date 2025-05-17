@@ -131,4 +131,10 @@ public class SubleaseService {
         Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get all Owned Sublease: account not found"));
         return subleaseRepository.findByAccount(account);      
     }
+
+    @Transactional(readOnly = true)
+    public List<Sublease> findSubleaseByAccountOrderedByDate(Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get all Owned Sublease Ordered: account not found"));
+        return subleaseRepository.findByAccountOrderByDatePostedDesc(account);
+    }
 }
