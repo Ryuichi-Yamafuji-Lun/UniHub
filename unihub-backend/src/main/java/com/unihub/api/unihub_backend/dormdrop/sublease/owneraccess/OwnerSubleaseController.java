@@ -1,9 +1,11 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease.owneraccess;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,6 +52,15 @@ public class OwnerSubleaseController {
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @GetMapping("/myListing/{accountId}")
+    public ResponseEntity<List<Sublease>> searchOwnSublease(@PathVariable Long accountId) {
+        List<Sublease> subleases = subleaseService.getSubleaseByAccountOrderedByDate(accountId);
+        if (subleases.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(subleases);
     }
 
 }
