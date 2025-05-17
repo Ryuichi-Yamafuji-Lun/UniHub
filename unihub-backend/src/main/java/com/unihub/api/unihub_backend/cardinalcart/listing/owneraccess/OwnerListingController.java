@@ -17,7 +17,7 @@ import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
 import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
 
 @RestController
-@RequestMapping(path = "api/v2/owner/listing")
+@RequestMapping(path = "api/v2/owner/accounts")
 public class OwnerListingController {
 
     private final ListingService listingService;
@@ -26,13 +26,13 @@ public class OwnerListingController {
         this.listingService = listingService;
     }
 
-    @PostMapping("/{accountId}")
+    @PostMapping("/{accountId}/listings")
     public ResponseEntity<Listing> createListing(@RequestBody Listing newlisting, @PathVariable Long accountId) {
         Listing createdListing = listingService.createListing(newlisting, accountId);
         return ResponseEntity.status(201).body(createdListing);
     }
 
-    @DeleteMapping("/{accountId}/{listingId}")
+    @DeleteMapping("/{accountId}/listings/{listingId}")
     public ResponseEntity<Void> deleteListing(@PathVariable Long accountId, @PathVariable Long listingId) {
         try {
             listingService.deleteListing(listingId, accountId);
@@ -42,7 +42,7 @@ public class OwnerListingController {
         }
     }
 
-    @PutMapping("/{accountId}/{listingId}")
+    @PutMapping("/{accountId}/listings/{listingId}")
     public ResponseEntity<Listing> updateListing(@PathVariable Long accountId, @PathVariable Long listingId, @RequestBody Listing updatedListing) {
         try {
             Listing updated = listingService.updateListing(listingId, updatedListing, accountId);
@@ -54,7 +54,7 @@ public class OwnerListingController {
         }
     }
 
-    @GetMapping("/myListings/{accountId}")
+    @GetMapping("/{accountId}/listings")
     public ResponseEntity<List<Listing>> searchOwnListing(@PathVariable Long accountId) {
     List<Listing> listings = listingService.getListingByAccountSortedBySold(accountId);
     if (listings.isEmpty()) {
@@ -63,7 +63,7 @@ public class OwnerListingController {
     return ResponseEntity.ok(listings);
     }
 
-    @GetMapping("/myUnsoldListing/{accountId}")
+    @GetMapping("{accountId}/listings/unsold")
     public ResponseEntity<List<Listing>> searchOwnActiveListing(@PathVariable Long accountId) {
     List<Listing> listings = listingService.getActiveListingsByAccount(accountId);
     if (listings.isEmpty()) {
