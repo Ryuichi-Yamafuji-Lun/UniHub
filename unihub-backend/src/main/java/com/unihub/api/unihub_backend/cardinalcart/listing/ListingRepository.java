@@ -16,6 +16,7 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
        "AND l.listingPrice BETWEEN :minPrice AND :maxPrice " +
        "AND (:school IS NULL OR l.listingSchool = :school) " +
        "AND (:category IS NULL OR l.listingCategory = :category)")
+       
     List<Listing> searchListings(
         @Param("listingName") String listingName,
         @Param("minPrice") Double minPrice,

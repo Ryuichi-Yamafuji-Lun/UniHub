@@ -3,6 +3,7 @@ package com.unihub.api.unihub_backend.dormdrop.sublease;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
+import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 
 @Service
 public class SubleaseService {
@@ -67,7 +69,7 @@ public class SubleaseService {
     public Sublease updateSublease(Long subleaseId, Sublease updatedSublease, Long accountId) {
         Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
 
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Delete Sublease: account not found"));
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Update Sublease: account not found"));
 
         if (!isOwnerOfSublease(sublease, account)) {
             throw new IllegalArgumentException("You are not authorized to update this sublease");
@@ -97,17 +99,36 @@ public class SubleaseService {
 
     @Transactional(readOnly = true)
     public Optional<Sublease> findSubleaseById(Long id) {
-    return subleaseRepository.findById(id);
+        return subleaseRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
-    public List<Sublease> searchSublease(Double maxPrice, Double latMin, Double latMax, Double lngMin, Double lngMax) {
+    public List<Sublease> searchSublease(Double maxPrice, Double latMin, Double latMax, Double lngMin, Double lngMax, String leaseName, Set<SubleaseAmenity> requiredAmenities) {
         if (maxPrice == null || maxPrice <= 0) maxPrice = Double.MAX_VALUE;
         if (latMin == null) latMin = -90.0;
         if (latMax == null) latMax = 90.0;
         if (lngMin == null) lngMin = -180.0;
         if (lngMax == null) lngMax = 180.0;
 
-        return subleaseRepository.findByLeasePriceLessThanEqualAndLatitudeBetweenAndLongitudeBetween(maxPrice, latMin, latMax, lngMin, lngMax);
+        List<Sublease> results = subleaseRepository.searchWithOptionalNameAndLocation(maxPrice, latMin, latMax, lngMin, lngMax, leaseName);
+
+        // Filter by amenities
+        if (requiredAmenities != null && !requiredAmenities.isEmpty()) {
+            results = results.stream()
+                .filter(s -> s.getAmenities().containsAll(requiredAmenities))
+                .toList();
+        }
+    
+        return results;
+    }
+
+    /*
+     * OWNER SUBLEASE ACCESS
+     */
+
+    @Transactional(readOnly = true)
+    public List<Sublease> findSubleaseByAccount(Long accountId) {
+        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get all Owned Sublease: account not found"));
+        return subleaseRepository.findByAccount(account);      
     }
 }
