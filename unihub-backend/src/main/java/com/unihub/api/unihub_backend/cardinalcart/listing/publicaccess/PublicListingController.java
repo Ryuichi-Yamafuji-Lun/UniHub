@@ -49,10 +49,9 @@ public class PublicListingController {
         @RequestParam ListingCategory category
     ) {
         List<Listing> listings = listingService.searchListing(listingName, minPrice, maxPrice, school, category);
-        if (listings.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(listings);
+        return listings.isEmpty()
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(listings);
     }
 
 }
