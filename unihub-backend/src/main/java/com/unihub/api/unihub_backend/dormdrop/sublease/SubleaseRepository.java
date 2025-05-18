@@ -35,5 +35,7 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
 
     List<Sublease> findByAccount(Account account);
     
+    List<Sublease> findAllOrderByDatePostedDesc();
+
     List<Sublease> findByAccountOrderByDatePostedDesc(Account account);
 }
