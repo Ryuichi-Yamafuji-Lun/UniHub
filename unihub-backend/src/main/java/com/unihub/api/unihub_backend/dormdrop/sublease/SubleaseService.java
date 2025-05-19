@@ -1,6 +1,6 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,7 +45,7 @@ public class SubleaseService {
 
         // do a double take on accound and date posted
         sublease.setAccount(account);
-        sublease.setDatePosted(LocalDateTime.now());
+        sublease.setDatePosted(LocalDate.now());
         
         return subleaseRepository.save(sublease);
     }

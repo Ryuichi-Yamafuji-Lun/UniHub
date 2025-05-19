@@ -1,6 +1,6 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 import org.hibernate.annotations.OnDelete;
@@ -37,9 +37,9 @@ public class Sublease {
     @Version
     private Long version;
 
-    private LocalDateTime datePosted;
-    private LocalDateTime leaseStartDate;
-    private LocalDateTime leaseEndDate;
+    private LocalDate datePosted;
+    private LocalDate leaseStartDate;
+    private LocalDate leaseEndDate;
     private String leaseName;
 
     @Enumerated(EnumType.STRING)
@@ -59,8 +59,8 @@ public class Sublease {
 
     public Sublease(){}
 
-    public Sublease(Account account, Long version, LocalDateTime datePosted, LocalDateTime leaseStartDate,
-            LocalDateTime leaseEndDate, String leaseName, Schools leaseSchool, Set<SubleaseAmenity> amenities,
+    public Sublease(Account account, Long version, LocalDate datePosted, LocalDate leaseStartDate,
+            LocalDate leaseEndDate, String leaseName, Schools leaseSchool, Set<SubleaseAmenity> amenities,
             Double leasePrice, String roomType, String leaseImage, String leaseDescription, String leaseAddress,
             Double longitude, Double latitude) {
         this.account = account;
@@ -100,27 +100,27 @@ public class Sublease {
         this.version = version;
     }
 
-    public LocalDateTime getDatePosted() {
+    public LocalDate getDatePosted() {
         return datePosted;
     }
 
-    public void setDatePosted(LocalDateTime datePosted) {
+    public void setDatePosted(LocalDate datePosted) {
         this.datePosted = datePosted;
     }
 
-    public LocalDateTime getLeaseStartDate() {
+    public LocalDate getLeaseStartDate() {
         return leaseStartDate;
     }
 
-    public void setLeaseStartDate(LocalDateTime leaseStartDate) {
+    public void setLeaseStartDate(LocalDate leaseStartDate) {
         this.leaseStartDate = leaseStartDate;
     }
 
-    public LocalDateTime getLeaseEndDate() {
+    public LocalDate getLeaseEndDate() {
         return leaseEndDate;
     }
 
-    public void setLeaseEndDate(LocalDateTime leaseEndDate) {
+    public void setLeaseEndDate(LocalDate leaseEndDate) {
         this.leaseEndDate = leaseEndDate;
     }
 
