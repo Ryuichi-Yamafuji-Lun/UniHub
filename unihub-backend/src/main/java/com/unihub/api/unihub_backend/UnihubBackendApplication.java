@@ -12,10 +12,9 @@ import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
-import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
-import com.unihub.api.unihub_backend.cardinalcart.listing.ListingRepository;
-import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
-import com.unihub.api.unihub_backend.common.enums.Schools;
+
+import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
+import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseRepository;
 
 @SpringBootApplication
 public class UnihubBackendApplication {
@@ -25,7 +24,7 @@ public class UnihubBackendApplication {
     }
 
     @Bean
-    public CommandLineRunner loadData(AccountRepository accountRepository, ListingRepository listingRepository) {
+    public CommandLineRunner loadData(AccountRepository accountRepository, SubleaseRepository subleaseRepository) {
         return args -> {
             try {
                 Account account = new Account(
@@ -45,18 +44,15 @@ public class UnihubBackendApplication {
                 );
                 
                 accountRepository.save(account);  
-                Listing listing = new Listing();
-                listing.setListingName("Iphone");
-                listing.setListingDescription("Apple Iphone used");
-                listing.setListingPrice(300.14);
-                listing.setDatePosted(LocalDateTime.now());
-                listing.setBoostedDate(LocalDateTime.now());
-                listing.setAccount(account);
-                listing.setIsSold(false);
-                listing.setListingCategory(ListingCategory.ELECTRONICS);
-                listing.setListingSchool(Schools.USC);
+                Sublease sublease = new Sublease();
+                sublease.setLeaseName("Wall Street");
+                sublease.setDatePosted(LocalDateTime.now());
+                sublease.setLeaseDescription("Lease Description");
+                sublease.setLeasePrice(7.77);
+                
+                
 
-                listingRepository.save(listing);
+                subleaseRepository.save(sublease);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -99,7 +99,7 @@ public class SubleaseService {
 
     @Transactional(readOnly = true)
     public List<Sublease> getAllSublease() {
-        return subleaseRepository.findAllOrderByDatePostedDesc();
+        return subleaseRepository.findAllByOrderByDatePostedDesc();
     }
     @Transactional(readOnly = true)
     public Optional<Sublease> findSubleaseById(Long id) {
