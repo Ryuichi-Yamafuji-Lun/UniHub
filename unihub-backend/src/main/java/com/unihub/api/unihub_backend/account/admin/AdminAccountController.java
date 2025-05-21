@@ -1,6 +1,5 @@
 package com.unihub.api.unihub_backend.account.admin;
 
-import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.account.Account;
+import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
+import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatusRoleResponse;
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
@@ -25,9 +26,11 @@ import com.unihub.api.unihub_backend.accountstatusrole.Role;
 public class AdminAccountController {
 
     private final AdminAccountService accountService;
+    private final AccountMapper accountMapper;
 
-    public AdminAccountController(AdminAccountService accountService) {
+    public AdminAccountController(AdminAccountService accountService, AccountMapper accountMapper) {
         this.accountService = accountService;
+        this.accountMapper = accountMapper;
     }
 
     @DeleteMapping("/{id}/delete")
@@ -41,15 +44,13 @@ public class AdminAccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
-        Optional<Account> account = accountService.findAccountById(id);
-        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<AccountResponseDTO> getAccountById(@PathVariable Long id) {
+        return accountService.findAccountById(id).map(account -> ResponseEntity.ok(accountMapper.toResponse(account, true))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{schoolEmail}/email")
-    public ResponseEntity<Account> getAccountBySchoolEmail(@PathVariable String email) {
-        Optional<Account> account = accountService.findAccountByEmail(email);
-        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/by-email")
+    public ResponseEntity<AccountResponseDTO> getAccountBySchoolEmail(@RequestParam String email) {
+        return accountService.findAccountByEmail(email).map(account -> ResponseEntity.ok(accountMapper.toResponse(account, true))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}/role-status")
@@ -60,14 +61,14 @@ public class AdminAccountController {
     }
 
     @PutMapping("/{id}/role")
-    public ResponseEntity<Account> updateAccountRole(@PathVariable Long id, @RequestParam Set<Role> role) {
+    public ResponseEntity<AccountResponseDTO> updateAccountRole(@PathVariable Long id, @RequestParam Set<Role> role) {
         Account account = accountService.updateAccountRole(id, role);
-        return ResponseEntity.ok(account);
+        return ResponseEntity.ok(accountMapper.toResponse(account, true));
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Account> changeAccountStatus(@PathVariable Long id, @RequestParam AccountStatus accountStatus) {
+    public ResponseEntity<AccountResponseDTO> changeAccountStatus(@PathVariable Long id, @RequestParam AccountStatus accountStatus) {
         Account account = accountService.updateAccountStatus(id, accountStatus);
-        return ResponseEntity.ok(account);
+        return ResponseEntity.ok(accountMapper.toResponse(account, true));
     }
 }
