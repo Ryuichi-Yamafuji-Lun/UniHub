@@ -1,6 +1,7 @@
 package com.unihub.api.unihub_backend.account;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unihub.api.unihub_backend.accountstatusrole.Role;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatusRoleResponse;
+import com.unihub.api.unihub_backend.accountstatusrole.Role;
 
 @RestController
 @RequestMapping(path = "api/v1/account")
@@ -50,9 +51,9 @@ public class AccountController {
         return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/email/{schoolEmail}")
-    public ResponseEntity<Account> getAccountBySchoolEmail(@PathVariable String schoolEmail) {
-        Optional<Account> account = accountService.findAccountBySchoolEmail(schoolEmail);
+    @GetMapping("/by-email")
+    public ResponseEntity<Account> getAccountByEmail(@RequestParam String email) {
+        Optional<Account> account = accountService.findAccountByEmail(email);
         return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -64,7 +65,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}/role")
-    public ResponseEntity<Account> updateAccountRole(@PathVariable Long id, @RequestParam Role role) {
+    public ResponseEntity<Account> updateAccountRole(@PathVariable Long id, @RequestParam Set<Role> role) {
         Account account = accountService.updateAccountRole(id, role);
         return ResponseEntity.ok(account);
     }

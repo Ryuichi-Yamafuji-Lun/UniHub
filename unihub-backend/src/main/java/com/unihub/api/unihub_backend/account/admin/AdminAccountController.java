@@ -1,6 +1,7 @@
 package com.unihub.api.unihub_backend.account.admin;
 
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,8 +45,8 @@ public class AdminAccountController {
     }
 
     @GetMapping("/{schoolEmail}/email")
-    public ResponseEntity<Account> getAccountBySchoolEmail(@PathVariable String schoolEmail) {
-        Optional<Account> account = accountService.findAccountBySchoolEmail(schoolEmail);
+    public ResponseEntity<Account> getAccountBySchoolEmail(@PathVariable String email) {
+        Optional<Account> account = accountService.findAccountByEmail(email);
         return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -57,7 +58,7 @@ public class AdminAccountController {
     }
 
     @PutMapping("/{id}/role")
-    public ResponseEntity<Account> updateAccountRole(@PathVariable Long id, @RequestParam Role role) {
+    public ResponseEntity<Account> updateAccountRole(@PathVariable Long id, @RequestParam Set<Role> role) {
         Account account = accountService.updateAccountRole(id, role);
         return ResponseEntity.ok(account);
     }

@@ -2,6 +2,7 @@ package com.unihub.api.unihub_backend.account.admin;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +30,8 @@ public class AdminAccountService {
 
     // find account by school email
     @Transactional(readOnly = true)
-    public Optional<Account> findAccountBySchoolEmail(String schoolEmail) {
-        return accountRepository.findBySchoolEmail(schoolEmail);
+    public Optional<Account> findAccountByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
     
     // delete account account
@@ -44,15 +45,15 @@ public class AdminAccountService {
     public AccountStatusRoleResponse getAccountRoleAndStatus(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("account not found"));
         
-        return new AccountStatusRoleResponse(account.getRole(), account.getAccountStatus());
+        return new AccountStatusRoleResponse(account.getRoles(), account.getAccountStatus());
     }
 
     // update account role
     @Transactional
-    public Account updateAccountRole(Long id, Role newRole) {
+    public Account updateAccountRole(Long id, Set<Role> newRole) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("account not found"));
 
-        account.setRole(newRole);
+        account.setRoles(newRole);
         account.setUpdatedAt(LocalDateTime.now());
 
         return accountRepository.save(account);

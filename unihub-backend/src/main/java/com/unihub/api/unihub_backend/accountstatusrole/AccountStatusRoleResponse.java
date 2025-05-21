@@ -1,17 +1,19 @@
 package com.unihub.api.unihub_backend.accountstatusrole;
 
+import java.util.Set;
+
 public final class AccountStatusRoleResponse {
 
-    private final Role role;
+    private final Set<Role> roles;
     private final AccountStatus userStatus;
 
-    public AccountStatusRoleResponse(Role role, AccountStatus userStatus) {
-        this.role = role;
+    public AccountStatusRoleResponse(Set<Role> roles, AccountStatus userStatus) {
+        this.roles = roles;
         this.userStatus = userStatus;
     }
 
-    public Role getRole() {
-        return this.role;    
+    public Set<Role> getRole() {
+        return this.roles;    
     }
 
     public AccountStatus getUserStatus() {

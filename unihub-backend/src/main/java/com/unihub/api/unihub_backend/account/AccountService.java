@@ -2,13 +2,14 @@ package com.unihub.api.unihub_backend.account;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.unihub.api.unihub_backend.accountstatusrole.Role;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatusRoleResponse;
+import com.unihub.api.unihub_backend.accountstatusrole.Role;
 
 @Service
 public class AccountService {
@@ -22,8 +23,6 @@ public class AccountService {
     // create account account
     @Transactional
     public Account createAccount(Account account) {
-        account.setCreatedAt(LocalDateTime.now());
-        account.setUpdatedAt(LocalDateTime.now());
         return accountRepository.save(account);
     }
 
@@ -41,8 +40,8 @@ public class AccountService {
 
     // find account by school email
     @Transactional(readOnly = true)
-    public Optional<Account> findAccountBySchoolEmail(String schoolEmail) {
-        return accountRepository.findBySchoolEmail(schoolEmail);
+    public Optional<Account> findAccountByEmail(String email) {
+        return accountRepository.findByEmail(email);
     }
 
     /*
@@ -57,15 +56,15 @@ public class AccountService {
     public AccountStatusRoleResponse getAccountRoleAndStatus(Long id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("account not found"));
         
-        return new AccountStatusRoleResponse(account.getRole(), account.getAccountStatus());
+        return new AccountStatusRoleResponse(account.getRoles(), account.getAccountStatus());
     }
 
     // update account role
     @Transactional
-    public Account updateAccountRole(Long id, Role newRole) {
+    public Account updateAccountRole(Long id, Set<Role> newRole) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("account not found"));
 
-        account.setRole(newRole);
+        account.setRoles(newRole);
         account.setUpdatedAt(LocalDateTime.now());
 
         return accountRepository.save(account);
