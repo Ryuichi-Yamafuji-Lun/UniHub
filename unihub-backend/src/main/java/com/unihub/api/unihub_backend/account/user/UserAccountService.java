@@ -30,13 +30,22 @@ public class UserAccountService {
         return getCurrentUserAccount();
     }
 
-    @Transactional
-    public Account updateOwnAccount(AccountUpdateRequest request){
+   @Transactional
+    public Account updateOwnAccount(AccountUpdateRequest request) {
         Account account = getCurrentUserAccount();
 
-        account.setFirstName(request.getFirstName());
-        account.setLastName(request.getLastName());
-        account.setProfilePicture(request.getProfilePicture());
+        if (request.getFirstName() != null) {
+            account.setFirstName(request.getFirstName());
+        }
+
+        if (request.getLastName() != null) {
+            account.setLastName(request.getLastName());
+        }
+
+        if (request.getProfilePicture() != null) {
+            account.setProfilePicture(request.getProfilePicture());
+        }
+
         if (request.getUsername() != null && !request.getUsername().equals(account.getUsername())) {
             if (accountRepository.existsByUsername(request.getUsername())) {
                 throw new RuntimeException("Username already taken");
@@ -45,9 +54,9 @@ public class UserAccountService {
         }
 
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            account.setPassword(request.getPassword()); //encrypt later
+            account.setPassword(request.getPassword()); // Encrypt later
         }
-        
+
         return accountRepository.save(account);
     }
 

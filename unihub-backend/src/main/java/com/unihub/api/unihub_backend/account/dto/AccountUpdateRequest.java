@@ -1,11 +1,16 @@
 package com.unihub.api.unihub_backend.account.dto;
 
+import jakarta.validation.constraints.Size;
+
 public class AccountUpdateRequest {
     private String firstName;
     private String lastName;
     private String profilePicture;
 
+    @Size(min = 3, max = 20, message = "Username must be between 3-20 characters")
     private String username;
+
+    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
     public String getFirstName() {
