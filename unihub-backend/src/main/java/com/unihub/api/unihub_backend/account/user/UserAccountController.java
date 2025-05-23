@@ -1,40 +1,44 @@
 package com.unihub.api.unihub_backend.account.user;
 
-import java.util.Optional;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.account.Account;
+import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
+import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
+import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 
 @RestController
 @RequestMapping(path = "api/v2/user/account")
+@PreAuthorize("hasAnyRole('ADMIN','USER')")
 public class UserAccountController {
 
     private final UserAccountService accountService;
+    private final AccountMapper accountMapper;
 
-    public UserAccountController(UserAccountService accountService) {
+    public UserAccountController(UserAccountService accountService, AccountMapper accountMapper) {
         this.accountService = accountService;
+        this.accountMapper = accountMapper;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
-        Optional<Account> account = accountService.findAccountById(id);
-        return account.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    @GetMapping("/me")
+    public ResponseEntity<AccountResponseDTO> getOwnAccount() {
+        Account account = accountService.getOwnAccount();
+        return ResponseEntity.ok(accountMapper.toResponse(account, false));
     }
    
-    @PutMapping("/{id}/update")
-    public ResponseEntity<Account> updateAccount(@PathVariable Long id, @RequestBody Account updatedAccount) {
+    @PutMapping("/me/update")
+    public ResponseEntity<AccountResponseDTO> updateAccount(@RequestBody AccountUpdateRequest request) {
         try {
-            Account updated = accountService.updateAccount(id, updatedAccount);
-            return ResponseEntity.ok(updated);
+            Account updated = accountService.updateOwnAccount(request);
+            return ResponseEntity.ok(accountMapper.toResponse(updated, false));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         } catch (RuntimeException ex) {
@@ -42,10 +46,10 @@ public class UserAccountController {
         }
     }
     
-    @DeleteMapping("/{id}/delete")
-    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {  
+    @DeleteMapping("/me/delete")
+    public ResponseEntity<Void> deleteAccount() {  
         try {
-            accountService.deleteAccount(id);
+            accountService.deleteOwnAccount();
             return ResponseEntity.noContent().build();
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

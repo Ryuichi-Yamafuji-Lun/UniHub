@@ -1,13 +1,12 @@
 package com.unihub.api.unihub_backend.account.user;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
+import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
 
 @Service
 public class UserAccountService {
@@ -18,29 +17,43 @@ public class UserAccountService {
         this.accountRepository = accountRepository;
     }
 
-    // delete account account (Soft delete in the future)
-    @Transactional
-    public void deleteAccount(Long id) {
-        accountRepository.deleteById(id);
+    private String getCurrentUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    // update account
+    private Account getCurrentUserAccount() {
+        return accountRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new RuntimeException("Authenticated account not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public Account getOwnAccount() {
+        return getCurrentUserAccount();
+    }
+
     @Transactional
-    public Account updateAccount(Long id, Account updatedAccount) {
-        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account Not Found"));
+    public Account updateOwnAccount(AccountUpdateRequest request){
+        Account account = getCurrentUserAccount();
 
-        account.setFirstName(updatedAccount.getFirstName());
-        account.setLastName(updatedAccount.getLastName());
-        account.setProfilePicture(updatedAccount.getProfilePicture());
-        account.setUpdatedAt(LocalDateTime.now());
+        account.setFirstName(request.getFirstName());
+        account.setLastName(request.getLastName());
+        account.setProfilePicture(request.getProfilePicture());
+        if (request.getUsername() != null && !request.getUsername().equals(account.getUsername())) {
+            if (accountRepository.existsByUsername(request.getUsername())) {
+                throw new RuntimeException("Username already taken");
+            }
+            account.setUsername(request.getUsername());
+        }
 
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            account.setPassword(request.getPassword()); //encrypt later
+        }
+        
         return accountRepository.save(account);
     }
 
-    // find account by id
-    @Transactional(readOnly = true)
-    public Optional<Account> findAccountById(Long id) {
-        return accountRepository.findById(id);
+    @Transactional
+    public void deleteOwnAccount() {
+        Account account = getCurrentUserAccount();
+        accountRepository.delete(account);
     }
-
 }
