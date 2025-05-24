@@ -15,6 +15,8 @@ import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
 import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(path = "api/v2/user/account")
 @PreAuthorize("hasAnyRole('ADMIN','USER')")
@@ -35,7 +37,7 @@ public class UserAccountController {
     }
    
     @PutMapping("/me/update")
-    public ResponseEntity<AccountResponseDTO> updateAccount(@RequestBody AccountUpdateRequest request) {
+    public ResponseEntity<AccountResponseDTO> updateAccount(@Valid @RequestBody AccountUpdateRequest request) {
         try {
             Account updated = accountService.updateOwnAccount(request);
             return ResponseEntity.ok(accountMapper.toResponse(updated, false));
