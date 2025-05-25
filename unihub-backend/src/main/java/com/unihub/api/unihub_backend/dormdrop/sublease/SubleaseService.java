@@ -15,6 +15,7 @@ import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseUpdateRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
@@ -152,14 +153,11 @@ public class SubleaseService {
      */
 
     @Transactional(readOnly = true)
-    public List<Sublease> getSubleaseByAccount(Long accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get all Owned Sublease: account not found"));
-        return subleaseRepository.findByAccount(account);      
-    }
+    public List<SubleaseResponseDTO> getSubleaseByAccountOrderedByDate() {
+        Account account = getCurrentUserAccount();
 
-    @Transactional(readOnly = true)
-    public List<Sublease> getSubleaseByAccountOrderedByDate(Long accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get all Owned Sublease Ordered: account not found"));
-        return subleaseRepository.findByAccountOrderByDatePostedDesc(account);
+        List<Sublease> subleases = subleaseRepository.findByAccountOrderByDatePostedDesc(account);
+
+        return subleases.stream().map(subleaseMapper::toResponse).toList();
     }
 }
