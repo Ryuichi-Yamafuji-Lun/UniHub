@@ -30,7 +30,7 @@ public class SubleaseRegistrationRequest {
     private Set<SubleaseAmenity> amenities;
 
     @NotNull(message = "Lease price is required")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Lease price must be greater than 0")
+    @DecimalMin(value = "300.0", inclusive = false, message = "Lease price must be greater than 0")
     private Double leasePrice;
 
     @NotBlank(message = "Room type is required")

@@ -17,6 +17,8 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
     WHERE s.leasePrice <= :maxPrice
       AND s.latitude BETWEEN :latMin AND :latMax
       AND s.longitude BETWEEN :lngMin AND :lngMax
+      AND s.roomWidth BETWEEN :widthMin AND :widthMax
+      AND s.roomDepth BETWEEN :depthMin AND :depthMax
       AND (:leaseName IS NULL OR LOWER(s.leaseName) LIKE LOWER(CONCAT('%', :leaseName, '%')))
     """)
 
@@ -26,6 +28,10 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
         @Param("latMax") Double latMax,
         @Param("lngMin") Double lngMin,
         @Param("lngMax") Double lngMax,
+        @Param("widthMin") Double widthMin,
+        @Param("widthMax") Double widthMax,
+        @Param("depthMin") Double depthMin,
+        @Param("depthMax") Double depthMax,
         @Param("leaseName") String leaseName
     );
 

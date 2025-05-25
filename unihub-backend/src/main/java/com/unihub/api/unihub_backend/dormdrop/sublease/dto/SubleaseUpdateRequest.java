@@ -18,7 +18,7 @@ public class SubleaseUpdateRequest {
     private Schools leaseSchool;
     private Set<SubleaseAmenity> amenities;
 
-    @DecimalMin(value = "0.0", inclusive = false, message = "Lease price must be greater than 0")
+    @DecimalMin(value = "300.0", inclusive = false, message = "Lease price must be greater than 0")
     private Double leasePrice;
 
     @Size(max = 50, message = "Room type must be under 50 characters")

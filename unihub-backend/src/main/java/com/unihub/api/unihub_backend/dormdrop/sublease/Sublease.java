@@ -236,6 +236,8 @@ public class Sublease {
                ", version=" + version +
                ", leasePrice=" + leasePrice +
                ", RoomType=" + roomType +
+               ", Width=" + roomDepth +
+               ", Depth=" + roomWidth +
                ", leaseImage" + leaseImage +
                ", startDate=" + leaseStartDate +
                ", endDate=" + leaseEndDate +
