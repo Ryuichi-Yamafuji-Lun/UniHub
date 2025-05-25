@@ -13,12 +13,13 @@ public class PublicAccountService {
 
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+    
     public PublicAccountService(AccountRepository accountRepository, AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
     }
 
-    // create account account
+    // create account 
     @Transactional
     public Account registerAccount(AccountRegistrationRequest request) {
         Account account = accountMapper.fromRegistrationRequest(request);
