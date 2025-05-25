@@ -107,14 +107,18 @@ public class SubleaseService {
     }
 
     @Transactional(readOnly = true)
-    public List<Sublease> searchSublease(Double maxPrice, Double latMin, Double latMax, Double lngMin, Double lngMax, String leaseName, Set<SubleaseAmenity> requiredAmenities) {
+    public List<Sublease> searchSublease(Double maxPrice, Double latMin, Double latMax, Double lngMin, Double lngMax, Double widthMin, Double widthMax, Double depthMin, Double depthMax, String leaseName, Set<SubleaseAmenity> requiredAmenities) {
         if (maxPrice == null || maxPrice <= 0) maxPrice = Double.MAX_VALUE;
         if (latMin == null) latMin = -90.0;
         if (latMax == null) latMax = 90.0;
         if (lngMin == null) lngMin = -180.0;
         if (lngMax == null) lngMax = 180.0;
+        if (widthMin == null) widthMin = 0.0;
+        if (widthMax == null || widthMax < widthMin) widthMax = widthMin;
+        if (depthMin == null) depthMin = 0.0;
+        if (depthMax == null || depthMax < depthMin) depthMax = depthMin;
 
-        List<Sublease> results = subleaseRepository.searchWithOptionalNameAndLocation(maxPrice, latMin, latMax, lngMin, lngMax, leaseName);
+        List<Sublease> results = subleaseRepository.searchWithOptionalNameAndLocation(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName);
 
         // Filter by amenities
         if (requiredAmenities != null && !requiredAmenities.isEmpty()) {

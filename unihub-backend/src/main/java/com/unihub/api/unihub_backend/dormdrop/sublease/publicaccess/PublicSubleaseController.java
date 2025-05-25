@@ -47,10 +47,14 @@ public class PublicSubleaseController {
         @RequestParam(required = false) Double latMax,
         @RequestParam(required = false) Double lngMin,
         @RequestParam(required = false) Double lngMax,
+        @RequestParam(required = false) Double widthMin,
+        @RequestParam(required = false) Double widthMax,
+        @RequestParam(required = false) Double depthMin,
+        @RequestParam(required = false) Double depthMax,
         @RequestParam(required = false) String leaseName,
         @RequestParam(required = false) Set<SubleaseAmenity> amenities
     ) {
-        List<Sublease> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, leaseName, amenities);
+        List<Sublease> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName, amenities);
         return subleases.isEmpty() 
             ? ResponseEntity.noContent().build()
             : ResponseEntity.ok(subleases);
