@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
 
 @RestController
 @RequestMapping(path = "api/v2/owner/accounts")
+@PreAuthorize("denyAll()")
 public class OwnerListingController {
 
     private final ListingService listingService;
