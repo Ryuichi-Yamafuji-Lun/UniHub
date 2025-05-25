@@ -39,7 +39,7 @@ public class AccountMapper {
 
     public Account fromRegistrationRequest(AccountRegistrationRequest request) {
         Account account = new Account();
-                account.setEmail(request.getEmail());
+        account.setEmail(request.getEmail());
         account.setUsername(request.getUsername());
         account.setPassword(request.getPassword()); // Encrypt this later
         account.setFirstName(request.getFirstName());

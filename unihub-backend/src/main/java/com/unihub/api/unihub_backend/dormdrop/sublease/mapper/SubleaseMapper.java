@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 
 @Component
@@ -35,5 +36,25 @@ public class SubleaseMapper {
         dto.setNumberOfRatings(owner.getNumberOfRatings());
 
         return dto;
+    }
+
+    public Sublease fromRegistrationRequest(SubleaseRegistrationRequest request) {
+        Sublease sublease = new Sublease();
+        sublease.setLeaseName(request.getLeaseName());
+        sublease.setLeaseStartDate(request.getLeaseStartDate());
+        sublease.setLeaseEndDate(request.getLeaseEndDate());
+        sublease.setLeaseSchool(request.getLeaseSchool());
+        sublease.setAmenities(request.getAmenities());
+        sublease.setLeasePrice(request.getLeasePrice());
+        sublease.setRoomType(request.getRoomType());
+        sublease.setRoomWidth(request.getRoomWidth());
+        sublease.setRoomDepth(request.getRoomDepth());
+        sublease.setLeaseImage(request.getLeaseImage());
+        sublease.setLeaseDescription(request.getLeaseDescription());
+        sublease.setLeaseAddress(request.getLeaseAddress());
+        sublease.setLatitude(request.getLatitude());
+        sublease.setLongitude(request.getLongitude());
+
+        return sublease;
     }
 }
