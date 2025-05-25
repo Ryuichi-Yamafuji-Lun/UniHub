@@ -21,7 +21,7 @@ public class AccountResponseDTO {
 
     private LocalDateTime createdAt;          
     private LocalDateTime updatedAt;
-
+ 
     // ADMIN Only Dynamically Apply Restrictions
     private Set<Role> roles;                  
     private AccountStatus accountStatus;
