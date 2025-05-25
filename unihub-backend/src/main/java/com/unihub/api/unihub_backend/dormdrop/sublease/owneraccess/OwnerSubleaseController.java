@@ -15,27 +15,34 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
 import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseService;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
+import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/v1/owner/accounts")
 public class OwnerSubleaseController {
+
+    private final SubleaseMapper subleaseMapper;
     
     private final SubleaseService subleaseService;
 
-    public OwnerSubleaseController(SubleaseService subleaseService) {
+    public OwnerSubleaseController(SubleaseService subleaseService, SubleaseMapper subleaseMapper) {
         this.subleaseService = subleaseService;
+        this.subleaseMapper = subleaseMapper;
     }
 
-    @PostMapping("/{accountId}/subleases")
-    public ResponseEntity<Sublease> createSublease(@RequestBody Sublease newSublease, @PathVariable Long accountId) {
-        Sublease createSublease = subleaseService.createSublease(newSublease, accountId);
-        return ResponseEntity.status(201).body(createSublease);
+    @PostMapping("/me/subleases")
+    public ResponseEntity<SubleaseResponseDTO> createSublease(@Valid @RequestBody SubleaseRegistrationRequest newSublease) {
+        Sublease createSublease = subleaseService.createSublease(newSublease);
+        return ResponseEntity.status(201).body(subleaseMapper.toResponse(createSublease));
     }
 
-    @DeleteMapping("/{accountId}/subleases/{subleaseId}")
-    public ResponseEntity<Void> deleteSublease(@PathVariable Long accountId, @PathVariable Long subleaseId) {
+    @DeleteMapping("/me/subleases/{subleaseId}")
+    public ResponseEntity<Void> deleteSublease(@PathVariable Long subleaseId) {
         try {
-            subleaseService.deleteSubLease(subleaseId, accountId);
+            subleaseService.deleteSubLease(subleaseId);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

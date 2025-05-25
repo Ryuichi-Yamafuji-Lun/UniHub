@@ -38,6 +38,9 @@ public class SubleaseUpdateRequest {
     @Size(max = 255, message = "Lease address must be under 255 characters")
     private String leaseAddress;
 
+    private Double longitude;
+    private Double latitude;
+
     public String getLeaseName() {
         return leaseName;
     }
@@ -132,6 +135,22 @@ public class SubleaseUpdateRequest {
 
     public void setLeaseAddress(String leaseAddress) {
         this.leaseAddress = leaseAddress;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
     
 }

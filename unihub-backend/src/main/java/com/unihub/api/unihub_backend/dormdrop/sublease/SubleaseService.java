@@ -5,12 +5,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseUpdateRequest;
+import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 
 @Service
@@ -18,17 +24,27 @@ public class SubleaseService {
     
     private final SubleaseRepository subleaseRepository;
     private final AccountRepository accountRepository;
+    private final SubleaseMapper subleaseMapper;
 
-    public SubleaseService(SubleaseRepository subleaseRepository, AccountRepository accountRepository) {
+    public SubleaseService(SubleaseRepository subleaseRepository, AccountRepository accountRepository, SubleaseMapper subleaseMapper) {
         this.subleaseRepository = subleaseRepository;
         this.accountRepository = accountRepository;
+        this.subleaseMapper = subleaseMapper;
     }
 
-    // check if account is active
-    private void validateAccount(Account account) {
+    private String getCurrentUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    private Account getCurrentUserAccount() {
+        Account account =  accountRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new RuntimeException("Autenticated account not found"));
+
+        // check if Account is active
         if (!account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
             throw new IllegalArgumentException("Account is invalid");
         }
+
+        return account;
     }
     
     // check if user is the owner of the listing
@@ -38,12 +54,11 @@ public class SubleaseService {
 
     // create sublease
     @Transactional
-    public Sublease createSublease(Sublease sublease, Long accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Create Sublease: account not found"));
-
-        validateAccount(account);
+    public Sublease createSublease(SubleaseRegistrationRequest request) {
+        Account account = getCurrentUserAccount();
 
         // do a double take on accound and date posted
+        Sublease sublease = subleaseMapper.fromRegistrationRequest(request);
         sublease.setAccount(account);
         sublease.setDatePosted(LocalDate.now());
         
@@ -52,13 +67,13 @@ public class SubleaseService {
 
     // delete sublease
     @Transactional
-    public void deleteSubLease(Long subleaseId, Long accountId) {
+    public void deleteSubLease(Long subleaseId) {
         Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
 
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Delete Sublease: account not found"));
+        Account account = getCurrentUserAccount();
 
         if (!isOwnerOfSublease(sublease, account)) {
-            throw new IllegalArgumentException("You are not authorized to delete this listing");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized: not your listing");
         }
 
         subleaseRepository.delete(sublease);
@@ -66,27 +81,29 @@ public class SubleaseService {
 
     // update sublease
     @Transactional
-    public Sublease updateSublease(Long subleaseId, Sublease updatedSublease, Long accountId) {
+    public Sublease updateSublease(Long subleaseId, SubleaseUpdateRequest updatedSublease) {
         Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
 
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Update Sublease: account not found"));
+        Account account = getCurrentUserAccount();
 
         if (!isOwnerOfSublease(sublease, account)) {
             throw new IllegalArgumentException("You are not authorized to update this sublease");
         }
 
-        sublease.setLeaseName(updatedSublease.getLeaseName());
-        sublease.setLeaseStartDate(updatedSublease.getLeaseStartDate());
-        sublease.setLeaseEndDate(updatedSublease.getLeaseEndDate());
-        sublease.setAmenities(updatedSublease.getAmenities());
-        sublease.setLeasePrice(updatedSublease.getLeasePrice());
-        sublease.setRoomType(updatedSublease.getRoomType());
-        sublease.setLeaseImage(updatedSublease.getLeaseImage());
-        sublease.setLeaseDescription(updatedSublease.getLeaseDescription());
-        sublease.setLeaseAddress(updatedSublease.getLeaseAddress());
-        sublease.setLongitude(updatedSublease.getLongitude());
-        sublease.setLatitude(updatedSublease.getLatitude());
-        sublease.setLeaseSchool(updatedSublease.getLeaseSchool());
+        if (updatedSublease.getLeaseName() != null) sublease.setLeaseName(updatedSublease.getLeaseName());
+        if (updatedSublease.getLeaseStartDate() != null) sublease.setLeaseStartDate(updatedSublease.getLeaseStartDate());
+        if (updatedSublease.getLeaseEndDate() != null) sublease.setLeaseEndDate(updatedSublease.getLeaseEndDate());
+        if (updatedSublease.getAmenities() != null) sublease.setAmenities(updatedSublease.getAmenities());
+        if (updatedSublease.getLeasePrice() != null) sublease.setLeasePrice(updatedSublease.getLeasePrice());
+        if (updatedSublease.getRoomType() != null) sublease.setRoomType(updatedSublease.getRoomType());
+        if (updatedSublease.getLeaseImage() != null) sublease.setLeaseImage(updatedSublease.getLeaseImage());
+        if (updatedSublease.getLeaseDescription() != null) sublease.setLeaseDescription(updatedSublease.getLeaseDescription());
+        if (updatedSublease.getLeaseAddress() != null) sublease.setLeaseAddress(updatedSublease.getLeaseAddress());
+        if (updatedSublease.getLongitude() != null) sublease.setLongitude(updatedSublease.getLongitude());
+        if (updatedSublease.getLatitude() != null) sublease.setLatitude(updatedSublease.getLatitude());
+        if (updatedSublease.getLeaseSchool() != null) sublease.setLeaseSchool(updatedSublease.getLeaseSchool());
+        if (updatedSublease.getRoomWidth() != null) sublease.setRoomWidth(updatedSublease.getRoomWidth());
+        if (updatedSublease.getRoomDepth() != null) sublease.setRoomDepth(updatedSublease.getRoomDepth());
 
         return subleaseRepository.save(sublease);
     }
