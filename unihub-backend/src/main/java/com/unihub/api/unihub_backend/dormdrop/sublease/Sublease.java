@@ -51,6 +51,8 @@ public class Sublease {
 
     private Double leasePrice;
     private String roomType;
+    private Double roomDepth;
+    private Double roomWidth;
     private String leaseImage;
     private String leaseDescription;
     private String leaseAddress;
@@ -61,7 +63,7 @@ public class Sublease {
 
     public Sublease(Account account, Long version, LocalDate datePosted, LocalDate leaseStartDate,
             LocalDate leaseEndDate, String leaseName, Schools leaseSchool, Set<SubleaseAmenity> amenities,
-            Double leasePrice, String roomType, String leaseImage, String leaseDescription, String leaseAddress,
+            Double leasePrice, String roomType, Double roomDepth, Double roomWidth,String leaseImage, String leaseDescription, String leaseAddress,
             Double longitude, Double latitude) {
         this.account = account;
         this.version = version;
@@ -73,6 +75,8 @@ public class Sublease {
         this.amenities = amenities;
         this.leasePrice = leasePrice;
         this.roomType = roomType;
+        this.roomDepth = roomDepth;
+        this.roomWidth = roomWidth;
         this.leaseImage = leaseImage;
         this.leaseDescription = leaseDescription;
         this.leaseAddress = leaseAddress;
@@ -162,6 +166,22 @@ public class Sublease {
 
     public void setRoomType(String roomType) {
         this.roomType = roomType;
+    }
+
+    public Double getRoomDepth() {
+        return roomDepth;
+    }
+
+    public void setRoomDepth(Double roomDepth) {
+        this.roomDepth = roomDepth;
+    }
+
+    public Double getRoomWidth() {
+        return roomWidth;
+    }
+
+    public void setRoomWidth(Double roomWidth) {
+        this.roomWidth = roomWidth;
     }
 
     public String getLeaseImage() {
