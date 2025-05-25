@@ -1,6 +1,7 @@
 package com.unihub.api.unihub_backend.account.publicaccess;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/v2/public/account")
+@PreAuthorize("hasAnyRole('ADMIN','USER')")
 public class PublicAccountController {
 
     private final PublicAccountService accountService;
