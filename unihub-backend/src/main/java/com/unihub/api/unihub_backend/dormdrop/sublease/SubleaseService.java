@@ -88,7 +88,7 @@ public class SubleaseService {
         Account account = getCurrentUserAccount();
 
         if (!isOwnerOfSublease(sublease, account)) {
-            throw new IllegalArgumentException("You are not authorized to update this sublease");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to update this sublease");
         }
 
         if (updatedSublease.getLeaseName() != null) sublease.setLeaseName(updatedSublease.getLeaseName());
@@ -116,16 +116,19 @@ public class SubleaseService {
      */
 
     @Transactional(readOnly = true)
-    public List<Sublease> getAllSublease() {
-        return subleaseRepository.findAllByOrderByDatePostedDesc();
+    public List<SubleaseResponseDTO> getAllSublease() {
+        List<Sublease> subleases = subleaseRepository.findAllByOrderByDatePostedDesc();
+        return subleases.stream().map(subleaseMapper::toResponse).toList();
     }
+
     @Transactional(readOnly = true)
     public Optional<Sublease> findSubleaseById(Long id) {
         return subleaseRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
-    public List<Sublease> searchSublease(Double maxPrice, Double latMin, Double latMax, Double lngMin, Double lngMax, Double widthMin, Double widthMax, Double depthMin, Double depthMax, String leaseName, Set<SubleaseAmenity> requiredAmenities) {
+    public List<SubleaseResponseDTO> searchSublease(
+            Double maxPrice, Double latMin, Double latMax, Double lngMin,Double lngMax, Double widthMin, Double widthMax, Double depthMin, Double depthMax, String leaseName, Set<SubleaseAmenity> requiredAmenities) {
         if (maxPrice == null || maxPrice <= 0) maxPrice = Double.MAX_VALUE;
         if (latMin == null) latMin = -90.0;
         if (latMax == null) latMax = 90.0;
@@ -136,7 +139,9 @@ public class SubleaseService {
         if (depthMin == null) depthMin = 0.0;
         if (depthMax == null || depthMax < depthMin) depthMax = depthMin;
 
-        List<Sublease> results = subleaseRepository.searchWithOptionalNameAndLocation(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName);
+        List<Sublease> results = subleaseRepository.searchWithOptionalNameAndLocation(
+            maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName
+        );
 
         // Filter by amenities
         if (requiredAmenities != null && !requiredAmenities.isEmpty()) {
@@ -144,8 +149,11 @@ public class SubleaseService {
                 .filter(s -> s.getAmenities().containsAll(requiredAmenities))
                 .toList();
         }
-    
-        return results;
+
+        // Convert to DTOs
+        return results.stream()
+            .map(subleaseMapper::toResponse)
+            .toList();
     }
 
     /*

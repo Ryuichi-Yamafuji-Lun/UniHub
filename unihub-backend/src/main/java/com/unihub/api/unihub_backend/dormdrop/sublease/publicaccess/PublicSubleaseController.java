@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
 import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseService;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
+import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 
 @RestController
@@ -20,28 +22,31 @@ import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 public class PublicSubleaseController {
 
     private final SubleaseService subleaseService;
+    private final SubleaseMapper subleaseMapper;
 
-    public PublicSubleaseController(SubleaseService subleaseService) {
+    public PublicSubleaseController(SubleaseService subleaseService, SubleaseMapper subleaseMapper) {
         this.subleaseService = subleaseService;
+        this.subleaseMapper = subleaseMapper;
     }
 
     @GetMapping("/{subleaseId}")
-    public ResponseEntity<Sublease> getSubleaseById(@PathVariable Long subleaseId) {
+    public ResponseEntity<SubleaseResponseDTO> getSubleaseById(@PathVariable Long subleaseId) {
         Optional<Sublease> sublease = subleaseService.findSubleaseById(subleaseId);
-        return sublease.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return sublease.map(s -> ResponseEntity.ok(subleaseMapper.toResponse(s))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Sublease>> getAllSublease() {
-        List<Sublease> sublease = subleaseService.getAllSublease();
+    public ResponseEntity<List<SubleaseResponseDTO>> getAllSublease() {
+        List<SubleaseResponseDTO> sublease = subleaseService.getAllSublease();
         if (sublease.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+        
         return ResponseEntity.ok(sublease);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Sublease>> searchSubleases(
+    public ResponseEntity<List<SubleaseResponseDTO>> searchSubleases(
         @RequestParam(required = false) Double maxPrice,
         @RequestParam(required = false) Double latMin,
         @RequestParam(required = false) Double latMax,
@@ -54,7 +59,7 @@ public class PublicSubleaseController {
         @RequestParam(required = false) String leaseName,
         @RequestParam(required = false) Set<SubleaseAmenity> amenities
     ) {
-        List<Sublease> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName, amenities);
+        List<SubleaseResponseDTO> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName, amenities);
         return subleases.isEmpty() 
             ? ResponseEntity.noContent().build()
             : ResponseEntity.ok(subleases);

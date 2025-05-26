@@ -61,7 +61,7 @@ public class OwnerSubleaseController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    // Work on this tomorrow
+    
     @GetMapping("/me/subleases")
     public ResponseEntity<List<SubleaseResponseDTO>> searchOwnSublease() {
         List<SubleaseResponseDTO> subleases = subleaseService.getSubleaseByAccountOrderedByDate();
