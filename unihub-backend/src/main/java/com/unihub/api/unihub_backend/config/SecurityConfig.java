@@ -45,17 +45,18 @@ public class SecurityConfig {
 
     // local development only DELETE WHEN DEPLOYING
     @Bean
-    public UserDetailsService userDetailsService() {
+    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         UserDetails admin = User.withUsername("admin")
-            .password("{noop}admin")  
+            .password(passwordEncoder.encode("admin"))
             .roles("ADMIN")
             .build();
 
         UserDetails user = User.withUsername("user")
-            .password("{noop}user")
+            .password(passwordEncoder.encode("user"))
             .roles("USER")
             .build();
 
         return new InMemoryUserDetailsManager(admin, user);
     }
+
 }
