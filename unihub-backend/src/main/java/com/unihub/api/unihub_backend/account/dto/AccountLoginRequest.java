@@ -2,7 +2,8 @@ package com.unihub.api.unihub_backend.account.dto;
 
 public class AccountLoginRequest {
     private String identifier;
-    private String Password;
+    private String password;
+
     public String getIdentifier() {
         return identifier;
     }
@@ -10,12 +11,10 @@ public class AccountLoginRequest {
         this.identifier = identifier;
     }
     public String getPassword() {
-        return Password;
+        return password;
     }
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
-    
-    
 }
