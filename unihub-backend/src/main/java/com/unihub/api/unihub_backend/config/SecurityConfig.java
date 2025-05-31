@@ -31,15 +31,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/api/v1/public/**").permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/v1/user/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated()
             )
-            .httpBasic(Customizer.withDefaults()) 
-            .formLogin(Customizer.withDefaults()) 
+            .httpBasic(Customizer.withDefaults())
+            .formLogin(Customizer.withDefaults())
             .build();
     }
 
