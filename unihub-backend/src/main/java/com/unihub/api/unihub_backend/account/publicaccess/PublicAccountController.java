@@ -27,6 +27,7 @@ public class PublicAccountController {
 
     @PostMapping
     public ResponseEntity<AccountResponseDTO> createAccount(@Valid @RequestBody AccountRegistrationRequest request) {
+        System.out.println("CreateAccount endpoint hit with email: " + request.getEmail());
         Account createdAccount = accountService.registerAccount(request);
         return ResponseEntity.status(201).body(accountMapper.toResponse(createdAccount, false));
     }
