@@ -59,7 +59,7 @@ public class Account {
     // Track User activity and permission
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles = Set.of(Role.USER);
+    private Set<Role> roles = Set.of(Role.ROLE_USER);
 
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;

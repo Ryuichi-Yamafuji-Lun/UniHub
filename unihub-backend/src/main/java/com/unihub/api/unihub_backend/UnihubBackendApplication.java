@@ -40,7 +40,7 @@ public class UnihubBackendApplication {
                     "test@gmail.com",           
                     "wbuffett",                 
                     "password123",              
-                    Set.of(Role.USER),          
+                    Set.of(Role.ROLE_USER),          
                     AccountStatus.ACTIVE,       
                     (byte) 0,                   
                     (byte) 0                   
