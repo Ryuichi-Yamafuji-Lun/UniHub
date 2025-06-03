@@ -1,40 +1,42 @@
 package com.unihub.api.unihub_backend.account.publicaccess;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unihub.api.unihub_backend.account.Account;
-import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.account.dto.AccountLoginRequest;
-
-import jakarta.validation.Valid;
-
+import com.unihub.api.unihub_backend.account.dto.AccountLoginResponse;
+import com.unihub.api.unihub_backend.security.jwt.JwtUtil;
+import com.unihub.api.unihub_backend.security.service.CustomUserDetailsService;
 
 @RestController
-@RequestMapping(path = "api/v1/public/auth")
+@RequestMapping("/api/v1/public/auth")
 public class AuthController {
-    
-    private final AccountRepository accountRepository;
-    private final PasswordEncoder passwordEncoder;
+  
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    public AuthController(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
-        this.accountRepository = accountRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
-    
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody AccountLoginRequest request) {
-        Account account = accountRepository.findByEmail(request.getIdentifier()).or(() -> accountRepository.findByUsername(request.getIdentifier())).orElse(null);
+    public ResponseEntity<AccountLoginResponse> login(@RequestBody AccountLoginRequest request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getIdentifier(), request.getPassword())
+        );
 
-        if(account == null || !passwordEncoder.matches(request.getPassword(), account.getPassword())) {
-            return ResponseEntity.status(401).body("Invalid credentials");
-        }
+        UserDetails userDetails = userDetailsService.loadUserByUsername(request.getIdentifier());
+        String token = jwtUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok("Login successful");
+        return ResponseEntity.ok(new AccountLoginResponse(token));
     }
-    
 }
