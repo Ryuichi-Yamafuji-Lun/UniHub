@@ -1,6 +1,7 @@
 package com.unihub.api.unihub_backend.account.user;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,17 +13,19 @@ import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
 public class UserAccountService {
 
     private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserAccountService(AccountRepository accountRepository) {
+    public UserAccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
-    }
-
-    private String getCurrentUserEmail() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        this.passwordEncoder = passwordEncoder;
     }
 
     private Account getCurrentUserAccount() {
-        return accountRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new RuntimeException("Authenticated account not found"));
+        String identifier = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("Authenticated identifier: " + identifier);
+        return accountRepository.findByEmail(identifier)
+            .or(() -> accountRepository.findByUsername(identifier))
+            .orElseThrow(() -> new RuntimeException("Authenticated account not found"));
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +57,7 @@ public class UserAccountService {
         }
 
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
-            account.setPassword(request.getPassword()); // Encrypt later
+            account.setPassword(passwordEncoder.encode(request.getPassword())); 
         }
 
         return accountRepository.save(account);
