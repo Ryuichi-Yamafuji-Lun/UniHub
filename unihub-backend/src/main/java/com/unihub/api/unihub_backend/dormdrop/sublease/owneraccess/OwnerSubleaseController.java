@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(path = "api/v1/owner/accounts")
-//@PreAuthorize("hasAnyRole('ADMIN','USER')")
+@PreAuthorize("hasAnyRole('ADMIN','USER')")
 public class OwnerSubleaseController {
 
     private final SubleaseService subleaseService;
