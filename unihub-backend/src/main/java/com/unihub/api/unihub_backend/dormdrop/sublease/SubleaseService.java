@@ -6,45 +6,29 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.unihub.api.unihub_backend.account.Account;
-import com.unihub.api.unihub_backend.account.AccountRepository;
-import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseUpdateRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
+import com.unihub.api.unihub_backend.security.utils.CurrentAccountProvider;
 
 @Service
 public class SubleaseService {
     
     private final SubleaseRepository subleaseRepository;
-    private final AccountRepository accountRepository;
     private final SubleaseMapper subleaseMapper;
+    private final CurrentAccountProvider currentAccountProvider;
 
-    public SubleaseService(SubleaseRepository subleaseRepository, AccountRepository accountRepository, SubleaseMapper subleaseMapper) {
+    public SubleaseService(SubleaseRepository subleaseRepository, SubleaseMapper subleaseMapper, CurrentAccountProvider currentAccountProvider) {
         this.subleaseRepository = subleaseRepository;
-        this.accountRepository = accountRepository;
         this.subleaseMapper = subleaseMapper;
-    }
-
-    private Account getCurrentUserAccount() {
-        String identifier = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("Authenticated identifier: " + identifier);
-        Account account = accountRepository.findByEmail(identifier)
-            .or(() -> accountRepository.findByUsername(identifier))
-            .orElseThrow(() -> new RuntimeException("Authenticated account not found"));
-        
-        if (account.getAccountStatus() != AccountStatus.ACTIVE) {
-            throw new RuntimeException("Account is not active. Please confirm your email.");
-        }
-
-        return account;
+        this.currentAccountProvider = currentAccountProvider;
     }
     
     // check if user is the owner of the listing
@@ -55,7 +39,7 @@ public class SubleaseService {
     // create sublease
     @Transactional
     public Sublease createSublease(SubleaseRegistrationRequest request) {
-        Account account = getCurrentUserAccount();
+        Account account = currentAccountProvider.getCurrentUserAccount();
 
         // do a double take on accound and date posted
         Sublease sublease = subleaseMapper.fromRegistrationRequest(request);
@@ -70,7 +54,7 @@ public class SubleaseService {
     public void deleteSubLease(Long subleaseId) {
         Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
 
-        Account account = getCurrentUserAccount();
+        Account account = currentAccountProvider.getCurrentUserAccount();;
 
         if (!isOwnerOfSublease(sublease, account)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized: not your listing");
@@ -84,7 +68,7 @@ public class SubleaseService {
     public Sublease updateSublease(Long subleaseId, SubleaseUpdateRequest updatedSublease) {
         Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
 
-        Account account = getCurrentUserAccount();
+        Account account = currentAccountProvider.getCurrentUserAccount();;
 
         if (!isOwnerOfSublease(sublease, account)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to update this sublease");
@@ -161,7 +145,7 @@ public class SubleaseService {
 
     @Transactional(readOnly = true)
     public List<SubleaseResponseDTO> getSubleaseByAccountOrderedByDate() {
-        Account account = getCurrentUserAccount();
+        Account account = currentAccountProvider.getCurrentUserAccount();;
 
         List<Sublease> subleases = subleaseRepository.findByAccountOrderByDatePostedDesc(account);
 
