@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
+import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 
 @Service
 public class UserAccountService {
@@ -23,9 +24,15 @@ public class UserAccountService {
     private Account getCurrentUserAccount() {
         String identifier = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println("Authenticated identifier: " + identifier);
-        return accountRepository.findByEmail(identifier)
+        Account account = accountRepository.findByEmail(identifier)
             .or(() -> accountRepository.findByUsername(identifier))
             .orElseThrow(() -> new RuntimeException("Authenticated account not found"));
+        
+        if (account.getAccountStatus() != AccountStatus.ACTIVE) {
+            throw new RuntimeException("Account is not active. Please confirm your email.");
+        }
+
+        return account;
     }
 
     @Transactional(readOnly = true)

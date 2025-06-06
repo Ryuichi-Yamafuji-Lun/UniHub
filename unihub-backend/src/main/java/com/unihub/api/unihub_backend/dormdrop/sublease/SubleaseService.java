@@ -33,16 +33,15 @@ public class SubleaseService {
         this.subleaseMapper = subleaseMapper;
     }
 
-    private String getCurrentUserEmail() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-
     private Account getCurrentUserAccount() {
-        Account account =  accountRepository.findByEmail(getCurrentUserEmail()).orElseThrow(() -> new RuntimeException("Autenticated account not found"));
-
-        // check if Account is active
-        if (!account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
-            throw new IllegalArgumentException("Account is invalid");
+        String identifier = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("Authenticated identifier: " + identifier);
+        Account account = accountRepository.findByEmail(identifier)
+            .or(() -> accountRepository.findByUsername(identifier))
+            .orElseThrow(() -> new RuntimeException("Authenticated account not found"));
+        
+        if (account.getAccountStatus() != AccountStatus.ACTIVE) {
+            throw new RuntimeException("Account is not active. Please confirm your email.");
         }
 
         return account;
