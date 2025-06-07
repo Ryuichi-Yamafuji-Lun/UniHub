@@ -71,14 +71,6 @@ public class Account {
     // For JPA
     public Account(){}
 
-    // Set User
-    
-
-    // Getter & Setter
-    public Long getId() {
-        return id;
-    }
-
     public Account(String firstName, String lastName, LocalDate dateOfBirth, String profilePicture, Float sumOfRatings,
             Integer numberOfRatings, String email, String username, String password, Set<Role> roles, AccountStatus accountStatus, Byte unsafeFlag,
             Byte suspensionCount) {
@@ -95,6 +87,11 @@ public class Account {
         this.accountStatus = accountStatus;
         this.unsafeFlag = unsafeFlag;
         this.suspensionCount = suspensionCount;
+    }
+    
+    // Getter & Setter
+    public Long getId() {
+        return id;
     }
 
     public String getFirstName() {
