@@ -2,8 +2,11 @@ package com.unihub.api.unihub_backend.verification;
 
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import com.unihub.api.unihub_backend.account.Account;
 
+@Service
 public class VerificationTokenService {
     
     private final VerificationTokenRepository verificationTokenRepository;
