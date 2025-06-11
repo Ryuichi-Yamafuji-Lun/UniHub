@@ -56,7 +56,7 @@ public class AccountMapper {
         account.setUpdatedAt(LocalDateTime.now());
         // Set defaults
         account.setRoles(Set.of(Role.ROLE_USER));
-        account.setAccountStatus(AccountStatus.ACTIVE);
+        account.setAccountStatus(AccountStatus.UNVERIFIED);
         account.setSumOfRatings(5.0f);
         account.setNumberOfRatings(1);
         account.setUnsafeFlag((byte) 0);
