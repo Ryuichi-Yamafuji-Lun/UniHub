@@ -1,0 +1,76 @@
+package com.unihub.api.unihub_backend.cardinalcart.listing.owneraccess;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
+import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
+
+@RestController
+@RequestMapping(path = "api/v2/owner/accounts")
+@PreAuthorize("denyAll()")
+public class OwnerListingController {
+
+    private final ListingService listingService;
+
+    public OwnerListingController(ListingService listingService) {
+        this.listingService = listingService;
+    }
+
+    @PostMapping("/{accountId}/listings")
+    public ResponseEntity<Listing> createListing(@RequestBody Listing newlisting, @PathVariable Long accountId) {
+        Listing createdListing = listingService.createListing(newlisting, accountId);
+        return ResponseEntity.status(201).body(createdListing);
+    }
+
+    @DeleteMapping("/{accountId}/listings/{listingId}")
+    public ResponseEntity<Void> deleteListing(@PathVariable Long accountId, @PathVariable Long listingId) {
+        try {
+            listingService.deleteListing(listingId, accountId);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @PutMapping("/{accountId}/listings/{listingId}")
+    public ResponseEntity<Listing> updateListing(@PathVariable Long accountId, @PathVariable Long listingId, @RequestBody Listing updatedListing) {
+        try {
+            Listing updated = listingService.updateListing(listingId, updatedListing, accountId);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping("/{accountId}/listings")
+    public ResponseEntity<List<Listing>> searchOwnListing(@PathVariable Long accountId) {
+    List<Listing> listings = listingService.getListingByAccountSortedBySold(accountId);
+    if (listings.isEmpty()) {
+        return ResponseEntity.noContent().build();
+    }
+    return ResponseEntity.ok(listings);
+    }
+
+    @GetMapping("{accountId}/listings/unsold")
+    public ResponseEntity<List<Listing>> searchOwnActiveListing(@PathVariable Long accountId) {
+    List<Listing> listings = listingService.getActiveListingsByAccount(accountId);
+    if (listings.isEmpty()) {
+        return ResponseEntity.noContent().build();
+    }
+    return ResponseEntity.ok(listings);
+    }
+}
