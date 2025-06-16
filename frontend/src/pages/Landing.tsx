@@ -1,3 +1,4 @@
+import About from "@/sections/landing/About";
 import Hero from "@/sections/landing/Hero"; 
 import Products from "@/sections/landing/Product";
 import WhyUnihub from "@/sections/landing/WhyUniHub";
@@ -7,13 +8,12 @@ const Landing = () => {
     <>
       {/* Hero Section */}
       <Hero />
-
-      {/* <Products /> */}
+      {/* Products Section */}
       <Products />
-      {/* <WhyUnihub /> */}
+      {/* WhyUnihub Section */}
       <WhyUnihub />
-      {/* <About /> */}
-      {/* <Footer /> */}
+      {/* About Section */}
+      <About />
     </>
   );
 };
