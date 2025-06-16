@@ -78,7 +78,7 @@ const LoginPage = () => {
 
         <p className="text-xs text-center text-gray-500">
           By continuing, you agree to UniHub’s{" "}
-          <a href="/terms" className="underline hover:text-gray-800">Terms</a> and{" "}
+          <a href="/terms" className="underline hover:text-gray-800">Terms & Conditions</a> and{" "}
           <a href="/privacy" className="underline hover:text-gray-800">Privacy Policy</a>.
         </p>
       </div>
