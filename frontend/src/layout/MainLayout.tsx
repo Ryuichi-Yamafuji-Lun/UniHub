@@ -1,6 +1,6 @@
 import { useState, useEffect} from "react";
 import type { ReactNode } from "react";
-import NavBar from "@/components/layout/Navbar";
+import NavBar from "@/components/layout/navbar/Navbar";
 import Footer from "@/components/layout/Footer";
 
 interface MainLayoutProps {
