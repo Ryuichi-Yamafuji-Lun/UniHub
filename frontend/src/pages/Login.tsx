@@ -1,23 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      await axios.post("/api/auth/login", {
-        identifier,
-        password,
-      });
-
-      //Login success — redirect or set auth state
+      await axios.post("/api/auth/login", { identifier, password });
       navigate("/dormdrop");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -33,7 +30,6 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-white">
       <div className="w-full max-w-md space-y-6">
-        {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold text-[#084479]">Log in to UniHub</h1>
           <p className="text-gray-500 mt-1 text-sm">
@@ -41,7 +37,6 @@ const LoginPage = () => {
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Email or Username</label>
@@ -55,15 +50,21 @@ const LoginPage = () => {
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
+          <div className="relative">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479] pr-10"
               required
             />
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-[38px] cursor-pointer text-gray-500"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
           </div>
 
           {error && <p className="text-sm text-red-500">{error}</p>}
