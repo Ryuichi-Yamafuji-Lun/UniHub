@@ -15,7 +15,11 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      await api.post("/api/v1/public/auth/login", { identifier, password });
+      const response = await api.post("/api/v1/public/auth/login", { identifier, password });
+
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      
       navigate("/dormdrop");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {

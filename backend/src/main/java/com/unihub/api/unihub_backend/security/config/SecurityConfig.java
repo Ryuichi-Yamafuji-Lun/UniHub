@@ -48,7 +48,7 @@ public class SecurityConfig {
                     "/h2-console/**",
                     "/api/v1/public/**",
                     "/api/v2/public/**",
-                    "/api/v1/verify",
+                    "/api/v1/verify*",
                     "/api/auth/**"
                 ).permitAll()
                 .anyRequest().authenticated()
