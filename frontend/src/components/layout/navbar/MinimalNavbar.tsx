@@ -4,7 +4,7 @@ import UniHubLogo from "@/assets/UniHubLogo.png";
 
 const MinimalNavBar = () => {
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
+    <header className="fixed top-0 left-0 w-full z-50 bg-white">
       <nav className="w-full h-20 px-6 md:px-10 flex items-center justify-start">
         <div className="flex items-center space-x-3 h-full">
           <Link to="/">
