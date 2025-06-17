@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import api from "@/lib/axios";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState("");
@@ -14,7 +15,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      await axios.post("/api/auth/login", { identifier, password });
+      await api.post("/api/v1/public/auth/login", { identifier, password });
       navigate("/dormdrop");
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
