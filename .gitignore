@@ -1,0 +1,66 @@
+# === ENV FILES ===
+.env
+frontend/.env
+backend/.env
+
+# === FRONTEND: Vite + React ===
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.DS_Store
+frontend/.vercel/
+
+# === BACKEND: Java / Spring Boot ===
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.idea/
+backend/.DS_Store
+
+# === Maven ===
+.mvn/wrapper/maven-wrapper.jar
+
+# === Editor / IDE ===
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+
+# === NetBeans ===
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# === General Builds ===
+build/
+**/build/
+
+# === Logs ===
+*.log
+*.log.*
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# === App Secrets ===
+**/application.properties
+**/application.yml
+
+# === Misc ===
+*.local
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
