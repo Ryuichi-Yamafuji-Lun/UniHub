@@ -45,7 +45,7 @@ const Signup = () => {
         ...form,
         dateOfBirth: form.dateOfBirth || null,
       });
-      navigate("/login");
+      navigate("/check-email");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Signup failed. Try again.");
