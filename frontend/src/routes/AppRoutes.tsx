@@ -1,11 +1,12 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import AuthLayout from "@/layout/AuthLayout";
 import MainLayout from "@/layout/MainLayout";
+import CheckEmailPage from "@/pages/CheckEmailPage";
+import DormDropAppRoutes from "@/apps/dormdrop/routes/AppRoutes";
 import Landing from "@/pages/Landing";
 import LoginPage from "@/pages/Login";
-import AuthLayout from "@/layout/AuthLayout";
 import Signup from "@/pages/Signup";
 import VerifyEmail from "@/pages/VerifyEmail";
-import CheckEmailPage from "@/pages/CheckEmailPage";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,10 @@ const AppRoutes = () => {
       <Route path="/signup" element={<AuthLayout><Signup /></AuthLayout>} />
       <Route path="/verify" element={<AuthLayout><VerifyEmail /></AuthLayout>} />
       <Route path="/check-email" element={<AuthLayout><CheckEmailPage /></AuthLayout>} />
+
+      {/* DormDrop Pages */}
+      <Route path="/dormdrop/*" element={<DormDropAppRoutes />} />
+      
       {/* Catch-all fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

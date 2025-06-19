@@ -1,6 +1,6 @@
 import { useState, useEffect} from "react";
 import type { ReactNode } from "react";
-import NavBar from "@/components/layout/navbar/Navbar";
+import NavBar from "@/apps/dormdrop/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 interface MainLayoutProps {

@@ -26,12 +26,12 @@ const NavBar = ({ isScrolled }: NavBarProps) => {
         {/* CENTER: Navigation */}
         <div className="flex-1 flex justify-center space-x-2 text-sm font-medium text-gray-800">
           <Link
-            to="/dormdrop"
+            to="/about"
             className={`px-3 py-1.5 rounded-md transition ${
-              isActive("/dormdrop") ? "bg-gray-100" : "hover:bg-gray-100"
+              isActive("/about") ? "bg-gray-100" : "hover:bg-gray-100"
             }`}
           >
-            DormDrop
+            UniHub
           </Link>
           <Link
             to="#"
@@ -39,7 +39,6 @@ const NavBar = ({ isScrolled }: NavBarProps) => {
           >
             CardinalCart (soon)
           </Link>
-
         </div>
 
         {/* RIGHT: Auth Buttons */}
