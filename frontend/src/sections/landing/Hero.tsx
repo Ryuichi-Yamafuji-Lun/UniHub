@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import UniHubLogo from "@/assets/UniHubLogo.png";
-import HeroBg from "@/assets/UniHubLogo.png"; // your actual background image here
+import HeroBg from "@/apps/dormdrop/assets/dormdrop-hero.png"; // your actual background image here
 
 export default function UniHubHero() {
   return (
@@ -16,15 +16,15 @@ export default function UniHubHero() {
         
         {/* Text Block */}
         <div className="text-center md:text-left max-w-xl md:w-1/2">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4 leading-tight">
             Created by Students. For Students.
           </h1>
-          <p className="text-lg sm:text-xl text-gray-700 mb-6 font-medium">
+          <p className="text-lg sm:text-xl text-white mb-6 font-medium">
             UniHub helps students sublease, buy, and sell safely across campus communities — starting with DormDrop, our trusted subleasing tool.
           </p>
           <Link
             to="/dormdrop"
-            className="inline-block bg-[#084479] text-white px-6 py-3 rounded-md font-semibold hover:bg-[#06345d] transition"
+            className="inline-block bg-white text-[#084479] px-6 py-3 rounded-md font-semibold hover:bg-[#084479] hover:text-white transition"
           >
             Explore DormDrop
           </Link>

@@ -12,25 +12,25 @@ const DormDropHero = () => {
 
       {/* Content */}
       <div className="relative z-20 max-w-6xl mx-auto px-6 sm:px-10 lg:px-20 py-28 text-left">
-        <h1 className="text-5xl sm:text-6xl font-extrabold text-[#0A2B4B] leading-tight drop-shadow-md">
+        <h1 className="text-5xl sm:text-6xl font-extrabold text-white leading-tight drop-shadow-md">
           Subleasing Reimagined
         </h1>
 
-        <p className="mt-6 text-lg sm:text-xl text-gray-800 font-medium max-w-xl drop-shadow-sm">
+        <p className="mt-6 text-lg sm:text-xl text-white font-medium max-w-xl drop-shadow-sm">
           DormDrop makes it{" "}
-          <span className="italic text-[#084479] font-semibold">effortless</span> for USC students to find or post trusted subleases.
+          <span className="italic font-semibold">effortless</span> for USC students to find or post trusted subleases.
         </p>
 
         <div className="mt-8 flex gap-4 flex-wrap">
           <Link
             to="/signup"
-            className="px-6 py-3 bg-[#084479] text-white rounded-xl font-semibold hover:bg-[#06345d] transition"
+            className="px-6 py-3 bg-white text-[#084479] rounded-xl font-semibold hover:bg-[#06345d] hover:text-white not-[]:transition"
           >
             Get Started
           </Link>
           <Link
             to="/about"
-            className="px-6 py-3 border border-[#084479] text-[#084479] rounded-xl font-semibold hover:bg-[#084479] hover:text-white transition"
+            className="px-6 py-3 border border-white text-white rounded-xl font-semibold hover:bg-[#084479] hover:text-white transition"
           >
             Learn More
           </Link>
