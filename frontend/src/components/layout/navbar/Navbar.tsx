@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react"; // Add this icon lib or use Heroicons
 import UniHubLogo from "@/assets/UniHubLogo.png";
 
 interface NavBarProps {
@@ -8,23 +10,22 @@ interface NavBarProps {
 const NavBar = ({ isScrolled }: NavBarProps) => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white shadow-md" : "bg-white"
+        isScrolled ? "bg-white shadow-md" : "bg-transparent"
       }`}
     >
       <nav className="w-full h-20 px-6 md:px-10 flex items-center justify-between">
-        {/* LEFT: Logo */}
-        <div className="flex-1">
-          <Link to="/" className="flex items-center space-x-3">
-            <img src={UniHubLogo} alt="Unihub Logo" className="h-16 w-auto" />
-          </Link>
-        </div>
+        {/* Logo */}
+        <Link to="/" className="flex items-center space-x-3">
+          <img src={UniHubLogo} alt="UniHub Logo" className="h-16 w-auto" />
+        </Link>
 
-        {/* CENTER: Navigation */}
-        <div className="flex-1 flex justify-center space-x-2 text-sm font-medium text-gray-800">
+        {/* Desktop Nav */}
+        <div className="hidden md:flex flex-1 justify-center space-x-2 text-sm font-medium text-gray-800">
           <Link
             to="/dormdrop"
             className={`px-3 py-1.5 rounded-md transition ${
@@ -33,17 +34,13 @@ const NavBar = ({ isScrolled }: NavBarProps) => {
           >
             DormDrop
           </Link>
-          <Link
-            to="#"
-            className="px-3 py-1.5 rounded-md text-gray-400 cursor-not-allowed"
-          >
+          <span className="px-3 py-1.5 text-gray-400 cursor-not-allowed">
             CardinalCart (soon)
-          </Link>
-
+          </span>
         </div>
 
-        {/* RIGHT: Auth Buttons */}
-        <div className="flex-1 flex justify-end items-center space-x-3 text-sm font-medium">
+        {/* Auth Buttons */}
+        <div className="hidden md:flex space-x-3 text-sm font-medium">
           <Link
             to="/login"
             className={`px-4 py-2 rounded-md transition ${
@@ -59,7 +56,31 @@ const NavBar = ({ isScrolled }: NavBarProps) => {
             Sign Up
           </Link>
         </div>
+
+        {/* Hamburger Icon */}
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
+
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div className="md:hidden bg-white shadow-md px-6 py-4 space-y-3">
+          <Link to="/dormdrop" className="block text-sm font-medium text-gray-800">
+            DormDrop
+          </Link>
+          <span className="block text-sm text-gray-400">CardinalCart (soon)</span>
+          <hr />
+          <Link to="/login" className="block text-sm text-gray-800">
+            Login
+          </Link>
+          <Link to="/signup" className="block text-sm font-semibold text-[#084479]">
+            Sign Up
+          </Link>
+        </div>
+      )}
     </header>
   );
 };

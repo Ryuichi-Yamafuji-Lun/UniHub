@@ -1,4 +1,4 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import NavBar from "@/components/layout/navbar/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -12,7 +12,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 5);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -22,7 +22,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <NavBar isScrolled={isScrolled} />
-      <main className="flex-grow pt-24">{children}</main>
+      <main className="flex-grow w-full">{children}</main>
       <Footer />
     </div>
   );
