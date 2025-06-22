@@ -3,9 +3,13 @@ import api from "@/lib/axios";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Signup = () => {
+
+  const location = useLocation();
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+
   const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
@@ -47,7 +51,7 @@ const Signup = () => {
         ...form,
         dateOfBirth: form.dateOfBirth || null,
       });
-      navigate("/check-email");
+      navigate(`/check-email?redirect=${redirect}`);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Signup failed. Try again.");

@@ -1,8 +1,12 @@
 // src/pages/CheckEmail.tsx
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { MailCheck } from "lucide-react";
 
 const CheckEmail = () => {
+    
+  const location = useLocation();
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-6">
@@ -15,7 +19,7 @@ const CheckEmail = () => {
           Didn't get the email? Try checking your spam folder or wait a few minutes.
         </p>
         <Link
-          to="/login"
+          to={`/login?redirect=${redirect}`}
           className="inline-block bg-[#084479] text-white px-6 py-2 rounded-md hover:bg-[#06345d] transition"
         >
           Back to Login

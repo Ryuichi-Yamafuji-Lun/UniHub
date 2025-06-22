@@ -2,9 +2,13 @@ import api from "@/lib/axios";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const LoginPage = () => {
+
+  const location = useLocation();
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,8 +23,8 @@ const LoginPage = () => {
 
       const token = response.data.token;
       localStorage.setItem("token", token);
-      
-      navigate("/dormdrop");
+      // change dashboard to main page unihub
+      navigate(redirect);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         console.error("Login failed:", err.response?.data);

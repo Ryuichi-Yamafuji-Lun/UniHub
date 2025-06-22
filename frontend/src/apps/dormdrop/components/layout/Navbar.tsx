@@ -42,7 +42,7 @@ const NavBar = ({ isScrolled }: NavBarProps) => {
         {/* Auth Buttons */}
         <div className="hidden md:flex space-x-3 text-sm font-medium">
           <Link
-            to="/login"
+            to="/login?redirect=/dormdrop"
             className={`px-4 py-2 rounded-md transition ${
               isActive("/login") ? "bg-gray-100" : "hover:bg-gray-100"
             }`}
@@ -50,7 +50,7 @@ const NavBar = ({ isScrolled }: NavBarProps) => {
             Login
           </Link>
           <Link
-            to="/signup"
+            to="/signup?redirect=/dormdrop"
             className="bg-[#084479] text-white px-4 py-2 rounded-md hover:bg-[#06345d] transition"
           >
             Sign Up
@@ -73,10 +73,10 @@ const NavBar = ({ isScrolled }: NavBarProps) => {
           </Link>
           <span className="block text-sm text-gray-400">CardinalCart (soon)</span>
           <hr />
-          <Link to="/login" className="block text-sm text-gray-800">
+          <Link to="/login?redirect=/dormdrop" className="block text-sm text-gray-800">
             Login
           </Link>
-          <Link to="/signup" className="block text-sm font-semibold text-[#084479]">
+          <Link to="/signup?redirect=/dormdrop" className="block text-sm font-semibold text-[#084479]">
             Sign Up
           </Link>
         </div>

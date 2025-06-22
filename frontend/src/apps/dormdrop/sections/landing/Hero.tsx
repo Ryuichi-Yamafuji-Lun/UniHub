@@ -28,7 +28,7 @@ const DormDropHero = () => {
 
           <div className="flex flex-wrap justify-center md:justify-start gap-4">
             <Link
-              to="/signup"
+              to="/signup?redirect=/dormdrop"
               className="px-6 py-3 bg-white text-[#084479] rounded-xl font-semibold hover:bg-[#06345d] hover:text-white transition"
             >
               Get Started
