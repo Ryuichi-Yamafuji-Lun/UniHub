@@ -24,7 +24,6 @@ public class UnihubBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(UnihubBackendApplication.class, args);
     }
-
    
     @Bean
     public CommandLineRunner loadData(AccountRepository accountRepository, SubleaseRepository subleaseRepository) {
