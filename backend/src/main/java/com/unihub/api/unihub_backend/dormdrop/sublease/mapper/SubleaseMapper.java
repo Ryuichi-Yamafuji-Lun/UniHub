@@ -29,11 +29,14 @@ public class SubleaseMapper {
 
         // Owner
         Account owner = sublease.getAccount();
-        dto.setOwnerUsername(owner.getUsername());
-        dto.setOwnerProfilePicture(owner.getProfilePicture());
-        dto.setOwnerEmail(owner.getEmail());
-        dto.setSumOfRatings(owner.getSumOfRatings());
-        dto.setNumberOfRatings(owner.getNumberOfRatings());
+        if (owner != null) {
+            dto.setOwnerId(owner.getId());
+            dto.setOwnerUsername(owner.getUsername());
+            dto.setOwnerProfilePicture(owner.getProfilePicture());
+            dto.setOwnerEmail(owner.getEmail());
+            dto.setSumOfRatings(owner.getSumOfRatings());
+            dto.setNumberOfRatings(owner.getNumberOfRatings()); 
+        }
 
         return dto;
     }

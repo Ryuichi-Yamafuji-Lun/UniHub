@@ -25,6 +25,7 @@ public class SubleaseResponseDTO {
     private Schools school;
 
     // Minimal Owner Info
+    private Long ownerId;
     private String ownerUsername;
     private String ownerProfilePicture;
     private Float sumOfRatings;
@@ -126,6 +127,12 @@ public class SubleaseResponseDTO {
     }
     public void setSchool(Schools school) {
         this.school = school;
+    }
+        public Long getOwnerId() {
+        return ownerId;
+    }
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
     public String getOwnerUsername() {
         return ownerUsername;
