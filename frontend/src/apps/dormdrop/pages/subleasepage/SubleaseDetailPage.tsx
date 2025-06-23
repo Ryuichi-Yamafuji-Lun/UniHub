@@ -1,7 +1,7 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import type { SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import api from "@/lib/axios";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const SubleaseDetailPage = () => {
   const { id } = useParams();
@@ -90,14 +90,37 @@ const SubleaseDetailPage = () => {
         </div>
 
         {/* Sidebar */}
-        <div className="md:w-1/3 p-4 border rounded-lg shadow-sm">
-          <div className="text-2xl font-bold">${sublease.leasePrice}</div>
-          <p className="text-sm text-gray-600 mb-4">per month</p>
+        <div className="md:w-1/3 p-4 border rounded-lg shadow-sm space-y-4">
+          {/* Price */}
+          <div>
+            <div className="text-2xl font-bold">${sublease.leasePrice}</div>
+            <p className="text-sm text-gray-600">per month</p>
+          </div>
 
-          <button className="w-full mt-2 bg-[#084479] text-white py-2 rounded-lg hover:bg-[#06345d]">
+          {/* Subleaser Info */}
+          <Link to={`/account/${sublease.ownerId}`} className="flex items-center gap-3 hover:bg-gray-50 p-2 rounded-lg transition">
+            <img
+              src={sublease.ownerProfilePicture || "/default-profile.png"}
+              alt={sublease.ownerUsername}
+              className="w-12 h-12 rounded-full object-cover"
+            />
+            <div>
+              <p className="text-md font-medium text-gray-900">{sublease.ownerUsername}</p>
+              <p className="text-sm text-yellow-600">
+                ⭐{" "}
+                {sublease.numberOfRatings && sublease.numberOfRatings > 0
+                  ? (sublease.sumOfRatings! / sublease.numberOfRatings!).toFixed(1)
+                  : "5.0"}{" "}
+                ({sublease.numberOfRatings || 1})
+              </p>
+            </div>
+          </Link>
+
+          {/* Contact Button */}
+          <button className="w-full bg-[#084479] text-white py-2 rounded-lg hover:bg-[#06345d]">
             Contact Subleaser
           </button>
-        </div>
+</div>
       </div>
     </div>
   );

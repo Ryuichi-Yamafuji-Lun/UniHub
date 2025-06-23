@@ -17,6 +17,7 @@ export type Schools = keyof typeof Schools;
 
 export interface SubleaseResponse {
   id: number;
+  ownerId: number;
   datePosted: string;
   leaseName: string;
   leasePrice: number;

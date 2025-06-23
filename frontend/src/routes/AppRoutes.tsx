@@ -1,9 +1,10 @@
+import DormDropAppRoutes from "@/apps/dormdrop/routes/AppRoutes";
 import AuthLayout from "@/layout/AuthLayout";
 import MainLayout from "@/layout/MainLayout";
 import CheckEmailPage from "@/pages/CheckEmailPage";
-import DormDropAppRoutes from "@/apps/dormdrop/routes/AppRoutes";
 import Landing from "@/pages/Landing";
 import LoginPage from "@/pages/Login";
+import PublicAccountProfile from "@/pages/profilepage/PublicProfilePage";
 import Signup from "@/pages/Signup";
 import VerifyEmail from "@/pages/VerifyEmail";
 import { Navigate, Route, Routes } from "react-router-dom";
@@ -21,6 +22,9 @@ const AppRoutes = () => {
 
       {/* DormDrop Pages */}
       <Route path="/dormdrop/*" element={<DormDropAppRoutes />} />
+
+      {/* Account Pages */}
+      <Route path="/account/:ownerId" element={<PublicAccountProfile />} />
       
       {/* Catch-all fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
