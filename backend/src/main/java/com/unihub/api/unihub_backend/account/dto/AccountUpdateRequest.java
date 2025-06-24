@@ -10,7 +10,6 @@ public class AccountUpdateRequest {
     @Size(min = 3, max = 20, message = "Username must be between 3-20 characters")
     private String username;
 
-    @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
     public String getFirstName() {

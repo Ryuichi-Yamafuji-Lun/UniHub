@@ -52,6 +52,9 @@ public class UserAccountService {
         }
 
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            if (request.getPassword().length() < 8) {
+                throw new IllegalArgumentException("Password must be at least 8 characters");
+            }
             account.setPassword(passwordEncoder.encode(request.getPassword())); 
         }
 
