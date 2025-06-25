@@ -1,6 +1,5 @@
-// Enums to match backend
-export type Schools = "USC"; 
-export type SubleaseAmenity = "AC" | "PARKING" | "GATED" | "POOL"; 
+import type { Schools } from "@/apps/dormdrop/types/enums/Schools";
+import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 
 // 1. Create DTO
 export interface SubleaseCreateDTO {
