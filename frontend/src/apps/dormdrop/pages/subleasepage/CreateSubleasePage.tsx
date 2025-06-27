@@ -1,48 +1,47 @@
+import { SchoolsArray } from "@/apps/dormdrop/types/enums/Schools";
+import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
+import { SubleaseAmenityArray } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
+import api from "@/lib/axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "@/lib/axios";
-import type { SubleaseCreateDTO } from "@/apps/dormdrop/types/Sublease";
-import { SchoolsArray } from "@/apps/dormdrop/types/enums/Schools";
-import { SubleaseAmenityArray } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
-import type { SubleaseAmenity} from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 
 const CreateSubleasePage = () => {
-  const [form, setForm] = useState<SubleaseCreateDTO>({
+  const navigate = useNavigate();
+  const getFormValue = (key: keyof typeof form) => form[key];
+
+  const [form, setForm] = useState({
     leaseName: "",
     leaseAddress: "",
-    leasePrice: 0,
+    leasePrice: "",
     leaseDescription: "",
     leaseStartDate: "",
     leaseEndDate: "",
     leaseImage: "",
     roomType: "",
-    roomWidth: 0,
-    roomDepth: 0,
+    roomWidth: "",
+    roomDepth: "",
     leaseSchool: "USC",
-    latitude: 0,
-    longitude: 0,
-    amenities: [],
+    latitude: "",
+    longitude: "",
+    amenities: [] as SubleaseAmenity[],
   });
 
-  const navigate = useNavigate();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    setForm(prev => ({
-      ...prev,
-      [name]: name === "leasePrice" || name === "roomWidth" || name === "roomDepth" || name === "latitude" || name === "longitude"
-        ? Number(value)
-        : value,
-    }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAmenityChange = (amenity: SubleaseAmenity) => {
-    setForm(prev => {
+    setForm((prev) => {
       const exists = prev.amenities.includes(amenity);
       return {
         ...prev,
         amenities: exists
-          ? prev.amenities.filter(a => a !== amenity)
+          ? prev.amenities.filter((a) => a !== amenity)
           : [...prev.amenities, amenity],
       };
     });
@@ -50,118 +49,202 @@ const CreateSubleasePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const leasePriceNumber = Number(form.leasePrice);
+    if (isNaN(leasePriceNumber) || leasePriceNumber < 300) {
+      alert("Lease price must be at least $300.");
+      return;
+    }
+
+    const payload = {
+      ...form,
+      leasePrice: leasePriceNumber,
+      roomWidth: Number(form.roomWidth),
+      roomDepth: Number(form.roomDepth),
+      latitude: Number(form.latitude),
+      longitude: Number(form.longitude),
+    };
+
     try {
-      await api.post("/api/v1/owner/accounts/me/subleases", form);
+      await api.post("/api/v1/owner/accounts/me/subleases", payload);
       navigate("/account/me");
     } catch (error) {
       console.error("Error creating sublease", error);
     }
   };
 
+  const inputClass =
+    "w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500";
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow space-y-8">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow space-y-8"
+    >
+      <h2 className="text-3xl font-semibold text-center">Create Sublease</h2>
 
-    <h2 className="text-3xl font-semibold text-center">Create Sublease</h2>
-
-    {/* SECTION 1: Lease Info */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Lease Info */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Lease Name</label>
-        <input name="leaseName" value={form.leaseName} onChange={handleChange} className="input" />
+          <label className="label">Lease Name</label>
+          <input
+            name="leaseName"
+            value={form.leaseName}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </div>
         <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Address</label>
-        <input name="leaseAddress" value={form.leaseAddress} onChange={handleChange} className="input" />
+          <label className="label">Address</label>
+          <input
+            name="leaseAddress"
+            value={form.leaseAddress}
+            onChange={handleChange}
+            className={inputClass}
+          />
         </div>
         <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Price (USD)</label>
-        <input type="number" name="leasePrice" value={form.leasePrice} onChange={handleChange} className="input" />
-        </div>
-    </div>
-
-    {/* SECTION 2: Description */}
-    <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 block">Description</label>
-        <textarea name="leaseDescription" value={form.leaseDescription} onChange={handleChange} rows={4} className="input w-full" />
-    </div>
-
-    {/* SECTION 3: Dates */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Start Date</label>
-        <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} className="input" />
-        </div>
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">End Date</label>
-        <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} className="input" />
-        </div>
-    </div>
-
-    {/* SECTION 4: Room Details */}
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Room Type</label>
-        <input name="roomType" value={form.roomType} onChange={handleChange} placeholder="e.g. Single, Double" className="input" />
-        </div>
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Image URL</label>
-        <input name="leaseImage" value={form.leaseImage} onChange={handleChange} className="input" />
-        </div>
-    </div>
-
-    {/* SECTION 5: Room Size */}
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Width (ft)</label>
-        <input type="number" name="roomWidth" value={form.roomWidth} onChange={handleChange} className="input" />
-        </div>
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Depth (ft)</label>
-        <input type="number" name="roomDepth" value={form.roomDepth} onChange={handleChange} className="input" />
-        </div>
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Latitude</label>
-        <input type="number" name="latitude" value={form.latitude} onChange={handleChange} className="input" />
-        </div>
-        <div className="flex flex-col">
-        <label className="text-sm font-medium text-gray-700 mb-1">Longitude</label>
-        <input type="number" name="longitude" value={form.longitude} onChange={handleChange} className="input" />
-        </div>
-    </div>
-
-    {/* SECTION 6: School */}
-    <div>
-        <label className="text-sm font-medium text-gray-700 mb-1 block">School</label>
-        <select name="leaseSchool" value={form.leaseSchool} onChange={handleChange} className="input w-full">
-        {SchoolsArray.map((school) => (
-            <option key={school} value={school}>{school}</option>
-        ))}
-        </select>
-    </div>
-
-    {/* SECTION 7: Amenities */}
-    <div>
-        <label className="text-sm font-medium text-gray-700 mb-2 block">Amenities</label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {SubleaseAmenityArray.map((amenity) => (
-            <label key={amenity} className="flex items-center space-x-2">
+          <label className="label">Price (USD)</label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+              $
+            </span>
             <input
+              type="number"
+              name="leasePrice"
+              value={form.leasePrice}
+              onChange={handleChange}
+              placeholder="300+"
+              className={`${inputClass} pl-7`}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Description */}
+      <div>
+        <label className="label">Description</label>
+        <textarea
+          name="leaseDescription"
+          value={form.leaseDescription}
+          onChange={handleChange}
+          rows={4}
+          className={inputClass}
+        />
+      </div>
+
+      {/* Dates */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col">
+          <label className="label">Start Date</label>
+          <input
+            type="date"
+            name="leaseStartDate"
+            value={form.leaseStartDate}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="label">End Date</label>
+          <input
+            type="date"
+            name="leaseEndDate"
+            value={form.leaseEndDate}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+      </div>
+
+      {/* Room Details */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col">
+          <label className="label">Room Type</label>
+          <input
+            name="roomType"
+            value={form.roomType}
+            onChange={handleChange}
+            placeholder="e.g. Single, Double"
+            className={inputClass}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="label">Image URL</label>
+          <input
+            name="leaseImage"
+            value={form.leaseImage}
+            onChange={handleChange}
+            className={inputClass}
+          />
+        </div>
+      </div>
+
+      {/* Room Size */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {[
+          ["roomWidth", "Width (ft)"],
+          ["roomDepth", "Depth (ft)"],
+          ["latitude", "Latitude"],
+          ["longitude", "Longitude"],
+        ].map(([name, label]) => (
+          <div className="flex flex-col" key={name}>
+            <label className="label">{label}</label>
+            <input
+              type="number"
+              name={name}
+              value={getFormValue(name as keyof typeof form)}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* School */}
+      <div>
+        <label className="label">School</label>
+        <select
+          name="leaseSchool"
+          value={form.leaseSchool}
+          onChange={handleChange}
+          className={inputClass}
+        >
+          {SchoolsArray.map((school) => (
+            <option key={school} value={school}>
+              {school}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Amenities */}
+      <div>
+        <label className="label mb-2">Amenities</label>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {SubleaseAmenityArray.map((amenity) => (
+            <label
+              key={amenity}
+              className="flex items-center space-x-2 text-sm"
+            >
+              <input
                 type="checkbox"
                 checked={form.amenities.includes(amenity)}
                 onChange={() => handleAmenityChange(amenity)}
-            />
-            <span className="text-sm">{amenity.replace('_', ' ')}</span>
+              />
+              <span>{amenity.replace("_", " ")}</span>
             </label>
-        ))}
+          ))}
         </div>
-    </div>
+      </div>
 
-    <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+      <button
+        type="submit"
+        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+      >
         Submit
-    </button>
+      </button>
     </form>
-
-
   );
 };
 
