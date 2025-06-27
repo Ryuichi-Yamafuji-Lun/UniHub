@@ -12,6 +12,7 @@ const SubleaseDetailPage = () => {
     const fetchData = async () => {
       try {
         const res = await api.get(`/api/v1/public/subleases/${id}`);
+        console.log("Fetched sublease:", res.data);
         setSublease(res.data);
       } catch (err) {
         console.error("Failed to fetch sublease:", err);

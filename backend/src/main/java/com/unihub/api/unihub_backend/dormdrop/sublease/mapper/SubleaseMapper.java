@@ -24,6 +24,8 @@ public class SubleaseMapper {
         dto.setLeaseAddress(sublease.getLeaseAddress());
         dto.setLongitude(sublease.getLongitude());
         dto.setLatitude(sublease.getLatitude());
+        dto.setRoomWidth(sublease.getRoomWidth());
+        dto.setRoomDepth(sublease.getRoomDepth());
         dto.setAmenities(sublease.getAmenities());
         dto.setSchool(sublease.getLeaseSchool());
 
