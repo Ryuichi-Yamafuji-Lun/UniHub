@@ -2,10 +2,10 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "@/apps/dormdrop/pages/Landing";
 import MainLayout from "@/apps/dormdrop/layout/MainLayout";
-import SubleaseDetailPage from "@/apps/dormdrop/pages/subleasepage/SubleaseDetailPage";
-import SubleaseListPage from "@/apps/dormdrop/pages/subleasepage/SubleaseListingPage";
-import UpdateSubleasePage from "@/apps/dormdrop/pages/subleasepage/UpdateSubleasePage";
-import CreateSubleasePage from "@/apps/dormdrop/pages/subleasepage/CreateSubleasePage";
+import SubleaseDetailPage from "@/apps/dormdrop/pages/subleasepage/public/SubleaseDetailPage";
+import SubleaseListPage from "@/apps/dormdrop/pages/subleasepage/public/SubleaseListingPage";
+import UpdateSubleasePage from "@/apps/dormdrop/pages/subleasepage/private/UpdateSubleasePage";
+import CreateSubleasePage from "@/apps/dormdrop/pages/subleasepage/private/CreateSubleasePage";
 
 const DormDropAppRoutes = () => {
   return (
