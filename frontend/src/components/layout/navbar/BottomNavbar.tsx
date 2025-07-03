@@ -1,3 +1,4 @@
+// BottomNavBar.tsx
 import { Link, useLocation } from "react-router-dom";
 
 interface BottomNavBarProps {
@@ -14,7 +15,7 @@ const BottomNavBar = ({ isVisible }: BottomNavBarProps) => {
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
       }`}
     >
-      <nav className="flex justify-center space-x-6 py-2 text-sm font-medium text-gray-700">
+      <nav className="w-full flex justify-center space-x-6 py-2 text-sm font-medium text-gray-700 px-6 md:px-10">
         <Link
           to="/dormdrop"
           className={`hover:text-[#084479] transition ${

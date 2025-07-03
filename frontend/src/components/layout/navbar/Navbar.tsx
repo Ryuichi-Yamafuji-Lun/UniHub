@@ -1,4 +1,4 @@
-// NavBar.tsx - Combines Top and Bottom Nav with scroll logic
+// NavBar.tsx
 import { useEffect, useState } from "react";
 import TopNavBar from "@/components/layout/navbar/TopNavbar";
 import BottomNavBar from "@/components/layout/navbar/BottomNavbar";
@@ -13,15 +13,12 @@ const NavBar = () => {
       const currentScroll = window.scrollY;
 
       if (currentScroll > lastScrollY && currentScroll > 100) {
-        // scrolling down
         setShowTop(false);
         setShowBottom(false);
       } else if (currentScroll < lastScrollY && currentScroll > 100) {
-        // scrolling up
         setShowTop(true);
         setShowBottom(false);
       } else if (currentScroll <= 100) {
-        // top of page
         setShowTop(true);
         setShowBottom(true);
       }
@@ -34,10 +31,10 @@ const NavBar = () => {
   }, [lastScrollY]);
 
   return (
-    <div className="sticky top-0 z-50 w-full">
+    <header className="fixed top-0 left-0 z-50 w-full">
       <TopNavBar isVisible={showTop} />
       <BottomNavBar isVisible={showBottom} />
-    </div>
+    </header>
   );
 };
 

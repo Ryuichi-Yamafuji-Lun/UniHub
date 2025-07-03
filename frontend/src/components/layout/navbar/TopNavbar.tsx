@@ -1,3 +1,4 @@
+// TopNavBar.tsx
 import { Link, useLocation } from "react-router-dom";
 import UniHubLogo from "@/assets/UniHubLogo.png";
 
@@ -15,13 +16,11 @@ const TopNavBar = ({ isVisible }: TopNavBarProps) => {
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
       }`}
     >
-      <nav className="w-full h-16 px-6 md:px-10 flex items-center justify-between">
-        {/* Logo */}
+      <nav className="max-w-screen-2xl mx-auto w-full h-16 px-6 flex items-center justify-between">
         <Link to="/" className="flex items-center space-x-3">
           <img src={UniHubLogo} alt="UniHub Logo" className="h-12 w-auto" />
         </Link>
 
-        {/* Auth Buttons */}
         <div className="hidden md:flex space-x-3 text-sm font-medium">
           <Link
             to="/login"
