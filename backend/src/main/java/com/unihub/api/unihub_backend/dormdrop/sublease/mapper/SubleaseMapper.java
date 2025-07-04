@@ -35,7 +35,6 @@ public class SubleaseMapper {
             dto.setOwnerId(owner.getId());
             dto.setOwnerUsername(owner.getUsername());
             dto.setOwnerProfilePicture(owner.getProfilePicture());
-            dto.setOwnerEmail(owner.getEmail());
             dto.setSumOfRatings(owner.getSumOfRatings());
             dto.setNumberOfRatings(owner.getNumberOfRatings()); 
         }

@@ -30,7 +30,6 @@ public class SubleaseResponseDTO {
     private String ownerProfilePicture;
     private Float sumOfRatings;
     private Integer numberOfRatings;
-    private String ownerEmail;
 
     public Long getId() {
         return id;
@@ -157,11 +156,5 @@ public class SubleaseResponseDTO {
     }
     public void setNumberOfRatings(Integer numberOfRatings) {
         this.numberOfRatings = numberOfRatings;
-    }
-    public String getOwnerEmail() {
-        return ownerEmail;
-    }
-    public void setOwnerEmail(String ownerEmail) {
-        this.ownerEmail = ownerEmail;
     }
 }
