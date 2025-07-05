@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +19,6 @@ import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 
 @RestController
 @RequestMapping(path = "api/v1/public/subleases")
-@PreAuthorize("hasAnyRole('ADMIN','USER')")
 public class PublicSubleaseController {
 
     private final SubleaseService subleaseService;
