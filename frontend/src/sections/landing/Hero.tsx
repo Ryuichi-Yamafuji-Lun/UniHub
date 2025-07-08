@@ -1,37 +1,36 @@
 import { Link } from "react-router-dom";
-import HeroBg from "@/apps/dormdrop/assets/dormdrop-hero.png";
+import HeroBg from "@/apps/dormdrop/assets/dormdrop-hero.png"; // Make sure it's more "banner-style"
 
 export default function UniHubHero() {
   return (
-    <section className="relative w-full overflow-hidden py-10">
-      <div className="relative min-h-[90vh] w-full rounded-[40px] overflow-hidden flex flex-col justify-center md:flex-row items-center">
-        {/* Background image */}
-        <img
-          src={HeroBg}
-          alt="Students using UniHub"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-
-        {/* Optional overlay if needed */}
-        <div className="absolute inset-0 bg-black/30 z-0" />
-
-        {/* Content block */}
-        <div className="relative z-10 max-w-3xl px-6 py-12 md:py-0 text-white text-center md:text-left space-y-6 md:space-y-8">
-          <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight drop-shadow-lg">
-            Created by Students. <br />
-            For Students.
+    <section className="relative w-full bg-[#fdf5f0] overflow-hidden">
+      <div className="w-full max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between px-6 py-12">
+        
+        {/* Text Content */}
+        <div className="max-w-xl space-y-6 md:space-y-8 text-center md:text-left">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#111] leading-tight">
+            Created by Students. <br /> For Students.
           </h1>
-          <p className="text-lg sm:text-xl font-medium drop-shadow-md">
+          <p className="text-lg sm:text-xl text-gray-700">
             UniHub helps students sublease, buy, and sell safely across campus communities — starting with DormDrop.
           </p>
           <div>
             <Link
               to="/dormdrop"
-              className="inline-block bg-white text-[#084479] px-6 py-3 rounded-md font-semibold hover:bg-[#084479] hover:text-white transition"
+              className="inline-block bg-[#084479] text-white px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-[#084479] border border-[#084479] transition"
             >
               Explore DormDrop
             </Link>
           </div>
+        </div>
+
+        {/* Image Content */}
+        <div className="w-full md:w-1/2 mb-8 md:mb-0">
+          <img
+            src={HeroBg}
+            alt="Students using UniHub"
+            className="w-full h-auto object-contain"
+          />
         </div>
       </div>
     </section>
