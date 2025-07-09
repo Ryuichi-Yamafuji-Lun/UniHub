@@ -7,7 +7,10 @@ const Landing = () => {
       {/* Hero Section */}
       <Hero />
       {/* Listings */}
-      <NewestSubleaseCarousel />
+
+      <div className="-mt-30 relative z-20">
+        <NewestSubleaseCarousel />
+      </div>
     </>
   );
 };

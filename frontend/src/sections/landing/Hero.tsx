@@ -1,38 +1,34 @@
-import { Link } from "react-router-dom";
-import HeroBg from "@/apps/dormdrop/assets/dormdrop-hero.png"; // Make sure it's more "banner-style"
+import HeroBg from "@/apps/dormdrop/assets/dormdrop-hero.png";
 
-export default function UniHubHero() {
+export default function HeroSection() {
   return (
-    <section className="relative w-full bg-[#fdf5f0] overflow-hidden">
-      <div className="w-full max-w-7xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between px-6 py-12">
-        
-        {/* Text Content */}
-        <div className="max-w-xl space-y-6 md:space-y-8 text-center md:text-left">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-[#111] leading-tight">
-            Created by Students. <br /> For Students.
-          </h1>
-          <p className="text-lg sm:text-xl text-gray-700">
-            UniHub helps students sublease, buy, and sell safely across campus communities — starting with DormDrop.
-          </p>
-          <div>
-            <Link
-              to="/dormdrop"
-              className="inline-block bg-[#084479] text-white px-6 py-3 rounded-md font-semibold hover:bg-white hover:text-[#084479] border border-[#084479] transition"
-            >
-              Explore DormDrop
-            </Link>
+    <section className="relative bg-[#0B4B86] text-white h-screen overflow-hidden">
+      {/* Center content horizontally, align top */}
+      <div className="pt-24 flex justify-center relative z-10">
+        <div className="flex flex-col md:flex-row items-center gap-x-6 max-w-5xl px-6">
+          {/* Text - left aligned */}
+          <div className="text-left">
+            <h1 className="text-3xl md:text-4xl font-semibold mb-2">
+              Created For Students
+            </h1>
+            <h2 className="text-3xl md:text-4xl font-semibold">
+              By Students
+            </h2>
+          </div>
+
+          {/* Image */}
+          <div className="mt-6 md:mt-0">
+            <img
+              src={HeroBg}
+              alt="Hero graphic"
+              className="w-[220px] md:w-[300px] object-contain"
+            />
           </div>
         </div>
-
-        {/* Image Content */}
-        <div className="w-full md:w-1/2 mb-8 md:mb-0">
-          <img
-            src={HeroBg}
-            alt="Students using UniHub"
-            className="w-full h-auto object-contain"
-          />
-        </div>
       </div>
+
+      {/* Bottom fade */}
+      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-white z-0" />
     </section>
   );
 }
