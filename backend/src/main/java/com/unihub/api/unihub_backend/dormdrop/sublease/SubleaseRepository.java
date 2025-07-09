@@ -2,14 +2,15 @@ package com.unihub.api.unihub_backend.dormdrop.sublease;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.account.Account;
-
-
+import com.unihub.api.unihub_backend.common.enums.Schools;
 
 public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
     @Query("""
@@ -44,4 +45,10 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
     List<Sublease> findAllByOrderByDatePostedDesc();
 
     List<Sublease> findByAccountOrderByDatePostedDesc(Account account);
+
+    Page<Sublease> findAllByOrderByDatePostedDesc(Pageable pageable);
+    
+    default List<Sublease> findTop7ByOrderByDatePostedDesc() {
+        return findAllByOrderByDatePostedDesc(PageRequest.of(0, 7)).getContent();
+    }
 }

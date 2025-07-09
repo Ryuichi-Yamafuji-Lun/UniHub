@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,6 +138,11 @@ public class SubleaseService {
         return results.stream()
             .map(subleaseMapper::toResponse)
             .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Sublease> getNewestSubleases(int limit) {
+        return subleaseRepository.findAllByOrderByDatePostedDesc(PageRequest.of(0, limit)).getContent();
     }
 
     /*

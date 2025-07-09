@@ -64,4 +64,21 @@ public class PublicSubleaseController {
             ? ResponseEntity.noContent().build()
             : ResponseEntity.ok(subleases);
     }
+
+    @GetMapping("/newest")
+    public ResponseEntity<List<SubleaseResponseDTO>> getNewestSubleases(
+        @RequestParam(defaultValue = "7") int limit
+    ) {
+        if (limit < 1) {
+            limit = 7; 
+        }
+        List<Sublease> newest = subleaseService.getNewestSubleases(limit);
+        List<SubleaseResponseDTO> dtoList = newest.stream()
+            .map(subleaseMapper::toResponse)
+            .toList();
+
+        return dtoList.isEmpty()
+            ? ResponseEntity.noContent().build()
+            : ResponseEntity.ok(dtoList);
+    }
 }
