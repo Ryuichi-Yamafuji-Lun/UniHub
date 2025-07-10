@@ -2,11 +2,11 @@ import HeroBg from "@/apps/dormdrop/assets/dormdrop-hero.png";
 
 export default function HeroSection() {
   return (
-    <section className="relative bg-[#0B4B86] text-white h-screen overflow-hidden">
-      {/* Center content horizontally, align top */}
+    <section className="relative bg-[#0B4B86] text-white h-[600px] overflow-hidden pb-[200px]">
+      {/* Top Centered Content */}
       <div className="pt-24 flex justify-center relative z-10">
         <div className="flex flex-col md:flex-row items-center gap-x-6 max-w-5xl px-6">
-          {/* Text - left aligned */}
+          {/* Text */}
           <div className="text-left">
             <h1 className="text-3xl md:text-4xl font-semibold mb-2">
               Created For Students
@@ -27,8 +27,8 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-b from-transparent to-white z-0" />
+      {/* Bottom fade (fades into white) */}
+      <div className="absolute bottom-0 left-0 w-full h-[200px] bg-gradient-to-b from-transparent to-white z-0" />
     </section>
   );
 }

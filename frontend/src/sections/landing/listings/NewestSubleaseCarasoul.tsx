@@ -21,7 +21,7 @@ const NewestSubleaseCarousel = () => {
   }, []);
 
   return (
-    <section className="px-4 py-10 max-w-7xl mx-auto">
+    <section className="px-4 max-w-7xl mx-auto">
         <Carousel
             title="Newest Subleases"
             listings={subleases}
@@ -30,6 +30,7 @@ const NewestSubleaseCarousel = () => {
             )}
         />
     </section>
+
   );
 };
 
