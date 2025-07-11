@@ -28,7 +28,7 @@ export default function HeroSection() {
       </div>
 
       {/* Bottom fade (fades into white) */}
-      <div className="absolute bottom-0 left-0 w-full h-[200px] bg-gradient-to-b from-transparent to-white z-0" />
+      <div className="absolute bottom-0 left-0 w-full h-[200px] bg-gradient-to-b from-transparent to-[#E2E6E6] z-0" />
     </section>
   );
 }

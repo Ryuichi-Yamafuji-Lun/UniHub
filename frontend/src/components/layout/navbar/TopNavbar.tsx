@@ -1,4 +1,3 @@
-// TopNavBar.tsx
 import { Link, useLocation } from "react-router-dom";
 import UniHubLogo from "@/assets/UniHubLogo.png";
 
@@ -12,8 +11,10 @@ const TopNavBar = ({ isVisible }: TopNavBarProps) => {
 
   return (
     <div
-      className={`w-full bg-white shadow-sm transition-all duration-300 ${
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
+      className={`w-full bg-[#0F141A] shadow-sm transition-all duration-300 ${
+        isVisible
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-full pointer-events-none"
       }`}
     >
       <nav className="max-w-screen-2xl mx-auto w-full h-16 px-6 flex items-center justify-between">
@@ -25,14 +26,16 @@ const TopNavBar = ({ isVisible }: TopNavBarProps) => {
           <Link
             to="/login"
             className={`px-4 py-2 rounded-md transition ${
-              isActive("/login") ? "bg-gray-100" : "hover:bg-gray-100"
+              isActive("/login")
+                ? "bg-white text-[#094B88] font-semibold"
+                : "hover:bg-[#06396A] text-white"
             }`}
           >
             Login
           </Link>
           <Link
             to="/signup"
-            className="bg-[#084479] text-white px-4 py-2 rounded-md hover:bg-[#06345d] transition"
+            className="bg-white text-[#094B88] px-4 py-2 rounded-md hover:bg-gray-100 transition"
           >
             Sign Up
           </Link>
