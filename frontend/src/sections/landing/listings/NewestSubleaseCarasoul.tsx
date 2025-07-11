@@ -28,6 +28,7 @@ const NewestSubleaseCarousel = () => {
             renderCard={(item) => (
             <SubleaseCard key={item.id} sublease={item} />
             )}
+            link="http://localhost:5173/dormdrop"
         />
     </section>
 
