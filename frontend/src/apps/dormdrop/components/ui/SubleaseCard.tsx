@@ -20,18 +20,18 @@ export default function SubleaseCard({ sublease }: { sublease: SubleaseResponse 
       <img
         src={leaseImage}
         alt={leaseName}
-        className="w-full h-48 object-cover"
+        className="w-full h-36 object-cover" // ↓ from h-48
       />
 
-      <div className="p-4 space-y-1">
-        <h2 className="text-lg font-semibold text-gray-900 truncate">
+      <div className="p-3 space-y-0.5"> {/* ↓ from p-4 and space-y-1 */}
+        <h2 className="text-base font-semibold text-gray-900 truncate"> {/* ↓ from text-lg */}
           {leaseName}
         </h2>
         <p className="text-sm text-gray-600 truncate">{leaseAddress}</p>
-        <p className="text-sm text-gray-500">
+        <p className="text-xs text-gray-500">
           {new Date(leaseStartDate).toLocaleDateString()} – {new Date(leaseEndDate).toLocaleDateString()}
         </p>
-        <p className="text-[#084479] font-bold text-md">${leasePrice}/month</p>
+        <p className="text-[#084479] font-bold text-sm">${leasePrice}/month</p>
       </div>
     </Link>
   );
