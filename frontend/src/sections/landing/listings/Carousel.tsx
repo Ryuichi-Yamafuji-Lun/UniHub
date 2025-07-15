@@ -26,31 +26,34 @@ export default function Carousel<T>({
   };
 
   return (
-    <section className="relative w-full px-6 py-8">
+    <section className="relative w-full px-6 py-10">
       {/* Header Row */}
       <div className="flex justify-between items-center mb-4">
+        {/* Left: Title + Link */}
         {link ? (
-          <Link to={link} className="flex items-center gap-1 group">
-            <h2 className="text-2xl font-bold">
-              {title}
-            </h2>
-            <ChevronRight className="w-5 h-5" strokeWidth={3} />
+          <Link
+            to={link}
+            className="flex items-center gap-1 text-2xl font-bold text-[#1E1E1E] hover:underline group transition"
+          >
+            {title}
+            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         ) : (
-          <h2 className="text-2xl font-semibold">{title}</h2>
+          <h2 className="text-2xl font-semibold text-[#1E1E1E]">{title}</h2>
         )}
 
+        {/* Right: Arrow Buttons */}
         <div className="flex gap-2">
           <button
             onClick={() => scroll("left")}
-            className="bg-white shadow p-2 rounded-full hover:bg-gray-100 transition"
+            className="bg-white border border-gray-200 shadow p-2 rounded-full hover:bg-gray-100 transition"
             aria-label="Scroll left"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
           <button
             onClick={() => scroll("right")}
-            className="bg-white shadow p-2 rounded-full hover:bg-gray-100 transition"
+            className="bg-white border border-gray-200 shadow p-2 rounded-full hover:bg-gray-100 transition"
             aria-label="Scroll right"
           >
             <ChevronRight className="w-5 h-5" />
@@ -58,7 +61,7 @@ export default function Carousel<T>({
         </div>
       </div>
 
-      {/* Scrollable content */}
+      {/* Scrollable Content */}
       <div
         ref={scrollRef}
         className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 scrollbar-hide"
