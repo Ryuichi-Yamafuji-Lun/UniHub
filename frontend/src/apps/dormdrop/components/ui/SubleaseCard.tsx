@@ -20,11 +20,11 @@ export default function SubleaseCard({ sublease }: { sublease: SubleaseResponse 
       <img
         src={leaseImage}
         alt={leaseName}
-        className="w-full h-36 object-cover" // ↓ from h-48
+        className="w-full h-36 object-cover rounded-t-xl"
       />
 
-      <div className="p-3 space-y-0.5"> {/* ↓ from p-4 and space-y-1 */}
-        <h2 className="text-base font-semibold text-gray-900 truncate"> {/* ↓ from text-lg */}
+      <div className="p-3 space-y-0.5 text-left">
+        <h2 className="text-base font-semibold text-gray-900 truncate">
           {leaseName}
         </h2>
         <p className="text-sm text-gray-600 truncate">{leaseAddress}</p>
