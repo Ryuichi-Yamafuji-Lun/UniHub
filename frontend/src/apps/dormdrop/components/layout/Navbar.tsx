@@ -1,86 +1,63 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react"; // Add this icon lib or use Heroicons
-import UniHubLogo from "@/assets/UniHubLogo.png";
+import { Link } from "react-router-dom";
+import { FiMenu, FiUser } from "react-icons/fi";
+import { FaSearch } from "react-icons/fa";
 
-interface NavBarProps {
-  isScrolled: boolean;
-}
-
-const NavBar = ({ isScrolled }: NavBarProps) => {
-  const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
-  const [isOpen, setIsOpen] = useState(false);
+const NavBar = () => {
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white shadow-md" : "bg-transparent"
-      }`}
-    >
-      <nav className="w-full h-20 px-6 md:px-10 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center space-x-3">
-          <img src={UniHubLogo} alt="UniHub Logo" className="h-16 w-auto" />
-        </Link>
-
-        {/* Desktop Nav */}
-        <div className="hidden md:flex flex-1 justify-center space-x-2 text-sm font-medium text-gray-800">
-          <Link
-            to="/"
-            className={`px-3 py-1.5 rounded-md transition ${
-              isActive("/") ? "bg-gray-100" : "hover:bg-gray-100"
-            }`}
-          >
-            Unihub
-          </Link>
-          <span className="px-3 py-1.5 text-gray-400 cursor-not-allowed">
-            CardinalCart (soon)
-          </span>
-        </div>
-
-        {/* Auth Buttons */}
-        <div className="hidden md:flex space-x-3 text-sm font-medium">
-          <Link
-            to="/login?redirect=/dormdrop"
-            className={`px-4 py-2 rounded-md transition ${
-              isActive("/login") ? "bg-gray-100" : "hover:bg-gray-100"
-            }`}
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup?redirect=/dormdrop"
-            className="bg-[#084479] text-white px-4 py-2 rounded-md hover:bg-[#06345d] transition"
-          >
-            Sign Up
-          </Link>
-        </div>
-
-        {/* Hamburger Icon */}
-        <div className="md:hidden">
-          <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+    <header className="w-full z-50">
+      {/* Top Black Nav */}
+      <div className="bg-black text-white px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
+        {/* Left: Hamburger */}
+        <div className="flex items-center space-x-4">
+          <button className="text-white text-2xl block">
+            <FiMenu />
           </button>
         </div>
-      </nav>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white shadow-md px-6 py-4 space-y-3">
-          <Link to="/" className="block text-sm font-medium text-gray-800">
-            Unihub
-          </Link>
-          <span className="block text-sm text-gray-400">CardinalCart (soon)</span>
-          <hr />
-          <Link to="/login?redirect=/dormdrop" className="block text-sm text-gray-800">
+        {/* Center: Search Bar */}
+        <div className="flex-1 max-w-xl w-full">
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
+            <input
+              type="text"
+              placeholder="Subleases"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-[#111] text-white pl-10 pr-4 py-2 rounded-md border border-transparent focus:outline-none focus:border-blue-500 placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+
+        {/* Right: Auth & Cart */}
+        <div className="flex items-center space-x-6 text-sm min-w-fit">
+          <Link to="/login" className="hover:underline whitespace-nowrap">
             Login
           </Link>
-          <Link to="/signup?redirect=/dormdrop" className="block text-sm font-semibold text-[#084479]">
-            Sign Up
+          <Link to="/account" className="hover:underline flex items-center space-x-1">
+            <FiUser />
+            <span>Account</span>
           </Link>
         </div>
-      )}
+      </div>
+
+      {/* Bottom Categories */}
+      <div className="bg-[#fef6e4] px-6 py-2 flex space-x-6 text-sm font-medium text-black overflow-x-auto">
+        <Link to="/dormdrop" className="hover:underline">
+          Sublease
+        </Link>
+        <Link to="/" className="hover:underline">
+          Furniture (soon)
+        </Link>
+        <Link to="/" className="hover:underline">
+          Books (soon)
+        </Link>
+        <Link to="/" className="hover:underline">
+          Tutoring (soon)
+        </Link>
+      </div>
     </header>
   );
 };
