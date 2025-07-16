@@ -7,6 +7,8 @@ import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -30,12 +32,18 @@ public class SubleaseRegistrationRequest {
     private Set<SubleaseAmenity> amenities;
 
     @NotNull(message = "Lease price is required")
-    @DecimalMin(value = "300.0", inclusive = false, message = "Lease price must be greater than 0")
+    @DecimalMin(value = "300.0", inclusive = false, message = "Lease price must be greater than 300")
     private Double leasePrice;
 
-    @NotBlank(message = "Room type is required")
-    @Size(max = 50, message = "Room type must be under 50 characters")
-    private String roomType;
+    @NotNull(message = "Number of rooms is required")
+    @Min(value = 0, message = "Number of rooms must be 0 or greater")
+    @Max(value = 10, message = "Number of rooms cannot exceed 10")
+    private Byte numRoom;
+
+    @NotNull(message = "Number of bathrooms is required")
+    @Min(value = 0, message = "Number of bathrooms must be 0 or greater")
+    @Max(value = 10, message = "Number of bathrooms cannot exceed 10")
+    private Byte numBath;
 
     @NotNull(message = "Room width is required")
     @DecimalMin(value = "1.0", inclusive = true, message = "Room width must be at least 1 ft")
@@ -61,6 +69,8 @@ public class SubleaseRegistrationRequest {
 
     @NotNull(message = "Longitude is required")
     private Double longitude;
+
+    // Getters and Setters
 
     public String getLeaseName() {
         return leaseName;
@@ -110,12 +120,20 @@ public class SubleaseRegistrationRequest {
         this.leasePrice = leasePrice;
     }
 
-    public String getRoomType() {
-        return roomType;
+    public Byte getNumRoom() {
+        return numRoom;
     }
 
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
+    public void setNumRoom(Byte numRoom) {
+        this.numRoom = numRoom;
+    }
+
+    public Byte getNumBath() {
+        return numBath;
+    }
+
+    public void setNumBath(Byte numBath) {
+        this.numBath = numBath;
     }
 
     public Double getRoomWidth() {
@@ -172,6 +190,5 @@ public class SubleaseRegistrationRequest {
 
     public void setLongitude(Double longitude) {
         this.longitude = longitude;
-    }   
-
+    }
 }

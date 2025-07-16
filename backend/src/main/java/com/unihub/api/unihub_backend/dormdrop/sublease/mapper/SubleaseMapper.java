@@ -19,7 +19,8 @@ public class SubleaseMapper {
         dto.setLeaseStartDate(sublease.getLeaseStartDate());
         dto.setLeaseEndDate(sublease.getLeaseEndDate());
         dto.setLeaseImage(sublease.getLeaseImage());
-        dto.setRoomType(sublease.getRoomType());
+        dto.setNumRoom(sublease.getNumRoom());
+        dto.setNumBath(sublease.getNumBath());
         dto.setLeaseDescription(sublease.getLeaseDescription());
         dto.setLeaseAddress(sublease.getLeaseAddress());
         dto.setLongitude(sublease.getLongitude());
@@ -50,7 +51,8 @@ public class SubleaseMapper {
         sublease.setLeaseSchool(request.getLeaseSchool());
         sublease.setAmenities(request.getAmenities());
         sublease.setLeasePrice(request.getLeasePrice());
-        sublease.setRoomType(request.getRoomType());
+        sublease.setNumRoom(request.getNumRoom());
+        sublease.setNumBath(request.getNumBath());
         sublease.setRoomWidth(request.getRoomWidth());
         sublease.setRoomDepth(request.getRoomDepth());
         sublease.setLeaseImage(request.getLeaseImage());

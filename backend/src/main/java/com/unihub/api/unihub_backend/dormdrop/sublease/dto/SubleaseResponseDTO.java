@@ -14,7 +14,8 @@ public class SubleaseResponseDTO {
     private LocalDate leaseStartDate;
     private LocalDate leaseEndDate;
     private String leaseImage;
-    private String roomType;
+    private Byte numRoom;
+    private Byte numBath;
     private Double roomWidth;
     private Double roomDepth;
     private String leaseDescription;
@@ -73,11 +74,17 @@ public class SubleaseResponseDTO {
     public void setLeaseImage(String leaseImage) {
         this.leaseImage = leaseImage;
     }
-    public String getRoomType() {
-        return roomType;
+    public Byte getNumRoom() {
+        return numRoom;
     }
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
+    public void setNumRoom(Byte numRoom) {
+        this.numRoom = numRoom;
+    }
+    public Byte getNumBath() {
+        return numBath;
+    }
+    public void setNumBath(Byte numBath) {
+        this.numBath = numBath;
     }
     public Double getRoomWidth() {
         return roomWidth;

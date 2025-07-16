@@ -80,7 +80,8 @@ public class SubleaseService {
         if (updatedSublease.getLeaseEndDate() != null) sublease.setLeaseEndDate(updatedSublease.getLeaseEndDate());
         if (updatedSublease.getAmenities() != null) sublease.setAmenities(updatedSublease.getAmenities());
         if (updatedSublease.getLeasePrice() != null) sublease.setLeasePrice(updatedSublease.getLeasePrice());
-        if (updatedSublease.getRoomType() != null) sublease.setRoomType(updatedSublease.getRoomType());
+        if (updatedSublease.getNumRoom() != null) sublease.setNumRoom(updatedSublease.getNumRoom());
+        if (updatedSublease.getNumBath() != null) sublease.setNumBath(updatedSublease.getNumBath());
         if (updatedSublease.getLeaseImage() != null) sublease.setLeaseImage(updatedSublease.getLeaseImage());
         if (updatedSublease.getLeaseDescription() != null) sublease.setLeaseDescription(updatedSublease.getLeaseDescription());
         if (updatedSublease.getLeaseAddress() != null) sublease.setLeaseAddress(updatedSublease.getLeaseAddress());
