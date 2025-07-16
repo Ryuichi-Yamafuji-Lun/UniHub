@@ -60,9 +60,11 @@ const SubleaseDetailPage = () => {
       </div>
 
       <div className="mt-10 flex flex-col lg:flex-row gap-10">
-        <div className="lg:w-2/3 space-y-8">
+        <div className="lg:w-2/3 space-y-8 text-left">
           <div>
-            <h2 className="text-xl font-semibold">Description</h2>
+            <p className="text-2xl font-bold text-gray-900 mt-2">Sublease at {sublease.leaseAddress}</p>
+          </div>
+          <div>
             <p className="text-gray-700 mt-2">{sublease.leaseDescription}</p>
           </div>
 
@@ -78,8 +80,8 @@ const SubleaseDetailPage = () => {
             </ul>
           </div>
 
-          <div>
-            <h2 className="text-xl font-semibold">Amenities</h2>
+          <div className="w-full border-t border-gray-300 my-6">
+            <h2 className="text-xl font-semibold">What this place offers</h2>
             <ul className="flex flex-wrap gap-2 mt-2 text-sm text-gray-700">
               {Array.from(sublease.amenities).map((a) => (
                 <li
