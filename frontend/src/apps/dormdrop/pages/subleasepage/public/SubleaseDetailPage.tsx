@@ -63,6 +63,7 @@ const SubleaseDetailPage = () => {
         <div className="lg:w-2/3 space-y-8 text-left">
           <div>
             <p className="text-2xl font-bold text-gray-900 mt-2">Sublease at {sublease.leaseAddress}</p>
+            <p>{sublease.roomType}</p>
           </div>
           <div>
             <p className="text-gray-700 mt-2">{sublease.leaseDescription}</p>
