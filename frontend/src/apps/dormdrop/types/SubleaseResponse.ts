@@ -24,7 +24,8 @@ export interface SubleaseResponse {
   leaseStartDate: string;
   leaseEndDate: string;
   leaseImage: string;
-  roomType: string;
+  numRoom: number;
+  numBath: number;
   roomWidth: number;
   roomDepth: number;
   leaseDescription: string;

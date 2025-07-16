@@ -63,12 +63,13 @@ const SubleaseDetailPage = () => {
         <div className="lg:w-2/3 space-y-8 text-left">
           <div>
             <p className="text-2xl font-bold text-gray-900 mt-2">Sublease at {sublease.leaseAddress}</p>
-            <p>{sublease.roomType}</p>
+            <p>{sublease.numRoom} bedrooms · {sublease.numBath} bath</p>
           </div>
+          <div className="w-full border-t border-gray-300 my-6"/>
           <div>
             <p className="text-gray-700 mt-2">{sublease.leaseDescription}</p>
           </div>
-
+          <div className="w-full border-t border-gray-300 my-6"/>
           <div>
             <h2 className="text-xl font-semibold">Lease Info</h2>
             <ul className="text-gray-700 mt-2 space-y-1 text-sm">
@@ -76,12 +77,12 @@ const SubleaseDetailPage = () => {
                 Dates: {new Date(sublease.leaseStartDate).toLocaleDateString()} → {new Date(sublease.leaseEndDate).toLocaleDateString()}
               </li>
               <li>Price: ${sublease.leasePrice}/month</li>
-              <li>Room Type: {sublease.roomType}</li>
+              <li>Room Type: {sublease.numRoom} bedrooms · {sublease.numBath} bath</li>
               <li>Dimensions: {sublease.roomWidth}ft x {sublease.roomDepth}ft</li>
             </ul>
           </div>
-
-          <div className="w-full border-t border-gray-300 my-6">
+          <div className="w-full border-t border-gray-300 my-6"/>
+          <div>
             <h2 className="text-xl font-semibold">What this place offers</h2>
             <ul className="flex flex-wrap gap-2 mt-2 text-sm text-gray-700">
               {Array.from(sublease.amenities).map((a) => (
