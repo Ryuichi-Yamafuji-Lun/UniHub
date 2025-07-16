@@ -16,7 +16,8 @@ const UpdateSubleasePage = () => {
     leaseStartDate: "",
     leaseEndDate: "",
     leaseImage: "",
-    roomType: "",
+    numRoom: 0,
+    numBath: 0,
     roomWidth: 0,
     roomDepth: 0,
     leaseSchool: "USC",
@@ -81,7 +82,8 @@ const UpdateSubleasePage = () => {
       <input name="leaseStartDate" type="date" value={form.leaseStartDate} onChange={handleChange} className="input" />
       <input name="leaseEndDate" type="date" value={form.leaseEndDate} onChange={handleChange} className="input" />
       <input name="leaseImage" value={form.leaseImage} onChange={handleChange} className="input" />
-      <input name="roomType" value={form.roomType} onChange={handleChange} className="input" />
+      <input name="numRoom" value={form.numRoom} onChange={handleChange} className="input" />
+      <input name="numBath" value={form.numBath} onChange={handleChange} className="input" />
       <input name="roomWidth" type="number" value={form.roomWidth} onChange={handleChange} className="input" />
       <input name="roomDepth" type="number" value={form.roomDepth} onChange={handleChange} className="input" />
 

@@ -17,7 +17,8 @@ const CreateSubleasePage = () => {
     leaseStartDate: "",
     leaseEndDate: "",
     leaseImage: "",
-    roomType: "",
+    numRoom: "",
+    numBath: "",
     roomWidth: "",
     roomDepth: "",
     leaseSchool: "USC",
@@ -160,12 +161,22 @@ const CreateSubleasePage = () => {
       {/* Room Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="flex flex-col">
-          <label className="label">Room Type</label>
+          <label className="label">Number of Room</label>
           <input
-            name="roomType"
-            value={form.roomType}
+            name="numRoom"
+            value={form.numRoom}
             onChange={handleChange}
-            placeholder="e.g. Single, Double"
+            placeholder="1"
+            className={inputClass}
+          />
+        </div>
+        <div className="flex flex-col">
+          <label className="label">Number of Bath</label>
+          <input
+            name="numBath"
+            value={form.numBath}
+            onChange={handleChange}
+            placeholder="1"
             className={inputClass}
           />
         </div>

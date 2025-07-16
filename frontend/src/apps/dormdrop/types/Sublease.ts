@@ -9,7 +9,8 @@ export interface SubleaseCreateDTO {
   leaseSchool: Schools;
   amenities: SubleaseAmenity[];
   leasePrice: number;
-  roomType: string;
+  numRoom: number;
+  numBath: number;
   roomWidth: number;
   roomDepth: number;
   leaseImage: string;
