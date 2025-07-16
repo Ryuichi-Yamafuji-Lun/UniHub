@@ -48,9 +48,10 @@ public class Sublease {
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "sublease_amenities", joinColumns = @JoinColumn(name = "sublease_id"))
     private Set<SubleaseAmenity> amenities;
-
+    
     private Double leasePrice;
-    private String roomType;
+    private Byte numRoom;
+    private Byte numBath;
     private Double roomDepth;
     private Double roomWidth;
     private String leaseImage;
@@ -63,7 +64,7 @@ public class Sublease {
 
     public Sublease(Account account, Long version, LocalDate datePosted, LocalDate leaseStartDate,
             LocalDate leaseEndDate, String leaseName, Schools leaseSchool, Set<SubleaseAmenity> amenities,
-            Double leasePrice, String roomType, Double roomDepth, Double roomWidth,String leaseImage, String leaseDescription, String leaseAddress,
+            Double leasePrice, Byte numRoom, Byte numBath, Double roomDepth, Double roomWidth,String leaseImage, String leaseDescription, String leaseAddress,
             Double longitude, Double latitude) {
         this.account = account;
         this.version = version;
@@ -74,7 +75,8 @@ public class Sublease {
         this.leaseSchool = leaseSchool;
         this.amenities = amenities;
         this.leasePrice = leasePrice;
-        this.roomType = roomType;
+        this.numRoom = numRoom;
+        this.numBath = numBath;
         this.roomDepth = roomDepth;
         this.roomWidth = roomWidth;
         this.leaseImage = leaseImage;
@@ -160,12 +162,20 @@ public class Sublease {
         this.leasePrice = leasePrice;
     }
 
-    public String getRoomType() {
-        return roomType;
+    public Byte getNumRoom() {
+        return numRoom;
     }
 
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
+    public void setNumRoom(Byte numRoom) {
+        this.numRoom = numRoom;
+    }
+
+    public Byte getNumBath() {
+        return numBath;
+    }
+
+    public void setNumBath(Byte numBath) {
+        this.numBath = numBath;
     }
 
     public Double getRoomDepth() {
@@ -235,7 +245,8 @@ public class Sublease {
                ", account='" + account.getFirstName() + '\'' +
                ", version=" + version +
                ", leasePrice=" + leasePrice +
-               ", RoomType=" + roomType +
+               ", numRoom=" + numRoom + 
+               ", numBath=" + numBath + 
                ", Width=" + roomDepth +
                ", Depth=" + roomWidth +
                ", leaseImage" + leaseImage +
