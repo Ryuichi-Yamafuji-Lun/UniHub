@@ -11,6 +11,7 @@ import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 
 import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,8 +43,12 @@ public class Sublease {
     private LocalDate leaseEndDate;
     private String leaseName;
 
+    @ElementCollection(targetClass = Schools.class)
     @Enumerated(EnumType.STRING)
-    private Schools leaseSchool;
+    @CollectionTable(name = "sublease_target_schools", joinColumns = @JoinColumn(name = "sublease_id"))
+    @Column(name = "school")
+    private Set<Schools> leaseSchool;
+
     @ElementCollection(targetClass = SubleaseAmenity.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "sublease_amenities", joinColumns = @JoinColumn(name = "sublease_id"))
@@ -63,7 +68,7 @@ public class Sublease {
     public Sublease(){}
 
     public Sublease(Account account, Long version, LocalDate datePosted, LocalDate leaseStartDate,
-            LocalDate leaseEndDate, String leaseName, Schools leaseSchool, Set<SubleaseAmenity> amenities,
+            LocalDate leaseEndDate, String leaseName, Set<Schools> leaseSchool, Set<SubleaseAmenity> amenities,
             Double leasePrice, Byte numRoom, Byte numBath, Double roomDepth, Double roomWidth,String leaseImage, String leaseDescription, String leaseAddress,
             Double longitude, Double latitude) {
         this.account = account;
@@ -138,11 +143,11 @@ public class Sublease {
         this.leaseName = leaseName;
     }
 
-    public Schools getLeaseSchool() {
+    public Set<Schools> getLeaseSchool() {
         return leaseSchool;
     }
 
-    public void setLeaseSchool(Schools leaseSchool) {
+    public void setLeaseSchool(Set<Schools> leaseSchool) {
         this.leaseSchool = leaseSchool;
     }
 

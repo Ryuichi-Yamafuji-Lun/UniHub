@@ -23,7 +23,7 @@ public class SubleaseResponseDTO {
     private Double longitude;
     private Double latitude;
     private Set<SubleaseAmenity> amenities;
-    private Schools school;
+    private Set<Schools> school;
 
     // Minimal Owner Info
     private Long ownerId;
@@ -128,10 +128,10 @@ public class SubleaseResponseDTO {
     public void setAmenities(Set<SubleaseAmenity> amenities) {
         this.amenities = amenities;
     }
-    public Schools getSchool() {
+    public Set<Schools> getSchool() {
         return school;
     }
-    public void setSchool(Schools school) {
+    public void setSchool(Set<Schools> school) {
         this.school = school;
     }
         public Long getOwnerId() {

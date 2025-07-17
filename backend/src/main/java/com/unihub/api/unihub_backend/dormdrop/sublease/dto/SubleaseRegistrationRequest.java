@@ -26,7 +26,7 @@ public class SubleaseRegistrationRequest {
     private LocalDate leaseEndDate;
 
     @NotNull(message = "School is required")
-    private Schools leaseSchool;
+    private Set<Schools> leaseSchool;
 
     @NotNull(message = "Amenities must be provided")
     private Set<SubleaseAmenity> amenities;
@@ -96,11 +96,11 @@ public class SubleaseRegistrationRequest {
         this.leaseEndDate = leaseEndDate;
     }
 
-    public Schools getLeaseSchool() {
+    public Set<Schools> getLeaseSchool() {
         return leaseSchool;
     }
 
-    public void setLeaseSchool(Schools leaseSchool) {
+    public void setLeaseSchool(Set<Schools> leaseSchool) {
         this.leaseSchool = leaseSchool;
     }
 

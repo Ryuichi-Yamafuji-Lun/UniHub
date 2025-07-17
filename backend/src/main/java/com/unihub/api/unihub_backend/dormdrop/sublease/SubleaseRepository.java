@@ -1,6 +1,7 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +37,11 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
         @Param("leaseName") String leaseName
     );
 
-    List<Sublease> findByLeaseSchool(Schools leaseSchool);
+    @Query("""
+    SELECT DISTINCT s FROM Sublease s JOIN s.leaseSchool ls
+    WHERE ls IN :schools
+    """)
+    List<Sublease> findByLeaseSchoolIn(@Param("schools") Set<Schools> schools);
 
     List<Sublease> findByLeaseName(String leaseName);
 
@@ -47,7 +52,7 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
     List<Sublease> findByAccountOrderByDatePostedDesc(Account account);
 
     Page<Sublease> findAllByOrderByDatePostedDesc(Pageable pageable);
-    
+
     default List<Sublease> findTop7ByOrderByDatePostedDesc() {
         return findAllByOrderByDatePostedDesc(PageRequest.of(0, 7)).getContent();
     }

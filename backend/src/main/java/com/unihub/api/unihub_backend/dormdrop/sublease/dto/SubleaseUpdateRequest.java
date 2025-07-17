@@ -18,7 +18,7 @@ public class SubleaseUpdateRequest {
 
     private LocalDate leaseStartDate;
     private LocalDate leaseEndDate;
-    private Schools leaseSchool;
+    private Set<Schools> leaseSchool;
     private Set<SubleaseAmenity> amenities;
 
     @DecimalMin(value = "300.0", inclusive = false, message = "Lease price must be greater than 300")
@@ -74,11 +74,11 @@ public class SubleaseUpdateRequest {
         this.leaseEndDate = leaseEndDate;
     }
 
-    public Schools getLeaseSchool() {
+    public Set<Schools> getLeaseSchool() {
         return leaseSchool;
     }
 
-    public void setLeaseSchool(Schools leaseSchool) {
+    public void setLeaseSchool(Set<Schools> leaseSchool) {
         this.leaseSchool = leaseSchool;
     }
 
