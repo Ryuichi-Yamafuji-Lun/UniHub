@@ -6,7 +6,7 @@ export interface SubleaseCreateDTO {
   leaseName: string;
   leaseStartDate: string;
   leaseEndDate: string;
-  leaseSchool: Schools;
+  leaseSchool: Schools[];
   amenities: SubleaseAmenity[];
   leasePrice: number;
   numRoom: number;
@@ -27,7 +27,7 @@ export type SubleaseUpdateDTO = Partial<SubleaseCreateDTO>;
 export interface SubleaseResponseDTO extends SubleaseCreateDTO {
   id: number;
   datePosted: string;
-  school: Schools;
+  school: Schools[];
 
   ownerId: number;
   ownerUsername: string;

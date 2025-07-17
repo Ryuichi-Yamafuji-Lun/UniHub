@@ -33,7 +33,7 @@ export interface SubleaseResponse {
   longitude: number;
   latitude: number;
   amenities: SubleaseAmenity[];
-  school: Schools;
+  school: Schools[];
   ownerUsername: string;
   ownerProfilePicture: string;
   sumOfRatings: number;

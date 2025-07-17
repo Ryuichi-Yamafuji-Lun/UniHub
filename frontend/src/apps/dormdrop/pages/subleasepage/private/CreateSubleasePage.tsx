@@ -1,4 +1,4 @@
-import { SchoolsArray } from "@/apps/dormdrop/types/enums/Schools";
+import { SchoolsArray, type Schools } from "@/apps/dormdrop/types/enums/Schools";
 import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import { SubleaseAmenityArray } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import api from "@/lib/axios";
@@ -21,7 +21,7 @@ const CreateSubleasePage = () => {
     numBath: "",
     roomWidth: "",
     roomDepth: "",
-    leaseSchool: "USC",
+    leaseSchool: [] as Schools[],
     latitude: "",
     longitude: "",
     amenities: [] as SubleaseAmenity[],
@@ -213,21 +213,22 @@ const CreateSubleasePage = () => {
       </div>
 
       {/* School */}
-      <div>
-        <label className="label">School</label>
-        <select
-          name="leaseSchool"
-          value={form.leaseSchool}
-          onChange={handleChange}
-          className={inputClass}
-        >
-          {SchoolsArray.map((school) => (
-            <option key={school} value={school}>
-              {school}
-            </option>
-          ))}
-        </select>
-      </div>
+      <select
+        name="leaseSchool"
+        multiple
+        value={form.leaseSchool}
+        onChange={(e) => {
+          const selected = Array.from(e.target.selectedOptions, (option) => option.value as Schools);
+          setForm((prev) => ({ ...prev, leaseSchool: selected }));
+        }}
+        className={inputClass + " h-40"} 
+      >
+        {SchoolsArray.map((school) => (
+          <option key={school} value={school}>
+            {school}
+          </option>
+        ))}
+      </select>
 
       {/* Amenities */}
       <div>

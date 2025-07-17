@@ -20,7 +20,7 @@ const UpdateSubleasePage = () => {
     numBath: 0,
     roomWidth: 0,
     roomDepth: 0,
-    leaseSchool: "USC",
+    leaseSchool: [],
     latitude: 0,
     longitude: 0,
     amenities: [],
