@@ -1,20 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FiMenu, FiUser, FiShoppingCart } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 import { FaSearch } from "react-icons/fa";
 
 const NavBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [scrollY, setScrollY] = useState(window.scrollY);
+  const [scrollDirection, setScrollDirection] = useState("up");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (Math.abs(currentScrollY - scrollY) > 10) {
+        setScrollDirection(currentScrollY > scrollY ? "down" : "up");
+        setScrollY(currentScrollY);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [scrollY]);
 
   return (
-    <header className="w-full z-50">
+    <header className="w-full z-50 sticky top-0 left-0">
       {/* Top Black Nav */}
-      <div className="bg-black text-white px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
-        {/* Left: Hamburger */}
-        <div className="flex items-center space-x-4">
-          <button className="text-white text-2xl block">
-            <FiMenu />
-          </button>
+      <div
+        className={`bg-black text-white px-4 py-3 flex items-center justify-between gap-4 flex-wrap transition-transform duration-300 ${
+          scrollDirection === "down" ? "-translate-y-full" : "translate-y-0"
+        }`}
+      >
+        {/* Left: Logo */}
+        <div className="flex items-center space-x-4 px-2">
+          <Link to="/" className="text-white text-2xl font-bold tracking-tight">
+            Unihub
+          </Link>
         </div>
 
         {/* Center: Search Bar */}
@@ -31,7 +50,7 @@ const NavBar = () => {
           </div>
         </div>
 
-        {/* Right: Auth & Cart */}
+        {/* Right: Auth */}
         <div className="flex items-center space-x-6 text-sm min-w-fit">
           <Link to="/login" className="hover:underline whitespace-nowrap">
             Login
@@ -40,15 +59,18 @@ const NavBar = () => {
             <FiUser />
             <span>Account</span>
           </Link>
-          <Link to="/cart" className="hover:underline flex items-center space-x-1">
-            <FiShoppingCart />
-            <span>Cart</span>
-          </Link>
         </div>
       </div>
 
-      {/* Bottom Categories */}
-      <div className="bg-[#fef6e4] px-6 py-2 flex space-x-6 text-sm font-medium text-black overflow-x-auto">
+      {/* Bottom Categories (only show when at very top of page) */}
+      <div
+        className={`bg-transparent px-6 py-2 flex space-x-6 text-sm font-medium text-black overflow-x-auto transition-opacity duration-300 ${
+          scrollY <= 10 ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      >
+        <Link to="/" className="hover:underline">
+          Home
+        </Link>
         <Link to="/dormdrop" className="hover:underline">
           Sublease
         </Link>

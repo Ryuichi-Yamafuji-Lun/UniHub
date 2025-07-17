@@ -8,7 +8,7 @@ interface AuthLayoutProps {
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
-    <div className="relative bg-white min-h-screen">
+    <div className="relative bg-[#fef6e4] min-h-screen">
       {/* Floating logo */}
       <MinimalNavBar />
 

@@ -7,7 +7,7 @@ const Landing = () => {
       {/* Hero Section */}
       <Hero />
       {/* Listings */}
-      <div className="relative z-20">
+      <div className="relative z-20 bg-[#E2E6E6]">
         <NewestSubleaseCarousel />
       </div>
     </>
