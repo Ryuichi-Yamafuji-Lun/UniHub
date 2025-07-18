@@ -71,7 +71,7 @@ const Signup = () => {
           <input
             type="email"
             name="email"
-            placeholder="USC Email"
+            placeholder="School Email"
             value={form.email}
             onChange={handleChange}
             required
