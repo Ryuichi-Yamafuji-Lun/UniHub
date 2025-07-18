@@ -29,7 +29,6 @@ export default function Carousel<T>({
     <section className="relative w-full px-6 py-10">
       {/* Header Row */}
       <div className="flex justify-between items-center mb-4">
-        {/* Left: Title + Link */}
         {link ? (
           <Link
             to={link}
@@ -42,7 +41,6 @@ export default function Carousel<T>({
           <h2 className="text-2xl font-semibold text-[#1E1E1E]">{title}</h2>
         )}
 
-        {/* Right: Arrow Buttons */}
         <div className="flex gap-2">
           <button
             onClick={() => scroll("left")}
@@ -61,20 +59,26 @@ export default function Carousel<T>({
         </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div
-        ref={scrollRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 scrollbar-hide"
-      >
-        {listings.map((item, idx) => (
-          <div
-            key={idx}
-            className="min-w-[300px] max-w-[300px] flex-shrink-0 snap-start"
-          >
-            {renderCard(item)}
-          </div>
-        ))}
-      </div>
+      {/* Scrollable or Empty Content */}
+      {listings.length === 0 ? (
+        <div className="w-full py-12 text-center text-gray-500 text-base border border-dashed border-gray-300 rounded-md bg-gray-50">
+          No listings available right now.
+        </div>
+      ) : (
+        <div
+          ref={scrollRef}
+          className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 scrollbar-hide"
+        >
+          {listings.map((item, idx) => (
+            <div
+              key={idx}
+              className="min-w-[300px] max-w-[300px] flex-shrink-0 snap-start"
+            >
+              {renderCard(item)}
+            </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
