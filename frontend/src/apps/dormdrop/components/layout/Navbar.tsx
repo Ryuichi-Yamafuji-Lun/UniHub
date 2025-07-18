@@ -55,7 +55,7 @@ const NavBar = () => {
           <Link to="/login" className="hover:underline whitespace-nowrap">
             Login
           </Link>
-          <Link to="/account" className="hover:underline flex items-center space-x-1">
+          <Link to="/account/me" className="hover:underline flex items-center space-x-1">
             <FiUser />
             <span>Account</span>
           </Link>
