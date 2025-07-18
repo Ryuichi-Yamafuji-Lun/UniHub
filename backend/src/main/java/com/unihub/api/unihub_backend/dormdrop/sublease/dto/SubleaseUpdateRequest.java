@@ -40,7 +40,7 @@ public class SubleaseUpdateRequest {
 
     private String leaseImage;
 
-    @Size(max = 500, message = "Lease description must be under 500 characters")
+    @Size(max = 1000, message = "Lease description must be under 1000 characters")
     private String leaseDescription;
 
     @Size(max = 255, message = "Lease address must be under 255 characters")
