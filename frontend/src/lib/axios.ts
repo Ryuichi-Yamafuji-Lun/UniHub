@@ -17,10 +17,24 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    const status = error.response?.status;
+    const pathname = window.location.pathname;
+
+    const isAuthError = status === 401 || status === 403;
+
+    // Always remove token if auth error
+    if (isAuthError) {
       localStorage.removeItem("token");
-      window.location.href = "/login"; // redirect to login page
+
+      // Only redirect to login if the route is protected
+      const publicPrefixes = ["/", "/dormdrop", "/cardinalcart"];
+      const isPublic = publicPrefixes.some((prefix) => pathname.startsWith(prefix));
+
+      if (!isPublic) {
+        window.location.href = "/login";
+      }
     }
+
     return Promise.reject(error);
   }
 );
