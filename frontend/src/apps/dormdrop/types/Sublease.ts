@@ -21,7 +21,7 @@ export interface SubleaseCreateDTO {
 }
 
 // 2. Update DTO
-export type SubleaseUpdateDTO = Partial<SubleaseCreateDTO>;
+export type SubleaseUpdateDTO = SubleaseCreateDTO;
 
 // 3. Response DTO
 export interface SubleaseResponseDTO extends SubleaseCreateDTO {
