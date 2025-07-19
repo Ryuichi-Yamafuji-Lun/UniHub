@@ -67,10 +67,10 @@ public class PublicSubleaseController {
 
     @GetMapping("/newest")
     public ResponseEntity<List<SubleaseResponseDTO>> getNewestSubleases(
-        @RequestParam(defaultValue = "7") int limit
+        @RequestParam(defaultValue = "8") int limit
     ) {
         if (limit < 1) {
-            limit = 7; 
+            limit = 8; 
         }
         List<Sublease> newest = subleaseService.getNewestSubleases(limit);
         List<SubleaseResponseDTO> dtoList = newest.stream()

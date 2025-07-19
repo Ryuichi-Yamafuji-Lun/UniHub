@@ -1,6 +1,7 @@
 export interface AccountResponsePublic {
   id: number;
   email: string;
+  school: string;
   username: string;
   firstName: string;
   lastName: string;

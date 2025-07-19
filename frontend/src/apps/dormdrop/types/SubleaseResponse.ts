@@ -9,8 +9,8 @@ export const SubleaseAmenity = {
 export type SubleaseAmenity = keyof typeof SubleaseAmenity;
 
 export const Schools = {
-  USC: "USC",
-
+  USC: "University of Southern California",
+  UCLA: "University of California, Los Angeles",
 } as const;
 
 export type Schools = keyof typeof Schools;

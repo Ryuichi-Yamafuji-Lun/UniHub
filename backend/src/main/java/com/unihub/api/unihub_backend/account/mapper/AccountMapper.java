@@ -29,7 +29,7 @@ public class AccountMapper {
         dto.setId(account.getId());
         dto.setEmail(account.getEmail());
         dto.setUsername(account.getUsername());
-        dto.setSchool(account.getSchool());
+        dto.setSchool(account.getSchool().getDisplayName());
         dto.setFirstName(account.getFirstName());
         dto.setLastName(account.getLastName());
         dto.setDateOfBirth(account.getDateOfBirth());

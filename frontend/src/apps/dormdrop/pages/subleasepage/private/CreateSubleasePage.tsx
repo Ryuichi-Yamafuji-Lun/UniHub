@@ -1,4 +1,4 @@
-import { SchoolsArray, type Schools } from "@/apps/dormdrop/types/enums/Schools";
+import { SchoolsArray, type Schools, schoolDisplayNames } from "@/apps/dormdrop/types/enums/Schools";
 import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import { SubleaseAmenityArray } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import api from "@/lib/axios";
@@ -254,7 +254,7 @@ const CreateSubleasePage = () => {
                     onChange={() => handleSchoolToggle(school)}
                     className="mr-2"
                   />
-                  {school}
+                  {schoolDisplayNames[school]}
                 </label>
               ))
             ) : (

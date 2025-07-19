@@ -22,6 +22,15 @@ public enum Schools {
         };
     }
 
+    public static Schools fromDisplayName(String displayName) {
+        for (Schools school : Schools.values()) {
+            if (school.getDisplayName().equalsIgnoreCase(displayName)) {
+                return school;
+            }
+        }
+        return null;
+    }
+    
     public static boolean isValidDomain(String domain) {
         return fromDomain(domain) != null;
     }
