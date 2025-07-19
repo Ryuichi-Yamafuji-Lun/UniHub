@@ -6,10 +6,12 @@ import java.util.Set;
 
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 
 public class AccountResponseDTO {
     private Long id;
     private String email;
+    private Schools school;
     private String username;
     private String firstName;
     private String lastName;
@@ -37,6 +39,12 @@ public class AccountResponseDTO {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+    public Schools getSchool() {
+        return school;
+    }
+    public void setSchool(Schools school) {
+        this.school = school;
     }
     public String getUsername() {
         return username;

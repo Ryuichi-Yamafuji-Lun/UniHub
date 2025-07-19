@@ -7,6 +7,8 @@ import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.account.dto.AccountRegistrationRequest;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
+import com.unihub.api.unihub_backend.common.enums.Schools;
+import com.unihub.api.unihub_backend.common.util.EmailDomainUtil;
 import com.unihub.api.unihub_backend.verification.EmailService;
 import com.unihub.api.unihub_backend.verification.VerificationTokenService;
 
@@ -29,6 +31,11 @@ public class PublicAccountService {
     // create account 
     @Transactional
     public Account registerAccount(AccountRegistrationRequest request) {
+        String domain = EmailDomainUtil.extractDomainFromEmail(request.getEmail());
+        if (!Schools.isValidDomain(domain)) {
+            throw new IllegalArgumentException("Email domain is not supported");
+        }
+
         Account account = accountMapper.fromRegistrationRequest(request);
         Account savedAccount = accountRepository.save(account);
 

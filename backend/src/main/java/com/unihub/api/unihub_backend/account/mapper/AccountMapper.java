@@ -11,6 +11,8 @@ import com.unihub.api.unihub_backend.account.dto.AccountRegistrationRequest;
 import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
+import com.unihub.api.unihub_backend.common.enums.Schools;
+import com.unihub.api.unihub_backend.common.util.EmailDomainUtil;
 
 @Component
 public class AccountMapper {
@@ -27,6 +29,7 @@ public class AccountMapper {
         dto.setId(account.getId());
         dto.setEmail(account.getEmail());
         dto.setUsername(account.getUsername());
+        dto.setSchool(account.getSchool());
         dto.setFirstName(account.getFirstName());
         dto.setLastName(account.getLastName());
         dto.setDateOfBirth(account.getDateOfBirth());
@@ -47,6 +50,7 @@ public class AccountMapper {
     public Account fromRegistrationRequest(AccountRegistrationRequest request) {
         Account account = new Account();
         account.setEmail(request.getEmail());
+        account.setSchool(Schools.fromDomain(EmailDomainUtil.extractDomainFromEmail(request.getEmail())));
         account.setUsername(request.getUsername());
         account.setPassword(passwordEncoder.encode(request.getPassword())); 
         account.setFirstName(request.getFirstName());

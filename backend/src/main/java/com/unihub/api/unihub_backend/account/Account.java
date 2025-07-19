@@ -9,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 
 import jakarta.persistence.Column;
@@ -42,7 +43,12 @@ public class Account {
     // User school email
     @Column(unique = true, nullable = false)
     private String email;
-    
+
+     // User school
+    @Enumerated(EnumType.STRING)
+    @Column(name = "school")
+    private Schools school;
+
     // User username
     @Column(nullable = false, unique = true)
     private String username;
@@ -72,7 +78,7 @@ public class Account {
     public Account(){}
 
     public Account(String firstName, String lastName, LocalDate dateOfBirth, String profilePicture, Float sumOfRatings,
-            Integer numberOfRatings, String email, String username, String password, Set<Role> roles, AccountStatus accountStatus, Byte unsafeFlag,
+            Integer numberOfRatings, String email, Schools school, String username, String password, Set<Role> roles, AccountStatus accountStatus, Byte unsafeFlag,
             Byte suspensionCount) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -81,6 +87,7 @@ public class Account {
         this.sumOfRatings = sumOfRatings;
         this.numberOfRatings = numberOfRatings;
         this.email = email;
+        this.school = school;
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -125,7 +132,15 @@ public class Account {
     public void setEmail(String email) {
         this.email = email;
     }
-    
+
+    public Schools getSchool() {
+        return school;
+    }
+
+    public void setSchool(Schools school) {
+        this.school = school;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -224,17 +239,16 @@ public class Account {
                 ", dateOfBirth=" + dateOfBirth +
                 ", email='" + email + '\'' +
                 ", username='" + username + '\'' +
-                ", password=" + password + '\'' +
+                ", password='[PROTECTED]'" +
                 ", profilePicture='" + profilePicture + '\'' +
                 ", numberOfRatings=" + numberOfRatings +
                 ", sumOfRatings=" + sumOfRatings +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", role=" + roles +
+                ", roles=" + roles +
                 ", accountStatus=" + accountStatus +
                 ", unsafeFlag=" + unsafeFlag +
                 ", suspensionCount=" + suspensionCount +
                 '}';
     }
-
 }
