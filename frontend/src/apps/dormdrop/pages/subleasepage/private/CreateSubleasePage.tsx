@@ -2,12 +2,12 @@ import { SchoolsArray, type Schools } from "@/apps/dormdrop/types/enums/Schools"
 import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import { SubleaseAmenityArray } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import api from "@/lib/axios";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const CreateSubleasePage = () => {
   const navigate = useNavigate();
-  const getFormValue = (key: keyof typeof form) => form[key];
+  const maxChars = 1000;
 
   const [form, setForm] = useState({
     leaseName: "",
@@ -27,13 +27,46 @@ const CreateSubleasePage = () => {
     amenities: [] as SubleaseAmenity[],
   });
 
+  const [leaseDescriptionError, setLeaseDescriptionError] = useState("");
+  const [schoolSearch, setSchoolSearch] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const filteredSchools = SchoolsArray.filter((school) =>
+    school.toLowerCase().includes(schoolSearch.toLowerCase())
+  );
+
+  const inputClass =
+    "w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500";
+
+  const getFormValue = (key: keyof typeof form) => form[key];
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "leaseDescription") {
+      if (value.length <= maxChars) {
+        setForm((prev) => ({ ...prev, [name]: value }));
+        setLeaseDescriptionError("");
+      } else {
+        setLeaseDescriptionError(`Character limit exceeded! Maximum is ${maxChars} characters.`);
+      }
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleSchoolToggle = (school: Schools) => {
+    setForm((prev) => ({
+      ...prev,
+      leaseSchool: prev.leaseSchool.includes(school)
+        ? prev.leaseSchool.filter((s) => s !== school)
+        : [...prev.leaseSchool, school],
+    }));
   };
 
   const handleAmenityChange = (amenity: SubleaseAmenity) => {
@@ -57,6 +90,11 @@ const CreateSubleasePage = () => {
       return;
     }
 
+    if (form.leaseDescription.length > maxChars) {
+      alert(`Lease description must be under ${maxChars} characters.`);
+      return;
+    }
+
     const payload = {
       ...form,
       leasePrice: leasePriceNumber,
@@ -74,8 +112,17 @@ const CreateSubleasePage = () => {
     }
   };
 
-  const inputClass =
-    "w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500";
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <form
@@ -86,30 +133,18 @@ const CreateSubleasePage = () => {
 
       {/* Lease Info */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="flex flex-col">
+        <div>
           <label className="label">Lease Name</label>
-          <input
-            name="leaseName"
-            value={form.leaseName}
-            onChange={handleChange}
-            className={inputClass}
-          />
+          <input name="leaseName" value={form.leaseName} onChange={handleChange} className={inputClass} />
         </div>
-        <div className="flex flex-col">
+        <div>
           <label className="label">Address</label>
-          <input
-            name="leaseAddress"
-            value={form.leaseAddress}
-            onChange={handleChange}
-            className={inputClass}
-          />
+          <input name="leaseAddress" value={form.leaseAddress} onChange={handleChange} className={inputClass} />
         </div>
-        <div className="flex flex-col">
+        <div>
           <label className="label">Price (USD)</label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-              $
-            </span>
+            <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
             <input
               type="number"
               name="leasePrice"
@@ -132,62 +167,41 @@ const CreateSubleasePage = () => {
           rows={4}
           className={inputClass}
         />
+        <div className="flex justify-between mt-1 text-sm">
+          <span className={leaseDescriptionError ? "text-red-600" : "text-gray-600"}>
+            {form.leaseDescription.length} / {maxChars} characters
+          </span>
+          {leaseDescriptionError && (
+            <span className="text-red-600 font-semibold">{leaseDescriptionError}</span>
+          )}
+        </div>
       </div>
 
       {/* Dates */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col">
+        <div>
           <label className="label">Start Date</label>
-          <input
-            type="date"
-            name="leaseStartDate"
-            value={form.leaseStartDate}
-            onChange={handleChange}
-            className={inputClass}
-          />
+          <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} className={inputClass} />
         </div>
-        <div className="flex flex-col">
+        <div>
           <label className="label">End Date</label>
-          <input
-            type="date"
-            name="leaseEndDate"
-            value={form.leaseEndDate}
-            onChange={handleChange}
-            className={inputClass}
-          />
+          <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} className={inputClass} />
         </div>
       </div>
 
       {/* Room Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="flex flex-col">
+        <div>
           <label className="label">Number of Room</label>
-          <input
-            name="numRoom"
-            value={form.numRoom}
-            onChange={handleChange}
-            placeholder="1"
-            className={inputClass}
-          />
+          <input name="numRoom" value={form.numRoom} onChange={handleChange} className={inputClass} />
         </div>
-        <div className="flex flex-col">
+        <div>
           <label className="label">Number of Bath</label>
-          <input
-            name="numBath"
-            value={form.numBath}
-            onChange={handleChange}
-            placeholder="1"
-            className={inputClass}
-          />
+          <input name="numBath" value={form.numBath} onChange={handleChange} className={inputClass} />
         </div>
-        <div className="flex flex-col">
+        <div>
           <label className="label">Image URL</label>
-          <input
-            name="leaseImage"
-            value={form.leaseImage}
-            onChange={handleChange}
-            className={inputClass}
-          />
+          <input name="leaseImage" value={form.leaseImage} onChange={handleChange} className={inputClass} />
         </div>
       </div>
 
@@ -199,7 +213,7 @@ const CreateSubleasePage = () => {
           ["latitude", "Latitude"],
           ["longitude", "Longitude"],
         ].map(([name, label]) => (
-          <div className="flex flex-col" key={name}>
+          <div key={name}>
             <label className="label">{label}</label>
             <input
               type="number"
@@ -212,33 +226,55 @@ const CreateSubleasePage = () => {
         ))}
       </div>
 
-      {/* School */}
-      <select
-        name="leaseSchool"
-        multiple
-        value={form.leaseSchool}
-        onChange={(e) => {
-          const selected = Array.from(e.target.selectedOptions, (option) => option.value as Schools);
-          setForm((prev) => ({ ...prev, leaseSchool: selected }));
-        }}
-        className={inputClass + " h-40"} 
-      >
-        {SchoolsArray.map((school) => (
-          <option key={school} value={school}>
-            {school}
-          </option>
-        ))}
-      </select>
+      {/* School Multi-Select with Search */}
+      <div ref={wrapperRef} className="relative">
+        <label className="label mb-2">Select Schools</label>
+        <input
+          type="text"
+          placeholder="Search schools..."
+          onChange={(e) => {
+            setSchoolSearch(e.target.value);
+            setDropdownOpen(true);
+          }}
+          value={schoolSearch}
+          className={inputClass}
+          onFocus={() => setDropdownOpen(true)}
+        />
+        {dropdownOpen && (
+          <div className="absolute z-10 w-full bg-white border border-gray-300 mt-1 max-h-60 overflow-y-auto rounded-md shadow-lg">
+            {filteredSchools.length > 0 ? (
+              filteredSchools.map((school) => (
+                <label
+                  key={school}
+                  className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                >
+                  <input
+                    type="checkbox"
+                    checked={form.leaseSchool.includes(school)}
+                    onChange={() => handleSchoolToggle(school)}
+                    className="mr-2"
+                  />
+                  {school}
+                </label>
+              ))
+            ) : (
+              <div className="px-4 py-2 text-gray-500">No schools found.</div>
+            )}
+          </div>
+        )}
+        {form.leaseSchool.length > 0 && (
+          <div className="mt-2 text-sm text-gray-700">
+            Selected: {form.leaseSchool.join(", ")}
+          </div>
+        )}
+      </div>
 
       {/* Amenities */}
       <div>
         <label className="label mb-2">Amenities</label>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
           {SubleaseAmenityArray.map((amenity) => (
-            <label
-              key={amenity}
-              className="flex items-center space-x-2 text-sm"
-            >
+            <label key={amenity} className="flex items-center space-x-2 text-sm">
               <input
                 type="checkbox"
                 checked={form.amenities.includes(amenity)}

@@ -1,18 +1,16 @@
-
 import DormDropLandingHero from "@/apps/dormdrop/sections/landing/Hero";
-import Features from "@/apps/dormdrop/sections/landing/Features";
-import HowItWorks from "@/apps/dormdrop/sections/landing/HowItWorks";
+import NewestSubleaseCarousel from "@/apps/dormdrop/sections/landing/listings/NewestSubleaseCarasoul";
 
 const Landing = () => {
   return (
     <>
       {/* Hero Section */}
       <DormDropLandingHero />
-      {/* Features Section */}
-      <Features />
-      {/* How it Works Section */}
-      <HowItWorks />
 
+      {/* Listings */}
+      <div className="relative z-20 bg-[#E2E6E6]">
+        <NewestSubleaseCarousel />
+      </div>
     </>
   );
 };
