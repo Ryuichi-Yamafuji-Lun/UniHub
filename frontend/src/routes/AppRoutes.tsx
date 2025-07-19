@@ -29,7 +29,7 @@ const AppRoutes = () => {
         {/* Account Pages */}
         <Route path="/account/:ownerId" element={<PublicAccountProfile />} />
         <Route path="/account/me" element={<UserProfilePage />} />
-        <Route path="/account/edit" element={<EditProfilePage />} />
+        <Route path="/account/me/edit" element={<EditProfilePage />} />
 
         {/* Catch-all fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
