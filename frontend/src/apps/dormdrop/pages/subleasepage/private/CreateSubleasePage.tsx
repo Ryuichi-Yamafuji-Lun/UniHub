@@ -131,7 +131,7 @@ const CreateSubleasePage = () => {
     >
       <h2 className="text-3xl font-semibold text-center">Create Sublease</h2>
 
-      {/* Lease Info */}
+      {/* Basic Inputs */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <label className="label">Lease Name</label>
@@ -207,18 +207,13 @@ const CreateSubleasePage = () => {
 
       {/* Room Size */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {[
-          ["roomWidth", "Width (ft)"],
-          ["roomDepth", "Depth (ft)"],
-          ["latitude", "Latitude"],
-          ["longitude", "Longitude"],
-        ].map(([name, label]) => (
-          <div key={name}>
-            <label className="label">{label}</label>
+        {["roomWidth", "roomDepth", "latitude", "longitude"].map((key) => (
+          <div key={key}>
+            <label className="label">{key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}</label>
             <input
               type="number"
-              name={name}
-              value={getFormValue(name as keyof typeof form)}
+              name={key}
+              value={getFormValue(key as keyof typeof form)}
               onChange={handleChange}
               className={inputClass}
             />
@@ -226,9 +221,30 @@ const CreateSubleasePage = () => {
         ))}
       </div>
 
-      {/* School Multi-Select with Search */}
+      {/* Schools Section with Chips */}
       <div ref={wrapperRef} className="relative">
         <label className="label mb-2">Select Schools</label>
+
+        {form.leaseSchool.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {form.leaseSchool.map((school) => (
+              <div
+                key={school}
+                className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+              >
+                {schoolDisplayNames[school]}
+                <button
+                  type="button"
+                  onClick={() => handleSchoolToggle(school)}
+                  className="ml-2 text-blue-500 hover:text-blue-700"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
         <input
           type="text"
           placeholder="Search schools..."
@@ -240,6 +256,7 @@ const CreateSubleasePage = () => {
           className={inputClass}
           onFocus={() => setDropdownOpen(true)}
         />
+
         {dropdownOpen && (
           <div className="absolute z-10 w-full bg-white border border-gray-300 mt-1 max-h-60 overflow-y-auto rounded-md shadow-lg">
             {filteredSchools.length > 0 ? (
@@ -260,11 +277,6 @@ const CreateSubleasePage = () => {
             ) : (
               <div className="px-4 py-2 text-gray-500">No schools found.</div>
             )}
-          </div>
-        )}
-        {form.leaseSchool.length > 0 && (
-          <div className="mt-2 text-sm text-gray-700">
-            Selected: {form.leaseSchool.join(", ")}
           </div>
         )}
       </div>

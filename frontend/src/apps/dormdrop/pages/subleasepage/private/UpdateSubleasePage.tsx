@@ -268,6 +268,26 @@ const UpdateSubleasePage = () => {
 
       <div ref={wrapperRef} className="relative">
         <label className="label mb-2">Select Schools</label>
+        {(form.leaseSchool ?? []).length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-2">
+            {(form.leaseSchool ?? []).map((school) => (
+              <span
+                key={school}
+                className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
+              >
+                {schoolDisplayNames[school]}
+                <button
+                  type="button"
+                  onClick={() => handleSchoolToggle(school)}
+                  className="ml-2 text-blue-600 hover:text-blue-900 font-bold"
+                  aria-label={`Remove ${schoolDisplayNames[school]}`}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
         <input
           type="text"
           placeholder="Search schools..."
@@ -296,26 +316,6 @@ const UpdateSubleasePage = () => {
             ) : (
               <div className="px-4 py-2 text-gray-500">No schools found.</div>
             )}
-          </div>
-        )}
-        {(form.leaseSchool ?? []).length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-2">
-            {(form.leaseSchool ?? []).map((school) => (
-              <span
-                key={school}
-                className="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm"
-              >
-                {schoolDisplayNames[school]}
-                <button
-                  type="button"
-                  onClick={() => handleSchoolToggle(school)}
-                  className="ml-2 text-blue-600 hover:text-blue-900 font-bold"
-                  aria-label={`Remove ${schoolDisplayNames[school]}`}
-                >
-                  ×
-                </button>
-              </span>
-            ))}
           </div>
         )}
       </div>
