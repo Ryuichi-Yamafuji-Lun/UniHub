@@ -57,7 +57,7 @@ public class SubleaseRegistrationRequest {
     private String leaseImage;
 
     @NotBlank(message = "Lease description is required")
-    @Size(max = 1000, message = "Lease description must be under 1000 characters")
+    @Size(max = 1000, message = "Lease description must be under 500 characters")
     private String leaseDescription;
 
     @NotBlank(message = "Lease address is required")
@@ -71,7 +71,6 @@ public class SubleaseRegistrationRequest {
     private Double longitude;
 
     // Getters and Setters
-
     public String getLeaseName() {
         return leaseName;
     }
