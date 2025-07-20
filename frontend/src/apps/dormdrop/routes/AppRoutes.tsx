@@ -13,10 +13,10 @@ const DormDropAppRoutes = () => {
       <Route path="" element={<MainLayout><Landing /></MainLayout>}/>
 
       {/* Sublease Paths */}
-      <Route path="sublease/:id" element={<SubleaseDetailPage />} />
-      <Route path="listings" element={<SubleaseListPage />} />
-      <Route path="sublease/:subleaseId/edit" element={<UpdateSubleasePage />} />
-      <Route path="sublease/new" element={<CreateSubleasePage />} />
+      <Route path="sublease/:id" element={<MainLayout><SubleaseDetailPage /></MainLayout>} />
+      <Route path="sublease" element={<MainLayout><SubleaseListPage /></MainLayout>} />
+      <Route path="sublease/:subleaseId/edit" element={<MainLayout><UpdateSubleasePage /></MainLayout>} />
+      <Route path="sublease/new" element={<MainLayout><CreateSubleasePage /></MainLayout>} />
 
       <Route path="*" element={<Navigate to="/dormdrop" replace />} />
     </Routes>

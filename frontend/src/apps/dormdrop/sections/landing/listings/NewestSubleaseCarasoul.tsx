@@ -29,7 +29,7 @@ const NewestSubleaseCarousel = () => {
         renderCard={(item) => (
           <SubleaseCard key={item.id} sublease={item} />
         )}
-        link="/dormdrop/listings"
+        link="/dormdrop/sublease"
       />
     </section>
   );

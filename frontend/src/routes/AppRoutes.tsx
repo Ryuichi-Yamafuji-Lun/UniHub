@@ -27,9 +27,9 @@ const AppRoutes = () => {
         <Route path="/dormdrop/*" element={<DormDropAppRoutes />} />
 
         {/* Account Pages */}
-        <Route path="/account/:userId" element={<PublicAccountProfile />} />
-        <Route path="/account/me" element={<UserProfilePage />} />
-        <Route path="/account/me/edit" element={<EditProfilePage />} />
+        <Route path="/account/:userId" element={<MainLayout><PublicAccountProfile /></MainLayout>} />
+        <Route path="/account/me" element={<MainLayout><UserProfilePage /></MainLayout>} />
+        <Route path="/account/me/edit" element={<MainLayout><EditProfilePage /></MainLayout>} />
 
         {/* Catch-all fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
