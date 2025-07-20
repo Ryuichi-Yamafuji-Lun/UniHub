@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
-import { Mail, School, Star, CalendarDays } from "lucide-react"; // Optional icons
+import { Mail, School, Star, CalendarDays } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface UserAccount {
@@ -43,7 +43,15 @@ const UserProfilePage = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">
-      <div className="bg-white border border-gray-200 shadow-md rounded-xl p-8 flex flex-col sm:flex-row gap-8 items-center">
+      <div className="bg-white border border-gray-200 shadow-md rounded-xl p-8 relative flex flex-col sm:flex-row gap-8 items-center">
+        {/* Edit button - top-right corner of card */}
+        <Link
+          to="/account/me/edit"
+          className="absolute top-4 right-4 px-4 py-1.5 text-sm font-medium bg-blue-700 text-white rounded-md hover:bg-blue-800 transition"
+        >
+          Edit Profile
+        </Link>
+
         {/* Left: profile pic + name + username */}
         <div className="flex flex-col items-center gap-3">
           <img
@@ -66,7 +74,7 @@ const UserProfilePage = () => {
           <div className="flex items-center gap-2">
             <School size={16} className="text-gray-500" />
             <span className="font-medium w-20">School:</span>
-            <span>{account.school}</span>
+            <span>{account.school || "N/A"}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -82,15 +90,6 @@ const UserProfilePage = () => {
               {account.createdAt &&
                 new Date(account.createdAt).toLocaleDateString()}
             </span>
-          </div>
-
-          <div className="pt-4">
-            <Link
-              to="/account/me/edit"
-              className="px-4 py-2 text-sm font-medium bg-blue-700 text-white rounded-md hover:bg-blue-800 transition"
-            >
-              Edit Profile
-            </Link>
           </div>
         </div>
       </div>
