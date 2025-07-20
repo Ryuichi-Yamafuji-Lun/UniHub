@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Carousel from "@/apps/dormdrop/sections/landing/listings/Carousel";
+import Carousel from "@/sections/landing/listings/Carousel";
 import SubleaseCard from "@/apps/dormdrop/components/ui/SubleaseCard";
 import type { SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import api from "@/lib/axios";
@@ -11,10 +11,10 @@ const NewestSubleaseCarousel = () => {
     const fetchNewest = async () => {
       try {
         const response = await api.get("/api/v1/public/subleases/newest?limit=8");
-        setSubleases(response.data ?? []); // Ensure fallback to empty array
+        setSubleases(response.data ?? []);
       } catch (error) {
         console.error("Failed to fetch newest subleases:", error);
-        setSubleases([]); // fallback to empty list on error
+        setSubleases([]);
       }
     };
 
@@ -29,7 +29,7 @@ const NewestSubleaseCarousel = () => {
         renderCard={(item) => (
           <SubleaseCard key={item.id} sublease={item} />
         )}
-        link="/dormdrop"
+        link="/dormdrop/listings"
       />
     </section>
   );
