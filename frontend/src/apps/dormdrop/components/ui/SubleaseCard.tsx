@@ -15,12 +15,12 @@ export default function SubleaseCard({ sublease }: { sublease: SubleaseResponse 
   return (
     <Link
       to={`/dormdrop/sublease/${id}`}
-      className="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
+      className="block w-[250px] bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300"
     >
       <img
         src={leaseImage}
         alt={leaseName}
-        className="w-full h-36 object-cover rounded-t-xl"
+        className="w-full h-36 object-cover"
       />
 
       <div className="p-3 space-y-0.5 text-left">
@@ -29,7 +29,8 @@ export default function SubleaseCard({ sublease }: { sublease: SubleaseResponse 
         </h2>
         <p className="text-sm text-gray-600 truncate">{leaseAddress}</p>
         <p className="text-xs text-gray-500">
-          {new Date(leaseStartDate).toLocaleDateString()} – {new Date(leaseEndDate).toLocaleDateString()}
+          {new Date(leaseStartDate).toLocaleDateString()} –{" "}
+          {new Date(leaseEndDate).toLocaleDateString()}
         </p>
         <p className="text-[#084479] font-bold text-sm">${leasePrice}/month</p>
       </div>

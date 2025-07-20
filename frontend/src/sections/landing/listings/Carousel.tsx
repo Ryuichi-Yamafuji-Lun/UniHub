@@ -18,16 +18,25 @@ export default function Carousel<T>({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
-    const scrollAmount = 340;
-    scrollRef.current?.scrollBy({
+    if (!scrollRef.current) return;
+
+    const container = scrollRef.current;
+    const card = container.querySelector("[data-card]") as HTMLElement;
+    if (!card) return;
+
+    const cardWidth = card.offsetWidth;
+    const gap = parseInt(getComputedStyle(container).gap || "0", 10);
+    const scrollAmount = cardWidth + gap;
+
+    container.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
     });
   };
 
   return (
-    <section className="relative w-full px-6 py-10">
-      {/* Header Row */}
+    <section className="relative w-full px-4 py-10">
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         {link ? (
           <Link
@@ -59,7 +68,7 @@ export default function Carousel<T>({
         </div>
       </div>
 
-      {/* Scrollable or Empty Content */}
+      {/* Cards */}
       {listings.length === 0 ? (
         <div className="w-full py-12 text-center text-gray-500 text-base border border-dashed border-gray-300 rounded-md bg-gray-50">
           No listings available right now.
@@ -67,12 +76,14 @@ export default function Carousel<T>({
       ) : (
         <div
           ref={scrollRef}
-          className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 scrollbar-hide"
+          className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
+          style={{ scrollPaddingLeft: "1rem" }}
         >
           {listings.map((item, idx) => (
             <div
               key={idx}
-              className="min-w-[300px] max-w-[300px] flex-shrink-0 snap-start"
+              data-card
+              className="w-[250px] flex-shrink-0 snap-start"
             >
               {renderCard(item)}
             </div>
