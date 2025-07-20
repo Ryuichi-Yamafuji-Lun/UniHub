@@ -64,6 +64,21 @@ const SubleaseDetailPage = () => {
           <div>
             <p className="text-2xl font-bold text-gray-900 mt-2">Sublease at {sublease.leaseAddress}</p>
             <p>{sublease.numRoom} bedrooms · {sublease.numBath} bath</p>
+
+          </div>
+          <div className="w-full border-t border-gray-300 my-6"/>
+          <div>
+            <h2 className="text-xl font-semibold">Preferred Universities</h2>
+            <ul className="flex flex-wrap gap-2 mt-2 text-sm text-gray-700">
+              {Array.from(sublease.school).map((school) => (
+                <li
+                  key={school}
+                  className="px-3 py-1 border rounded-full bg-gray-50 capitalize"
+                >
+                  {school}
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="w-full border-t border-gray-300 my-6"/>
           <div>
@@ -85,12 +100,12 @@ const SubleaseDetailPage = () => {
           <div>
             <h2 className="text-xl font-semibold">What this place offers</h2>
             <ul className="flex flex-wrap gap-2 mt-2 text-sm text-gray-700">
-              {Array.from(sublease.amenities).map((a) => (
+              {Array.from(sublease.amenities).map((amenity) => (
                 <li
-                  key={a}
+                  key={amenity}
                   className="px-3 py-1 border rounded-full bg-gray-50 capitalize"
                 >
-                  {a.replace(/_/g, " ").toLowerCase()}
+                  {amenity.replace(/_/g, " ").toLowerCase()}
                 </li>
               ))}
             </ul>
