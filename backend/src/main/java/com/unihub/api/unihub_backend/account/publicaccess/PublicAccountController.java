@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.dto.AccountRegistrationRequest;
-import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
+import com.unihub.api.unihub_backend.account.dto.AccountPrivateResponseDTO;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class PublicAccountController {
     }
 
     @PostMapping
-    public ResponseEntity<AccountResponseDTO> createAccount(@Valid @RequestBody AccountRegistrationRequest request) {
+    public ResponseEntity<AccountPrivateResponseDTO> createAccount(@Valid @RequestBody AccountRegistrationRequest request) {
         System.out.println("CreateAccount endpoint hit with email: " + request.getEmail());
         Account createdAccount = accountService.registerAccount(request);
         return ResponseEntity.status(201).body(accountMapper.toResponse(createdAccount, false));

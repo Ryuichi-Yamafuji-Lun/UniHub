@@ -7,7 +7,7 @@ import java.util.Set;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
 
-public class AccountResponseDTO {
+public class AccountPrivateResponseDTO {
     private Long id;
     private String email;
     private String school;

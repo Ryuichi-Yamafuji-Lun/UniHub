@@ -27,7 +27,7 @@ const AppRoutes = () => {
         <Route path="/dormdrop/*" element={<DormDropAppRoutes />} />
 
         {/* Account Pages */}
-        <Route path="/account/:ownerId" element={<PublicAccountProfile />} />
+        <Route path="/account/:userId" element={<PublicAccountProfile />} />
         <Route path="/account/me" element={<UserProfilePage />} />
         <Route path="/account/me/edit" element={<EditProfilePage />} />
 

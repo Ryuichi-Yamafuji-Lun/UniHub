@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.dto.AccountRegistrationRequest;
-import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
+import com.unihub.api.unihub_backend.account.dto.AccountPrivateResponseDTO;
+import com.unihub.api.unihub_backend.account.dto.AccountPublicResponseDTO;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
 import com.unihub.api.unihub_backend.common.enums.Schools;
@@ -23,8 +24,8 @@ public class AccountMapper {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public AccountResponseDTO toResponse(Account account, boolean includeAdminFields) {
-        AccountResponseDTO dto = new AccountResponseDTO();
+    public AccountPrivateResponseDTO toResponse(Account account, boolean includeAdminFields) {
+        AccountPrivateResponseDTO dto = new AccountPrivateResponseDTO();
 
         dto.setId(account.getId());
         dto.setEmail(account.getEmail());
@@ -43,6 +44,19 @@ public class AccountMapper {
             dto.setRoles(account.getRoles());
             dto.setAccountStatus(account.getAccountStatus());
         }
+
+        return dto;
+    }
+
+    public AccountPublicResponseDTO toPublicResponse(Account account) {
+        AccountPublicResponseDTO dto = new AccountPublicResponseDTO();
+        dto.setId(account.getId());
+        dto.setSchool(account.getSchool().getDisplayName());
+        dto.setUsername(account.getUsername());
+        dto.setProfilePicture(account.getProfilePicture());
+        dto.setNumberOfRatings(account.getNumberOfRatings());
+        dto.setSumOfRatings(account.getSumOfRatings());
+        dto.setCreatedAt(account.getCreatedAt());
 
         return dto;
     }

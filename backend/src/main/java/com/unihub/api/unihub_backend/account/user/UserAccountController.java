@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountService;
-import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
+import com.unihub.api.unihub_backend.account.dto.AccountPrivateResponseDTO;
+import com.unihub.api.unihub_backend.account.dto.AccountPublicResponseDTO;
 import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 
@@ -38,13 +39,13 @@ public class UserAccountController {
 
     {/* Personal */}
     @GetMapping("/me")
-    public ResponseEntity<AccountResponseDTO> getOwnAccount() {
+    public ResponseEntity<AccountPrivateResponseDTO> getOwnAccount() {
         Account account = userAccountService.getOwnAccount();
         return ResponseEntity.ok(accountMapper.toResponse(account, false));
     }
    
     @PutMapping("/me/update")
-    public ResponseEntity<AccountResponseDTO> updateAccount(@Valid @RequestBody AccountUpdateRequest request) {
+    public ResponseEntity<AccountPrivateResponseDTO> updateAccount(@Valid @RequestBody AccountUpdateRequest request) {
         try {
             Account updated = userAccountService.updateOwnAccount(request);
             return ResponseEntity.ok(accountMapper.toResponse(updated, false));
@@ -67,12 +68,10 @@ public class UserAccountController {
 
     {/* Public */}
     @GetMapping("/{userId}")
-    public ResponseEntity<AccountResponseDTO> getAccountById(@PathVariable Long userId) {
+    public ResponseEntity<AccountPublicResponseDTO> getAccountById(@PathVariable Long userId) {
         Account account = accountService.findAccountById(userId)
             .orElseThrow(() -> new RuntimeException("Account not found"));
         
-        return ResponseEntity.ok(accountMapper.toResponse(account, false));
+        return ResponseEntity.ok(accountMapper.toPublicResponse(account));
     }
-
-
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.account.Account;
-import com.unihub.api.unihub_backend.account.dto.AccountResponseDTO;
+import com.unihub.api.unihub_backend.account.dto.AccountPrivateResponseDTO;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatusRoleResponse;
@@ -44,12 +44,12 @@ public class AdminAccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AccountResponseDTO> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<AccountPrivateResponseDTO> getAccountById(@PathVariable Long id) {
         return accountService.findAccountById(id).map(account -> ResponseEntity.ok(accountMapper.toResponse(account, true))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-email")
-    public ResponseEntity<AccountResponseDTO> getAccountBySchoolEmail(@RequestParam String email) {
+    public ResponseEntity<AccountPrivateResponseDTO> getAccountBySchoolEmail(@RequestParam String email) {
         return accountService.findAccountByEmail(email).map(account -> ResponseEntity.ok(accountMapper.toResponse(account, true))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -61,13 +61,13 @@ public class AdminAccountController {
     }
 
     @PutMapping("/{id}/role")
-    public ResponseEntity<AccountResponseDTO> updateAccountRole(@PathVariable Long id, @RequestParam Set<Role> role) {
+    public ResponseEntity<AccountPrivateResponseDTO> updateAccountRole(@PathVariable Long id, @RequestParam Set<Role> role) {
         Account account = accountService.updateAccountRole(id, role);
         return ResponseEntity.ok(accountMapper.toResponse(account, true));
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<AccountResponseDTO> changeAccountStatus(@PathVariable Long id, @RequestParam AccountStatus accountStatus) {
+    public ResponseEntity<AccountPrivateResponseDTO> changeAccountStatus(@PathVariable Long id, @RequestParam AccountStatus accountStatus) {
         Account account = accountService.updateAccountStatus(id, accountStatus);
         return ResponseEntity.ok(accountMapper.toResponse(account, true));
     }
