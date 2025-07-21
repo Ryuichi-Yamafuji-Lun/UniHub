@@ -10,7 +10,7 @@ const MySubleaseCarousel = () => {
   useEffect(() => {
     const fetchNewest = async () => {
       try {
-        const response = await api.get("/api/v1/public/subleases/newest?limit=4");
+        const response = await api.get("api/v1/owner/accounts/me/subleases?limit=4");
         setSubleases(response.data ?? []);
       } catch (error) {
         console.error("Failed to fetch newest subleases:", error);
