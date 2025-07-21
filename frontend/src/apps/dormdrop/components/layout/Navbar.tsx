@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiUser } from "react-icons/fi";
-// import { FaSearch } from "react-icons/fa";
+import { FiUser, FiMenu, FiX } from "react-icons/fi";
 
 const NavBar = () => {
-  // const [searchTerm, setSearchTerm] = useState("");
   const [scrollY, setScrollY] = useState(window.scrollY);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,7 +18,7 @@ const NavBar = () => {
       }
     };
 
-    const token = localStorage.getItem("token"); // or sessionStorage / cookies
+    const token = localStorage.getItem("token");
     setIsLoggedIn(!!token);
 
     window.addEventListener("scroll", handleScroll);
@@ -27,89 +26,91 @@ const NavBar = () => {
   }, [scrollY]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token"); // remove auth token
+    localStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigate("/"); // redirect to home
+    navigate("/");
   };
 
   return (
     <header className="w-full z-50 sticky top-0 left-0">
-      {/* Top Black Nav */}
+      {/* Sticky container with top nav + mobile menu */}
       <div
-        className={`bg-black text-white px-4 py-3 flex items-center justify-between gap-4 flex-wrap transition-transform duration-300 ${
+        className={`transition-transform duration-300 ${
           scrollDirection === "down" ? "-translate-y-full" : "translate-y-0"
         }`}
       >
-        {/* Left: Logo */}
-        <div className="flex items-center space-x-4 px-2">
-          <Link to="/" className="text-white text-2xl font-bold tracking-tight">
-            Unihub
-          </Link>
-        </div>
-
-        {/* Center: Search Bar */}
-        {/* <div className="flex-1 max-w-xl w-full">
-          <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
-            <input
-              type="text"
-              placeholder="Subleases"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-[#111] text-white pl-10 pr-4 py-2 rounded-md border border-transparent focus:outline-none focus:border-blue-500 placeholder:text-gray-400"
-            />
+        {/* Top Bar */}
+        <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
+          <div className="text-2xl font-bold tracking-tight">
+            <Link to="/">Unihub</Link>
           </div>
-        </div> */}
 
-        {/* Right: Auth */}
-        <div className="flex items-center space-x-6 text-sm min-w-fit">
-          {!isLoggedIn ? (
-            <>
-              <Link to="/login" className="hover:underline whitespace-nowrap">
-                Login
-              </Link>
-              <Link to="/signup" className="hover:underline whitespace-nowrap">
-                Signup
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/account/me" className="hover:underline flex items-center space-x-1">
-                <FiUser />
-                <span>Account</span>
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="hover:underline whitespace-nowrap text-left"
-              >
-                Logout
-              </button>
-            </>
-          )}
+          <div className="md:hidden">
+            <button onClick={() => setMenuOpen(!menuOpen)}>
+              {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+            </button>
+          </div>
+
+          {/* Desktop Auth Links */}
+          <div className="hidden md:flex items-center space-x-6 text-sm">
+            {!isLoggedIn ? (
+              <>
+                <Link to="/login" className="hover:underline whitespace-nowrap">Login</Link>
+                <Link to="/signup" className="hover:underline whitespace-nowrap">Signup</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/account/me" className="hover:underline flex items-center space-x-1">
+                  <FiUser />
+                  <span>Account</span>
+                </Link>
+                <button onClick={handleLogout} className="hover:underline text-left whitespace-nowrap">
+                  Logout
+                </button>
+              </>
+            )}
+          </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {menuOpen && (
+          <div className="bg-black text-white flex flex-col px-4 py-4 space-y-3 md:hidden">
+            {/* Auth Links */}
+            {!isLoggedIn ? (
+              <>
+                <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
+                <Link to="/signup" onClick={() => setMenuOpen(false)}>Signup</Link>
+              </>
+            ) : (
+              <>
+                <Link to="/account/me" onClick={() => setMenuOpen(false)}>Account</Link>
+                <button onClick={() => { handleLogout(); setMenuOpen(false); }}>Logout</button>
+              </>
+            )}
+
+            <hr className="border-gray-600 my-2" />
+
+            {/* Category Links */}
+            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Home</Link>
+            <Link to="/dormdrop" onClick={() => setMenuOpen(false)} className="hover:underline">Sublease</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Furniture (soon)</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Books (soon)</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Tutoring (soon)</Link>
+          </div>
+        )}
       </div>
 
-      {/* Bottom Categories */}
+      {/* Bottom Category Links (Desktop Only) */}
       <div
-        className={`bg-[#fef6e4] px-6 py-2 flex space-x-6 text-sm font-medium text-black overflow-x-auto transition-opacity duration-300 ${
+        className={`bg-[#fef6e4] px-6 py-2 space-x-6 text-sm font-medium text-black overflow-x-auto transition-opacity duration-300 hidden md:flex ${
           scrollY <= 10 ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        <Link to="/" className="hover:underline">
-          Home
-        </Link>
-        <Link to="/dormdrop" className="hover:underline">
-          Sublease
-        </Link>
-        <Link to="/" className="hover:underline">
-          Furniture (soon)
-        </Link>
-        <Link to="/" className="hover:underline">
-          Books (soon)
-        </Link>
-        <Link to="/" className="hover:underline">
-          Tutoring (soon)
-        </Link>
+        <Link to="/" className="hover:underline">Home</Link>
+        <Link to="/dormdrop" className="hover:underline">Sublease</Link>
+        <Link to="/" className="hover:underline">Furniture (soon)</Link>
+        <Link to="/" className="hover:underline">Books (soon)</Link>
+        <Link to="/" className="hover:underline">Tutoring (soon)</Link>
       </div>
     </header>
   );
