@@ -6,6 +6,7 @@ import java.util.Set;
 import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -57,7 +58,8 @@ public class SubleaseRegistrationRequest {
     private String leaseImage;
 
     @NotBlank(message = "Lease description is required")
-    @Size(max = 1000, message = "Lease description must be under 500 characters")
+    @Column(name = "lease_description", length = 1000)
+    @Size(max = 1000, message = "Lease description must be under 1000 characters")
     private String leaseDescription;
 
     @NotBlank(message = "Lease address is required")
