@@ -1,19 +1,8 @@
+import api from "@/lib/axios";
+import { CalendarDays, Mail, School, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, School, Star, CalendarDays } from "lucide-react";
-import api from "@/lib/axios";
-
-interface UserAccount {
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  school: string;
-  profilePicture: string;
-  sumOfRatings: number;
-  numberOfRatings: number;
-  createdAt: string;
-}
+import type { UserAccount } from "@/types/UserAccount";
 
 const EditProfilePage = () => {
   const [form, setForm] = useState<UserAccount | null>(null);

@@ -64,8 +64,7 @@ public class OwnerSubleaseController {
     }
     
     @GetMapping("/me/subleases")
-    public ResponseEntity<List<SubleaseResponseDTO>> searchOwnSublease(
-            @RequestParam(required = false) Integer limit) {
+    public ResponseEntity<List<SubleaseResponseDTO>> searchOwnSublease(@RequestParam(required = false) Integer limit) {
 
         List<SubleaseResponseDTO> subleases = subleaseService.getSubleaseByAccountOrderedByDate(limit);
 

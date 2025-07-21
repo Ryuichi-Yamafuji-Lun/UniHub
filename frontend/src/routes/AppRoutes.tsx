@@ -1,3 +1,4 @@
+import MySubleaseListingPage from "@/apps/dormdrop/pages/subleasepage/private/MySubleasePage";
 import DormDropAppRoutes from "@/apps/dormdrop/routes/AppRoutes";
 import AuthLayout from "@/layout/AuthLayout";
 import MainLayout from "@/layout/MainLayout";
@@ -30,6 +31,7 @@ const AppRoutes = () => {
         <Route path="/account/:userId" element={<MainLayout><PublicAccountProfile /></MainLayout>} />
         <Route path="/account/me" element={<MainLayout><UserProfilePage /></MainLayout>} />
         <Route path="/account/me/edit" element={<MainLayout><EditProfilePage /></MainLayout>} />
+        <Route path="/account/me/sublease" element={<MainLayout><MySubleaseListingPage/></MainLayout>} />
 
         {/* Catch-all fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

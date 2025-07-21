@@ -2,18 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import api from "@/lib/axios";
 import { School, Star, CalendarDays } from "lucide-react";
-
-interface UserAccount {
-  username: string;
-  email: string;
-  profilePicture?: string;
-  firstName?: string;
-  lastName?: string;
-  school?: string;
-  sumOfRatings?: number;
-  numberOfRatings?: number;
-  createdAt?: string;
-}
+import type { UserAccount } from "@/types/UserAccount";
 
 const PublicProfilePage = () => {
   const { userId } = useParams<{ userId: string }>();
