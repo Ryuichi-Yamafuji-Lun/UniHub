@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
-import { FaSearch } from "react-icons/fa";
+// import { FaSearch } from "react-icons/fa";
 
 const NavBar = () => {
-  const [searchTerm, setSearchTerm] = useState("");
+  // const [searchTerm, setSearchTerm] = useState("");
   const [scrollY, setScrollY] = useState(window.scrollY);
   const [scrollDirection, setScrollDirection] = useState("up");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -47,7 +47,7 @@ const NavBar = () => {
           </Link>
         </div>
 
-        {/* Center: Search Bar */}
+        {/* Center: Search Bar
         <div className="flex-1 max-w-xl w-full">
           <div className="relative">
             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
@@ -59,7 +59,7 @@ const NavBar = () => {
               className="w-full bg-[#111] text-white pl-10 pr-4 py-2 rounded-md border border-transparent focus:outline-none focus:border-blue-500 placeholder:text-gray-400"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Right: Auth */}
         <div className="flex items-center space-x-6 text-sm min-w-fit">
