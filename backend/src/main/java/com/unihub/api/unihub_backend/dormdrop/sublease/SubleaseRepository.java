@@ -51,9 +51,11 @@ public interface SubleaseRepository extends JpaRepository<Sublease, Long>{
 
     List<Sublease> findByAccountOrderByDatePostedDesc(Account account);
 
+    Page<Sublease> findByAccountOrderByDatePostedDesc(Account account, Pageable pageable);
+
     Page<Sublease> findAllByOrderByDatePostedDesc(Pageable pageable);
 
-    default List<Sublease> findTop7ByOrderByDatePostedDesc() {
+    default List<Sublease> findTop8ByOrderByDatePostedDesc() {
         return findAllByOrderByDatePostedDesc(PageRequest.of(0, 7)).getContent();
     }
 }

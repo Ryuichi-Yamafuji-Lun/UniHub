@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
 import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseService;
@@ -63,12 +64,15 @@ public class OwnerSubleaseController {
     }
     
     @GetMapping("/me/subleases")
-    public ResponseEntity<List<SubleaseResponseDTO>> searchOwnSublease() {
-        List<SubleaseResponseDTO> subleases = subleaseService.getSubleaseByAccountOrderedByDate();
+    public ResponseEntity<List<SubleaseResponseDTO>> searchOwnSublease(
+            @RequestParam(required = false) Integer limit) {
+
+        List<SubleaseResponseDTO> subleases = subleaseService.getSubleaseByAccountOrderedByDate(limit);
+
         if (subleases.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
+
         return ResponseEntity.ok(subleases);
     }
-
 }
