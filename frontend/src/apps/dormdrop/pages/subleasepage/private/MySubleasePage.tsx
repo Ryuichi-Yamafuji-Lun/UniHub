@@ -16,34 +16,47 @@ const MySubleaseListingPage = () => {
         console.error("Error fetching subleases:", err);
       }
     };
+
     fetchSubleases();
   }, []);
 
   return (
-    <div className="bg-gray-50 min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative">
-      <div className="max-w-screen-xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-800 mb-12 text-center">
-          My Subleases
+    <div className="bg-white min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-10 text-center tracking-tight">
+          📋 My Subleases
         </h1>
-        <div
-          className="grid gap-8 justify-center sm:justify-start"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            alignItems: "stretch",
-          }}
-        >
-          {subleases.map((sublease) => (
-            <div key={sublease.id} className="relative">
-              <SubleaseCard sublease={sublease} />
-            </div>
-          ))}
-        </div>
+
+        {subleases.length === 0 ? (
+          <div className="text-center text-gray-500 text-lg mt-8">
+            You haven’t listed any subleases yet.
+            <br />
+            <Link
+              to="/dormdrop/sublease/new"
+              className="text-blue-600 hover:underline font-medium"
+            >
+              Create one now
+            </Link>
+            .
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {subleases.map((sublease) => (
+              <div
+                key={sublease.id}
+                className="transition transform duration-200"
+              >
+                <SubleaseCard sublease={sublease} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
       {/* Floating Create Button */}
       <Link
         to="/dormdrop/sublease/new"
-        className="fixed bottom-6 right-6 w-16 h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg text-2xl flex items-center justify-center"
+        className="fixed bottom-6 right-6 w-16 h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-xl text-3xl flex items-center justify-center transition-transform hover:scale-110"
         aria-label="Create Sublease"
       >
         +
