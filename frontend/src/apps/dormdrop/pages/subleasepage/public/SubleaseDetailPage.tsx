@@ -1,12 +1,14 @@
 import type { SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import api from "@/lib/axios";
+// import { Heart, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Share2, Heart } from "lucide-react";
+import type { UserAccount } from "@/types/UserAccount";
 
 const SubleaseDetailPage = () => {
   const { id } = useParams();
   const [sublease, setSublease] = useState<SubleaseResponse | null>(null);
+  const [account, setAccount] = useState<UserAccount | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -14,6 +16,9 @@ const SubleaseDetailPage = () => {
       try {
         const res = await api.get(`/api/v1/public/subleases/${id}`);
         setSublease(res.data);
+
+        const account_res = await api.get("/api/v2/user/account/me");
+        setAccount(account_res.data);
       } catch (err) {
         console.error("Failed to fetch sublease:", err);
         setError("Failed to load sublease. Please try again.");
@@ -32,12 +37,20 @@ const SubleaseDetailPage = () => {
       <div className="flex justify-between items-start mb-1">
         <h1 className="text-3xl font-bold text-gray-900 text-left">{sublease.leaseName}</h1>
         <div className="flex gap-4">
-          <button className="flex hover:text-black hover:bg-gray-400flex items-center gap-1 text-sm text-gray-700 hover:bg-gray-100 hover:shadow px-3 py-2 rounded-lg transition">
+          {account && sublease && account.id === sublease.ownerId && (
+            <Link
+              to={`/dormdrop/sublease/${sublease.id}/edit`}
+              className="inline-block bg-[#084479] text-white px-4 py-2 rounded-lg hover:bg-[#06345d] text-sm font-semibold"
+            >
+              Edit Sublease
+            </Link>
+          )}
+          {/* <button className="flex hover:text-black hover:bg-gray-400flex items-center gap-1 text-sm text-gray-700 hover:bg-gray-100 hover:shadow px-3 py-2 rounded-lg transition">
             <Share2 className="w-4 h-4" /> Share
           </button>
           <button className="flex hover:text-black hover:bg-gray-400flex items-center gap-1 text-sm text-gray-700 hover:bg-gray-100 hover:shadow px-3 py-2 rounded-lg transition">
             <Heart className="w-4 h-4" /> Save
-          </button>
+          </button> */}
         </div>
       </div>
 
