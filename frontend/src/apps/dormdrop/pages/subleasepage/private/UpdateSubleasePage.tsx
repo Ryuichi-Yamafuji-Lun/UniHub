@@ -1,15 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "@/lib/axios";
-import {
-  SchoolsArray,
-  type Schools,
-  schoolDisplayNames,
-} from "@/apps/dormdrop/types/enums/Schools";
-import {
-  SubleaseAmenityArray,
-  type SubleaseAmenity,
-} from "@/apps/dormdrop/types/enums/SubleaseAmenity";
+import { SchoolsArray, type Schools, schoolDisplayNames, } from "@/apps/dormdrop/types/enums/Schools";
+import { SubleaseAmenityArray, type SubleaseAmenity, } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import type { SubleaseUpdateDTO } from "@/apps/dormdrop/types/Sublease";
 
 const UpdateSubleasePage = () => {
@@ -153,6 +146,20 @@ const UpdateSubleasePage = () => {
     }
   };
 
+  const handleDelete = async () => {
+    // Confirm before deleting
+    if (window.confirm("Are you sure you want to delete this sublease? This action cannot be undone.")) {
+      try {
+        await api.delete(`/api/v1/owner/accounts/me/subleases/${id}`);
+        alert("Sublease deleted successfully.");
+        navigate("/account/me");
+      } catch (error) {
+        console.error("Error deleting sublease:", error);
+        alert("Failed to delete the sublease. Please try again.");
+      }
+    }
+  };
+
   const inputClass =
     "w-full px-3 py-2 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500";
 
@@ -161,7 +168,16 @@ const UpdateSubleasePage = () => {
       onSubmit={handleSubmit}
       className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow space-y-8"
     >
-      <h2 className="text-3xl font-semibold text-center">Update Sublease</h2>
+      <div className="flex justify-between items-start">
+        <h2 className="text-3xl font-semibold">Update Sublease</h2>
+        <button
+          type="button" 
+          onClick={handleDelete}
+          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition text-sm font-semibold"
+        >
+          Delete
+        </button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
@@ -336,12 +352,14 @@ const UpdateSubleasePage = () => {
         </div>
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
-      >
-        Update Sublease
-      </button>
+      <div className="pt-4 space-y-4">
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition font-semibold"
+        >
+          Update Sublease
+        </button>
+      </div>
     </form>
   );
 };
