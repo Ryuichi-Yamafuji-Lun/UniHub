@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { CalendarDays, Mail, School, Star } from "lucide-react";
+import { CalendarDays, Mail, School, Star, Eye, EyeOff } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { UserAccount } from "@/types/UserAccount";
@@ -8,6 +8,7 @@ const EditProfilePage = () => {
   const [form, setForm] = useState<UserAccount | null>(null);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState({ pass: false, confirm: false });
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -16,7 +17,6 @@ const EditProfilePage = () => {
       const res = await api.get("/api/v2/user/account/me");
       setForm(res.data);
     };
-
     fetchProfile();
   }, []);
 
@@ -88,73 +88,98 @@ const EditProfilePage = () => {
         </div>
 
         {/* Editable Fields */}
-        <div className="flex-1 space-y-4">
-          <div>
-            <input
-              name="firstName"
-              value={form.firstName}
-              onChange={handleChange}
-              className="text-2xl font-bold text-gray-900 w-full border-b focus:outline-none"
-              placeholder="First Name"
-            />
-            <input
-              name="lastName"
-              value={form.lastName}
-              onChange={handleChange}
-              className="text-xl font-semibold text-gray-900 w-full border-b focus:outline-none mt-1"
-              placeholder="Last Name"
-            />
-            <input
-              name="username"
-              value={form.username}
-              onChange={handleChange}
-              className="text-gray-500 text-sm w-full border-b focus:outline-none mt-1"
-              placeholder="Username"
-            />
+        <div className="flex-1 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+              <input
+                name="firstName"
+                value={form.firstName}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                placeholder="First Name"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+              <input
+                name="lastName"
+                value={form.lastName}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                placeholder="Last Name"
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+              <input
+                name="username"
+                value={form.username}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                placeholder="Username"
+              />
+            </div>
           </div>
 
-          <div className="space-y-2 text-gray-700 text-sm">
+          {/* Static Info */}
+          <div className="space-y-2 text-gray-700 text-sm mt-4">
             <div className="flex items-center gap-2">
               <Mail size={16} className="text-gray-500" />
               <span className="font-medium w-20">Email:</span>
               <span>{form.email}</span>
             </div>
-
             <div className="flex items-center gap-2">
               <School size={16} className="text-gray-500" />
               <span className="font-medium w-20">School:</span>
               <span>{form.school}</span>
             </div>
-
             <div className="flex items-center gap-2">
               <Star size={16} className="text-yellow-500" />
               <span className="font-medium w-20">Rating:</span>
               <span>{averageRating} ★</span>
             </div>
-
             <div className="flex items-center gap-2">
               <CalendarDays size={16} className="text-gray-500" />
               <span className="font-medium w-20">Joined:</span>
               <span>{new Date(form.createdAt).toLocaleDateString()}</span>
             </div>
+          </div>
 
-            {/* Password */}
-            <div className="pt-4 space-y-2">
-              <label className="block text-sm font-medium">New Password</label>
+          {/* Password Fields */}
+          <div className="pt-4 space-y-4">
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
               <input
-                type="password"
+                type={showPassword.pass ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Leave blank to keep current"
-                className="w-full border px-3 py-2 rounded-md"
+                className="w-full border px-3 py-2 rounded-md pr-10"
               />
+              <span
+                onClick={() => setShowPassword((prev) => ({ ...prev, pass: !prev.pass }))}
+                className="absolute right-3 top-9 transform -translate-y-1/2 cursor-pointer text-gray-500"
+              >
+                {showPassword.pass ? <EyeOff size={20} /> : <Eye size={20} />}
+              </span>
+            </div>
+
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
               <input
-                type="password"
+                type={showPassword.confirm ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm new password"
-                className="w-full border px-3 py-2 rounded-md"
+                className="w-full border px-3 py-2 rounded-md pr-10"
               />
+              <span
+                onClick={() => setShowPassword((prev) => ({ ...prev, confirm: !prev.confirm }))}
+                className="absolute right-3 top-9 transform -translate-y-1/2 cursor-pointer text-gray-500"
+              >
+                {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
+              </span>
             </div>
           </div>
 
