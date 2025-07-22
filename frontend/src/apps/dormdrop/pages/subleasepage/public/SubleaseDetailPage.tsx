@@ -16,12 +16,16 @@ const SubleaseDetailPage = () => {
       try {
         const res = await api.get(`/api/v1/public/subleases/${id}`);
         setSublease(res.data);
-
-        const account_res = await api.get("/api/v2/user/account/me");
-        setAccount(account_res.data);
       } catch (err) {
         console.error("Failed to fetch sublease:", err);
         setError("Failed to load sublease. Please try again.");
+      }
+
+      try {
+        const accountRes = await api.get("/api/v2/user/account/me");
+        setAccount(accountRes.data);
+      } catch {
+        setAccount(null);
       }
     };
 
