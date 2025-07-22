@@ -11,6 +11,7 @@ import UserProfilePage from "@/pages/profilepage/UserProfilePage";
 import Signup from "@/pages/Signup";
 import VerifyEmail from "@/pages/VerifyEmail";
 import { Navigate, Route, Routes } from "react-router-dom";
+import PrivateRoute from "./PrivateRoute";
 
 const AppRoutes = () => {
   return (
@@ -28,10 +29,10 @@ const AppRoutes = () => {
         <Route path="/dormdrop/*" element={<DormDropAppRoutes />} />
 
         {/* Account Pages */}
-        <Route path="/account/:userId" element={<MainLayout><PublicAccountProfile /></MainLayout>} />
-        <Route path="/account/me" element={<MainLayout><UserProfilePage /></MainLayout>} />
-        <Route path="/account/me/edit" element={<MainLayout><EditProfilePage /></MainLayout>} />
-        <Route path="/account/me/sublease" element={<MainLayout><MySubleaseListingPage/></MainLayout>} />
+        <Route path="/account/:userId" element={<PrivateRoute><MainLayout><PublicAccountProfile /></MainLayout></PrivateRoute>} />
+        <Route path="/account/me" element={<PrivateRoute><MainLayout><UserProfilePage /></MainLayout></PrivateRoute>} />
+        <Route path="/account/me/edit" element={<PrivateRoute><MainLayout><EditProfilePage /></MainLayout></PrivateRoute>} />
+        <Route path="/account/me/sublease" element={<PrivateRoute><MainLayout><MySubleaseListingPage/></MainLayout></PrivateRoute>} />
 
         {/* Catch-all fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
