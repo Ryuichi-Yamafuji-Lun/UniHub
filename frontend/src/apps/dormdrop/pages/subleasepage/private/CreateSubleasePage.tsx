@@ -135,11 +135,11 @@ const CreateSubleasePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
           <label className="label">Lease Name</label>
-          <input name="leaseName" value={form.leaseName} onChange={handleChange} className={inputClass} />
+          <input name="leaseName" value={form.leaseName} onChange={handleChange} required className={inputClass} />
         </div>
         <div>
           <label className="label">Address</label>
-          <input name="leaseAddress" value={form.leaseAddress} onChange={handleChange} className={inputClass} />
+          <input name="leaseAddress" value={form.leaseAddress} onChange={handleChange} required className={inputClass} />
         </div>
         <div>
           <label className="label">Price (USD)</label>
@@ -150,6 +150,7 @@ const CreateSubleasePage = () => {
               name="leasePrice"
               value={form.leasePrice}
               onChange={handleChange}
+              required
               placeholder="300+"
               className={`${inputClass} pl-7`}
             />
@@ -164,6 +165,7 @@ const CreateSubleasePage = () => {
           name="leaseDescription"
           value={form.leaseDescription}
           onChange={handleChange}
+          required
           rows={4}
           className={inputClass}
         />
@@ -181,11 +183,11 @@ const CreateSubleasePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="label">Start Date</label>
-          <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} className={inputClass} />
+          <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} required className={inputClass} />
         </div>
         <div>
           <label className="label">End Date</label>
-          <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} className={inputClass} />
+          <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} required className={inputClass} />
         </div>
       </div>
 
@@ -193,15 +195,15 @@ const CreateSubleasePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="label">Number of Room</label>
-          <input name="numRoom" value={form.numRoom} onChange={handleChange} className={inputClass} />
+          <input name="numRoom" value={form.numRoom} onChange={handleChange} required className={inputClass} />
         </div>
         <div>
           <label className="label">Number of Bath</label>
-          <input name="numBath" value={form.numBath} onChange={handleChange} className={inputClass} />
+          <input name="numBath" value={form.numBath} onChange={handleChange} required className={inputClass} />
         </div>
         <div>
           <label className="label">Image URL</label>
-          <input name="leaseImage" value={form.leaseImage} onChange={handleChange} className={inputClass} />
+          <input name="leaseImage" value={form.leaseImage} onChange={handleChange} required className={inputClass} />
         </div>
       </div>
 
@@ -215,6 +217,7 @@ const CreateSubleasePage = () => {
               name={key}
               value={getFormValue(key as keyof typeof form)}
               onChange={handleChange}
+              required
               className={inputClass}
             />
           </div>
