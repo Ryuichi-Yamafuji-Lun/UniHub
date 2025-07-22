@@ -20,7 +20,10 @@ const Signup = () => {
   });
 
   const [error, setError] = useState<string | null>(null);
-  const [showPasswords, setShowPasswords] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    pass: false,
+    confirm: false,
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -29,8 +32,13 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    if (!form.email.includes("@")) return setError("Please enter a valid email.");
+    setError(null); 
+    if (!form.firstName || !form.lastName)
+      return setError("First and last name are required.");
+    if (!form.dateOfBirth)
+      return setError("Date of birth is required.");
+    if (!form.email.includes("@"))
+      return setError("Please enter a valid email.");
     if (form.username.length < 3 || form.username.length > 20)
       return setError("Username must be between 3 and 20 characters.");
     if (form.password.length < 8)
@@ -39,10 +47,7 @@ const Signup = () => {
       return setError("Passwords do not match.");
 
     try {
-      await api.post("api/v2/public/account", {
-        ...form,
-        dateOfBirth: form.dateOfBirth || null,
-      });
+      await api.post("api/v2/public/account", form);
       navigate(`/check-email?redirect=${redirect}`);
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -90,7 +95,7 @@ const Signup = () => {
 
           <div className="relative">
             <input
-              type={showPasswords ? "text" : "password"}
+              type={showPassword.pass ? "text" : "password"}
               name="password"
               placeholder="Password"
               value={form.password}
@@ -98,11 +103,17 @@ const Signup = () => {
               required
               className="w-full border border-gray-300 px-4 py-2 rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-[#084479]"
             />
+            <span
+              onClick={() => setShowPassword(prev => ({ ...prev, pass: !prev.pass }))}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+            >
+              {showPassword.pass ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
           </div>
 
           <div className="relative">
             <input
-              type={showPasswords ? "text" : "password"}
+              type={showPassword.confirm ? "text" : "password"}
               name="confirmPassword"
               placeholder="Confirm Password"
               value={form.confirmPassword}
@@ -110,39 +121,40 @@ const Signup = () => {
               required
               className="w-full border border-gray-300 px-4 py-2 rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-[#084479]"
             />
-
             <span
-              onClick={() => setShowPasswords(!showPasswords)}
+              onClick={() => setShowPassword(prev => ({ ...prev, confirm: !prev.confirm }))}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
             >
-              {showPasswords ? <EyeOff size={20} /> : <Eye size={20} />}
+              {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
           </div>
-
+          
           <input
             type="text"
             name="firstName"
-            placeholder="First Name (optional)"
+            placeholder="First Name"
             value={form.firstName}
             onChange={handleChange}
+            required
             className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
           />
 
           <input
             type="text"
             name="lastName"
-            placeholder="Last Name (optional)"
+            placeholder="Last Name"
             value={form.lastName}
             onChange={handleChange}
+            required
             className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
           />
 
           <input
             type="date"
             name="dateOfBirth"
-            placeholder="Date of Birth (optional)"
             value={form.dateOfBirth}
             onChange={handleChange}
+            required
             className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
           />
 
