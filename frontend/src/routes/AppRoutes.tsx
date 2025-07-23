@@ -1,42 +1,53 @@
-import MySubleaseListingPage from "@/apps/dormdrop/pages/subleasepage/private/MySubleasePage";
-import DormDropAppRoutes from "@/apps/dormdrop/routes/AppRoutes";
-import AuthLayout from "@/layout/AuthLayout";
+import { Suspense } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+
+import PrivateRoute from "./PrivateRoute";
+
 import MainLayout from "@/layout/MainLayout";
-import CheckEmailPage from "@/pages/CheckEmailPage";
+import AuthLayout from "@/layout/AuthLayout";
+
 import Landing from "@/pages/Landing";
 import LoginPage from "@/pages/Login";
-import EditProfilePage from "@/pages/profilepage/EditProfilePage";
-import PublicAccountProfile from "@/pages/profilepage/PublicProfilePage";
-import UserProfilePage from "@/pages/profilepage/UserProfilePage";
 import Signup from "@/pages/Signup";
 import VerifyEmail from "@/pages/VerifyEmail";
-import { Navigate, Route, Routes } from "react-router-dom";
-import PrivateRoute from "./PrivateRoute";
+import CheckEmailPage from "@/pages/CheckEmailPage";
+
+import UserProfilePage from "@/pages/profilepage/UserProfilePage";
+import EditProfilePage from "@/pages/profilepage/EditProfilePage";
+import PublicAccountProfile from "@/pages/profilepage/PublicProfilePage";
+
+import DormDropAppRoutes from "@/apps/dormdrop/routes/AppRoutes";
+import MySubleaseListingPage from "@/apps/dormdrop/pages/subleasepage/private/MySubleasePage";
 
 const AppRoutes = () => {
   return (
-    <Routes>
-        {/* Landing Page */}
-        <Route path="/" element={<MainLayout><Landing /></MainLayout>} />
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#fef6e4] text-gray-500">Loading...</div>}>
+      <Routes>
 
-        {/* Auth Page */}
+        {/* Auth Pages - no MainLayout */}
         <Route path="/login" element={<AuthLayout><LoginPage /></AuthLayout>} />
         <Route path="/signup" element={<AuthLayout><Signup /></AuthLayout>} />
         <Route path="/verify" element={<AuthLayout><VerifyEmail /></AuthLayout>} />
         <Route path="/check-email" element={<AuthLayout><CheckEmailPage /></AuthLayout>} />
 
-        {/* DormDrop Pages */}
-        <Route path="/dormdrop/*" element={<DormDropAppRoutes />} />
+        {/* Routes under MainLayout */}
+        <Route path="/" element={<MainLayout />}>
+          {/* Public */}
+          <Route index element={<Landing />} />
+          <Route path="dormdrop/*" element={<DormDropAppRoutes />} />
+          <Route path="account/:userId" element={<PrivateRoute><PublicAccountProfile /></PrivateRoute>} />
 
-        {/* Account Pages */}
-        <Route path="/account/:userId" element={<PrivateRoute><MainLayout><PublicAccountProfile /></MainLayout></PrivateRoute>} />
-        <Route path="/account/me" element={<PrivateRoute><MainLayout><UserProfilePage /></MainLayout></PrivateRoute>} />
-        <Route path="/account/me/edit" element={<PrivateRoute><MainLayout><EditProfilePage /></MainLayout></PrivateRoute>} />
-        <Route path="/account/me/sublease" element={<PrivateRoute><MainLayout><MySubleaseListingPage/></MainLayout></PrivateRoute>} />
+          {/* Private */}
+          <Route path="account/me" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
+          <Route path="account/me/edit" element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
+          <Route path="account/me/sublease" element={<PrivateRoute><MySubleaseListingPage /></PrivateRoute>} />
+        </Route>
 
-        {/* Catch-all fallback */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+
+      </Routes>
+    </Suspense>
   );
 };
 

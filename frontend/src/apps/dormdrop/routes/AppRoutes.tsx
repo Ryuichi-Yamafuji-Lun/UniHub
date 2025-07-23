@@ -1,7 +1,6 @@
 // src/apps/dormdrop/routes/AppRoutes.tsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "@/apps/dormdrop/pages/Landing";
-import MainLayout from "@/apps/dormdrop/layout/MainLayout";
 import SubleaseDetailPage from "@/apps/dormdrop/pages/subleasepage/public/SubleaseDetailPage";
 import SubleaseListPage from "@/apps/dormdrop/pages/subleasepage/public/SubleaseListingPage";
 import UpdateSubleasePage from "@/apps/dormdrop/pages/subleasepage/private/UpdateSubleasePage";
@@ -11,14 +10,32 @@ import PrivateRoute from "@/routes/PrivateRoute";
 const DormDropAppRoutes = () => {
   return (
     <Routes>
-      <Route path="" element={<MainLayout><Landing /></MainLayout>}/>
+      {/* Main Landing */}
+      <Route index element={<Landing />} />
 
-      {/* Sublease Paths */}
-      <Route path="sublease/:id" element={<MainLayout><SubleaseDetailPage /></MainLayout>} />
-      <Route path="sublease" element={<MainLayout><SubleaseListPage /></MainLayout>} />
-      <Route path="sublease/:subleaseId/edit" element={<PrivateRoute><MainLayout><UpdateSubleasePage /></MainLayout></PrivateRoute>} />
-      <Route path="sublease/new" element={<PrivateRoute><MainLayout><CreateSubleasePage /></MainLayout></PrivateRoute>} />
+      {/* Public Sublease Pages */}
+      <Route path="sublease" element={<SubleaseListPage />} />
+      <Route path="sublease/:id" element={<SubleaseDetailPage />} />
 
+      {/* Protected Sublease Actions */}
+      <Route
+        path="sublease/:subleaseId/edit"
+        element={
+          <PrivateRoute>
+            <UpdateSubleasePage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="sublease/new"
+        element={
+          <PrivateRoute>
+            <CreateSubleasePage />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/dormdrop" replace />} />
     </Routes>
   );
