@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "@/lib/axios";
-import { SchoolsArray, type Schools, schoolDisplayNames, } from "@/apps/dormdrop/types/enums/Schools";
+import { SchoolsArray, type Schools, schoolDisplayNames, } from "@/types/enums/Schools";
 import { SubleaseAmenityArray, type SubleaseAmenity, } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import type { SubleaseUpdateDTO } from "@/apps/dormdrop/types/Sublease";
 

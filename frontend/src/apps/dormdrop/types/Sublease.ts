@@ -1,4 +1,4 @@
-import type { Schools } from "@/apps/dormdrop/types/enums/Schools";
+import type { Schools } from "@/types/enums/Schools";
 import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 
 // 1. Create DTO

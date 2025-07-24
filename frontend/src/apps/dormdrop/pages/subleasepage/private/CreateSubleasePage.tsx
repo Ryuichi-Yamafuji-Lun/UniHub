@@ -1,4 +1,4 @@
-import { SchoolsArray, type Schools, schoolDisplayNames } from "@/apps/dormdrop/types/enums/Schools";
+import { SchoolsArray, type Schools, schoolDisplayNames } from "@/types/enums/Schools";
 import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import { SubleaseAmenityArray } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import api from "@/lib/axios";

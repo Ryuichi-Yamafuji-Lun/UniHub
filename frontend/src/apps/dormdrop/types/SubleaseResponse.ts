@@ -1,19 +1,5 @@
-export const SubleaseAmenity = {
-  WIFI: "WIFI",
-  LAUNDRY: "LAUNDRY",
-  FURNISHED: "FURNISHED",
-  AIR_CONDITIONING: "AIR_CONDITIONING",
-  PET_FRIENDLY: "PET_FRIENDLY",
-} as const;
-
-export type SubleaseAmenity = keyof typeof SubleaseAmenity;
-
-export const Schools = {
-  USC: "University of Southern California",
-  UCLA: "University of California, Los Angeles",
-} as const;
-
-export type Schools = keyof typeof Schools;
+import type { Schools } from "@/types/enums/Schools";
+import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 
 export interface SubleaseResponse {
   id: number;
