@@ -20,6 +20,7 @@ const Signup = () => {
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState({
     pass: false,
     confirm: false,
@@ -32,7 +33,11 @@ const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null); 
+    if (isSubmitting) return;
+
+    setError(null);
+    setIsSubmitting(true);
+
     if (!form.firstName || !form.lastName)
       return setError("First and last name are required.");
     if (!form.dateOfBirth)
@@ -55,6 +60,8 @@ const Signup = () => {
       } else {
         setError("An unexpected error occurred.");
       }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -128,7 +135,7 @@ const Signup = () => {
               {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
           </div>
-          
+
           <input
             type="text"
             name="firstName"
@@ -160,9 +167,14 @@ const Signup = () => {
 
           <button
             type="submit"
-            className="w-full bg-[#084479] text-white py-2 rounded-md hover:bg-[#06345d] transition"
+            disabled={isSubmitting}
+            className={`w-full text-white py-2 rounded-md transition ${
+              isSubmitting
+                ? "bg-[#084479]/50 cursor-not-allowed"
+                : "bg-[#084479] hover:bg-[#06345d]"
+            }`}
           >
-            Sign Up
+            {isSubmitting ? "Creating account..." : "Sign Up"}
           </button>
         </form>
 
