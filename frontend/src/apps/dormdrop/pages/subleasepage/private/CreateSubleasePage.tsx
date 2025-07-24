@@ -83,23 +83,41 @@ const CreateSubleasePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const numRoom = Number(form.numRoom);
+    const numBath = Number(form.numBath);
+    const roomWidth = Number(form.roomWidth);
+    const roomDepth = Number(form.roomDepth);
     const leasePriceNumber = Number(form.leasePrice);
+    
     if (isNaN(leasePriceNumber) || leasePriceNumber < 300) {
-      alert("Lease price must be at least $300.");
-      return;
+      return alert("Lease price must be at least $300.");
+    }
+
+    if (isNaN(numRoom) || numRoom <= 0) {
+      return alert("Number of rooms must be greater than 0.");
+    }
+
+    if (isNaN(numBath) || numBath <= 0) {
+      return alert("Number of baths must be greater than 0.");
+    }
+
+    if (isNaN(roomWidth) || roomWidth <= 0 || isNaN(roomDepth) || roomDepth <= 0) {
+      return alert("Room width and depth must be greater than 0.");
+    }
+    
+    if (new Date(form.leaseEndDate) < new Date(form.leaseStartDate)) {
+      return alert("End date cannot be before start date.");
     }
 
     if (form.leaseDescription.length > maxChars) {
-      alert(`Lease description must be under ${maxChars} characters.`);
-      return;
+      return alert(`Lease description must be under ${maxChars} characters.`);
     }
 
     const payload = {
       ...form,
       leasePrice: leasePriceNumber,
-      roomWidth: Number(form.roomWidth),
-      roomDepth: Number(form.roomDepth),
+      roomWidth: roomWidth,
+      roomDepth: roomDepth,
       latitude: Number(form.latitude),
       longitude: Number(form.longitude),
     };
@@ -183,11 +201,11 @@ const CreateSubleasePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="label">Start Date</label>
-          <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} required className={inputClass} />
+          <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} required className={inputClass} max={form.leaseEndDate || undefined} />
         </div>
         <div>
           <label className="label">End Date</label>
-          <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} required className={inputClass} />
+          <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} required className={inputClass} min={form.leaseStartDate || undefined} />
         </div>
       </div>
 
@@ -195,11 +213,11 @@ const CreateSubleasePage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="label">Number of Room</label>
-          <input name="numRoom" value={form.numRoom} onChange={handleChange} required className={inputClass} />
+          <input name="numRoom" value={form.numRoom} onChange={handleChange} required className={inputClass} min={1} />
         </div>
         <div>
           <label className="label">Number of Bath</label>
-          <input name="numBath" value={form.numBath} onChange={handleChange} required className={inputClass} />
+          <input name="numBath" value={form.numBath} onChange={handleChange} required className={inputClass} min={1} />
         </div>
         <div>
           <label className="label">Image URL</label>
