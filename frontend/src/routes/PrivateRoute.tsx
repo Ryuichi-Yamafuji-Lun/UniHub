@@ -9,22 +9,24 @@ type PrivateRouteProps = {
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const { isLoggedIn, checked } = useAuth();
-  const [showLoading, setShowLoading] = useState(false);
+  const [minDelayPassed, setMinDelayPassed] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setShowLoading(true);
-    }, 300); 
+      setMinDelayPassed(true);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, []);
 
-  if (!checked) {
-    return showLoading ? (
-      <div className="w-full h-screen flex items-center justify-center">
-        <p className="text-gray-500">Checking authentication...</p>
+  if (!checked || !minDelayPassed) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-xl font-medium">
+          Checking authentication...
+        </p>
       </div>
-    ) : null;
+    );
   }
 
   if (!isLoggedIn) {

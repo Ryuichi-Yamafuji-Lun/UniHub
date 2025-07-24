@@ -8,13 +8,25 @@ export const useNewestSubleases = () => {
 
   useEffect(() => {
     const fetch = async () => {
+      const startTime = Date.now();
+
       try {
         const res = await api.get("/api/v1/public/subleases/newest?limit=8");
         setData(res.data ?? []);
       } catch (error) {
         console.error("Error fetching newest subleases:", error);
       } finally {
-        setLoading(false);
+        const elapsedTime = Date.now() - startTime;
+        const minDuration = 1000; 
+        const remainingTime = minDuration - elapsedTime;
+
+        if (remainingTime > 0) {
+          setTimeout(() => {
+            setLoading(false);
+          }, remainingTime);
+        } else {
+          setLoading(false);
+        }
       }
     };
 

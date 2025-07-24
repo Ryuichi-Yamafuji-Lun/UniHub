@@ -108,9 +108,9 @@ const NavBar = () => {
       >
         <Link to="/" className="hover:underline">Home</Link>
         <Link to="/dormdrop" className="hover:underline">Sublease</Link>
-        <Link to="/" className="hover:underline">Furniture (soon)</Link>
+        {/* <Link to="/" className="hover:underline">Furniture (soon)</Link>
         <Link to="/" className="hover:underline">Books (soon)</Link>
-        <Link to="/" className="hover:underline">Tutoring (soon)</Link>
+        <Link to="/" className="hover:underline">Tutoring (soon)</Link> */}
       </div>
     </header>
   );

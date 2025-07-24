@@ -6,6 +6,7 @@ import SubleaseListPage from "@/apps/dormdrop/pages/subleasepage/public/Sublease
 import UpdateSubleasePage from "@/apps/dormdrop/pages/subleasepage/private/UpdateSubleasePage";
 import CreateSubleasePage from "@/apps/dormdrop/pages/subleasepage/private/CreateSubleasePage";
 import PrivateRoute from "@/routes/PrivateRoute";
+import RouteLoader from "@/routes/RouteLoader";
 
 const DormDropAppRoutes = () => {
   return (
@@ -14,8 +15,8 @@ const DormDropAppRoutes = () => {
       <Route index element={<Landing />} />
 
       {/* Public Sublease Pages */}
-      <Route path="sublease" element={<SubleaseListPage />} />
-      <Route path="sublease/:id" element={<SubleaseDetailPage />} />
+      <Route path="sublease" element={<RouteLoader><SubleaseListPage /></RouteLoader>} />
+      <Route path="sublease/:id" element={<RouteLoader><SubleaseDetailPage /></RouteLoader>} />
 
       {/* Protected Sublease Actions */}
       <Route
