@@ -13,7 +13,6 @@ const Landing = () => {
       {/* Listings */}
       <div className="relative z-20 bg-[#E2E6E6]">
         {loading ? (
-          // Use the correct skeleton component that you built
           <NewestSubleaseCarousel.Skeleton />
         ) : (
           <NewestSubleaseCarousel subleases={subleases} />
