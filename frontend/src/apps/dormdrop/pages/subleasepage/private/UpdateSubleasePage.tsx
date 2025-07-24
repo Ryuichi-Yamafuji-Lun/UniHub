@@ -137,6 +137,15 @@ const UpdateSubleasePage = () => {
       alert(`Lease description must be under ${maxChars} characters.`);
       return;
     }
+    if (form.numRoom <= 0 || form.numBath <= 0) {
+      return alert("Rooms and bathrooms must be greater than 0.");
+    }
+    if (form.roomWidth <= 0 || form.roomDepth <= 0) {
+      return alert("Room dimensions must be greater than 0.");
+    }
+    if (new Date(form.leaseEndDate) < new Date(form.leaseStartDate)) {
+      return alert("End date cannot be before start date.");
+    }
 
     try {
       await api.put(`/api/v1/owner/accounts/me/subleases/${id}`, form);
@@ -187,6 +196,7 @@ const UpdateSubleasePage = () => {
             value={form.leaseName ?? ""}
             onChange={handleChange}
             className={inputClass}
+            required
           />
         </div>
         <div>
@@ -196,6 +206,7 @@ const UpdateSubleasePage = () => {
             value={form.leaseAddress ?? ""}
             onChange={handleChange}
             className={inputClass}
+            required
           />
         </div>
         <div>
@@ -206,6 +217,7 @@ const UpdateSubleasePage = () => {
             value={form.leasePrice ?? ""}
             onChange={handleChange}
             className={inputClass}
+            required
           />
         </div>
       </div>
@@ -218,6 +230,7 @@ const UpdateSubleasePage = () => {
           onChange={handleChange}
           rows={4}
           className={inputClass}
+          required
         />
         <div className="flex justify-between mt-1 text-sm">
           <span className={leaseDescriptionError ? "text-red-600" : "text-gray-600"}>
@@ -238,6 +251,8 @@ const UpdateSubleasePage = () => {
             value={form.leaseStartDate ?? ""}
             onChange={handleChange}
             className={inputClass}
+            required
+            max={form.leaseEndDate || undefined}
           />
         </div>
         <div>
@@ -248,6 +263,8 @@ const UpdateSubleasePage = () => {
             value={form.leaseEndDate ?? ""}
             onChange={handleChange}
             className={inputClass}
+            required
+            min={form.leaseStartDate || undefined}
           />
         </div>
       </div>
