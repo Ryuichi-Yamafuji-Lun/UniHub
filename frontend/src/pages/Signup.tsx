@@ -3,6 +3,7 @@ import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { isAllowedEmail } from "@/types/enums/Email";
 
 const Signup = () => {
   const location = useLocation();
@@ -36,7 +37,6 @@ const Signup = () => {
     if (isSubmitting) return;
 
     setError(null);
-    setIsSubmitting(true);
 
     if (!form.firstName || !form.lastName)
       return setError("First and last name are required.");
@@ -44,12 +44,19 @@ const Signup = () => {
       return setError("Date of birth is required.");
     if (!form.email.includes("@"))
       return setError("Please enter a valid email.");
+    if (!isAllowedEmail(form.email))
+      return setError("Only school emails are allowed, or UniHub is not available for your school.");
     if (form.username.length < 3 || form.username.length > 20)
       return setError("Username must be between 3 and 20 characters.");
     if (form.password.length < 8)
       return setError("Password must be at least 8 characters long.");
     if (form.password !== form.confirmPassword)
       return setError("Passwords do not match.");
+    if (new Date(form.dateOfBirth) > new Date()) {
+      return setError("Date of birth cannot be in the future.");
+}
+    
+    setIsSubmitting(true);
 
     try {
       await api.post("api/v2/public/account", form);
@@ -160,6 +167,7 @@ const Signup = () => {
             type="date"
             name="dateOfBirth"
             value={form.dateOfBirth}
+            max={new Date().toISOString().split("T")[0]}
             onChange={handleChange}
             required
             className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
