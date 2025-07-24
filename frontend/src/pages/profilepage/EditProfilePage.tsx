@@ -31,15 +31,17 @@ const EditProfilePage = () => {
 
     if (password) {
       if (password.length < 8) {
-        setError("Password must be at least 8 characters.");
-        return;
+        return setError("Password must be at least 8 characters.");
       }
       if (password !== confirmPassword) {
-        setError("Passwords do not match.");
-        return;
+        return setError("Passwords do not match.");
       }
     }
-
+    if (form) {
+      if(!form.username){
+        return setError("Username is required")
+      }
+    }
     try {
       const payload = {
         ...form,
@@ -116,6 +118,7 @@ const EditProfilePage = () => {
                 name="username"
                 value={form.username}
                 onChange={handleChange}
+                required
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
                 placeholder="Username"
               />
