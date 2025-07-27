@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import SubleaseCard from "@/apps/dormdrop/components/ui/SubleaseCard";
 import SearchFilters from "@/apps/dormdrop/components/ui/SearchFilters";
+import SubleaseCard from "@/apps/dormdrop/components/ui/SubleaseCard";
+import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import type { SearchFiltersType } from "@/apps/dormdrop/types/SearchFilters";
 import type { SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import api from "@/lib/axios";
-import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
+import { useEffect, useState } from "react";
 
 const SubleaseListPage = () => {
   const [allSubleases, setAllSubleases] = useState<SubleaseResponse[]>([]);
@@ -13,6 +13,7 @@ const SubleaseListPage = () => {
     leaseName: "",
     maxPrice: 30000,
     amenities: [] as SubleaseAmenity[],
+    school: undefined,
   });
 
   useEffect(() => {
@@ -31,14 +32,20 @@ const SubleaseListPage = () => {
 
   useEffect(() => {
     const applyFilters = () => {
+      if (!Array.isArray(allSubleases)) {
+        setFilteredSubleases([]);
+        return;
+      }
+      
       const filtered = allSubleases.filter((sublease) => {
         const matchesName = !filters.leaseName || sublease.leaseName?.toLowerCase().includes(filters.leaseName.toLowerCase());
         const matchesPrice = !filters.maxPrice || sublease.leasePrice <= filters.maxPrice;
         const matchesAmenities = (filters.amenities ?? []).every((amenity) =>
           sublease.amenities?.includes(amenity)
         );
+        const matchesSchools = !filters.school || sublease.school.includes(filters.school);
 
-        return matchesName && matchesPrice && matchesAmenities;
+        return matchesName && matchesPrice && matchesAmenities && matchesSchools;
       });
 
       setFilteredSubleases(filtered);
@@ -54,8 +61,9 @@ const SubleaseListPage = () => {
   const handleReset = () => {
     const resetFilters: SearchFiltersType = {
       leaseName: "",
-      maxPrice: 5000,
+      maxPrice: 30000,
       amenities: [],
+      school: undefined,
     };
     setFilters(resetFilters);
   };

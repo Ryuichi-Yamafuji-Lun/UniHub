@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.unihub.api.unihub_backend.account.Account;
+import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseUpdateRequest;
@@ -115,7 +116,7 @@ public class SubleaseService {
 
     @Transactional(readOnly = true)
     public List<SubleaseResponseDTO> searchSublease(
-            Double maxPrice, Double latMin, Double latMax, Double lngMin,Double lngMax, Double widthMin, Double widthMax, Double depthMin, Double depthMax, String leaseName, Set<SubleaseAmenity> requiredAmenities) {
+            Double maxPrice, Double latMin, Double latMax, Double lngMin,Double lngMax, Double widthMin, Double widthMax, Double depthMin, Double depthMax, String leaseName, Set<SubleaseAmenity> requiredAmenities, Set<Schools> schools) {
         if (maxPrice == null || maxPrice <= 0) maxPrice = Double.MAX_VALUE;
         if (latMin == null) latMin = -90.0;
         if (latMax == null) latMax = 90.0;
@@ -134,6 +135,13 @@ public class SubleaseService {
         if (requiredAmenities != null && !requiredAmenities.isEmpty()) {
             results = results.stream()
                 .filter(s -> s.getAmenities().containsAll(requiredAmenities))
+                .toList();
+        }
+
+        // filter by school
+        if (schools != null && !schools.isEmpty()) {
+            results = results.stream()
+                .filter(s -> s.getLeaseSchool().containsAll(schools))
                 .toList();
         }
 

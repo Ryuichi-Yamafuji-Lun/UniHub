@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
 import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseService;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
@@ -57,9 +58,11 @@ public class PublicSubleaseController {
         @RequestParam(required = false) Double depthMin,
         @RequestParam(required = false) Double depthMax,
         @RequestParam(required = false) String leaseName,
-        @RequestParam(required = false) Set<SubleaseAmenity> amenities
+        @RequestParam(required = false) Set<SubleaseAmenity> amenities,
+        @RequestParam(required = false)
+        Set<Schools> schools
     ) {
-        List<SubleaseResponseDTO> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName, amenities);
+        List<SubleaseResponseDTO> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName, amenities, schools);
         return subleases.isEmpty() 
             ? ResponseEntity.noContent().build()
             : ResponseEntity.ok(subleases);

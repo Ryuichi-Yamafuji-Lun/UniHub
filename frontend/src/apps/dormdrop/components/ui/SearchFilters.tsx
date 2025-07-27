@@ -1,24 +1,26 @@
 import { type ChangeEvent } from "react";
 import type { SearchFiltersType } from "@/apps/dormdrop/types/SearchFilters";
 import { SubleaseAmenityArray, type SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
+import { SchoolsArray, type Schools, schoolDisplayNames } from "@/types/enums/Schools";
 
 interface SearchFiltersProps {
   filters: SearchFiltersType;
-  onFilterChange: (newFilters: SearchFiltersType
-  ) => void;
+  onFilterChange: (newFilters: SearchFiltersType) => void;
   onReset: () => void;
 }
 
 const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps) => {
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onFilterChange({ ...filters, [e.target.name]: e.target.value });
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    const parsedValue = name === "maxPrice" ? parseInt(value) : value;
+    onFilterChange({ ...filters, [name]: parsedValue });
   };
 
   const handleAmenityChange = (amenity: SubleaseAmenity) => {
     const exists = (filters.amenities ?? []).includes(amenity);
     const updatedAmenities = exists
-        ? (filters.amenities ?? []).filter((a) => a !== amenity)
-        : [...(filters.amenities ?? []), amenity];
+      ? (filters.amenities ?? []).filter((a) => a !== amenity)
+      : [...(filters.amenities ?? []), amenity];
 
     onFilterChange({ ...filters, amenities: updatedAmenities });
   };
@@ -27,7 +29,7 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
     <div className="bg-gray-50 p-6 rounded-lg shadow-sm w-full">
       <h3 className="text-xl font-bold text-gray-800 mb-4">Filters</h3>
 
-      {/* Lease Name Search */}
+      {/* Lease Name */}
       <div className="mb-6">
         <label htmlFor="leaseName" className="block text-sm font-medium text-gray-700 mb-1">
           Lease Name
@@ -43,9 +45,9 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
         />
       </div>
 
-      {/* Max Price Slider */}
+      {/* Max Price */}
       <div className="mb-6">
-        <label htmlFor="maxPrice" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="maxPrice" className="block text-sm font-medium text-gray-700 mb-1">
           Max Price: ${filters.maxPrice || "Any"}
         </label>
         <input
@@ -61,7 +63,33 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
         />
       </div>
 
-      {/* Amenities Checkboxes */}
+      {/* School Dropdown (Single Select) */}
+      <div className="mb-6">
+        <label htmlFor="school" className="block text-sm font-medium text-gray-700 mb-1">
+          School
+        </label>
+        <select
+          id="school"
+          name="school"
+          value={filters.school || ""}
+          onChange={(e) =>
+            onFilterChange({
+              ...filters,
+              school: e.target.value === "" ? undefined : (e.target.value as Schools),
+            })
+          }
+        >
+          <option value="">Any</option>
+          {SchoolsArray.map((school) => (
+            <option key={school} value={school}>
+              {schoolDisplayNames[school]}
+            </option>
+          ))}
+        </select>
+
+      </div>
+
+      {/* Amenities */}
       <div className="mb-6">
         <h4 className="text-md font-semibold text-gray-700 mb-2">Amenities</h4>
         <div className="space-y-2">
@@ -70,12 +98,11 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
               <input
                 type="checkbox"
                 id={amenity}
-                value={amenity}
                 checked={(filters.amenities ?? []).includes(amenity)}
                 onChange={() => handleAmenityChange(amenity)}
                 className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
               />
-              <label htmlFor={amenity} className="ml-2 text-sm text-gray-600">
+              <label htmlFor={amenity} className="ml-2 text-sm text-gray-600 capitalize">
                 {amenity.replace("_", " ").toLowerCase().replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
               </label>
             </div>
