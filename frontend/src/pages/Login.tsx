@@ -55,7 +55,7 @@ const LoginPage = () => {
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
-              placeholder="you@usc.edu or username"
+              placeholder="you@school.edu or username"
               required
             />
           </div>
