@@ -26,11 +26,11 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
   };
 
   return (
-    <div className="bg-gray-50 p-6 rounded-lg shadow-sm w-full">
-      <h3 className="text-xl font-bold text-gray-800 mb-4">Filters</h3>
+    <div className="bg-white p-6 rounded-2xl shadow-md w-full border border-gray-200">
+      <h3 className="text-2xl font-semibold text-gray-800 mb-6">🔍 Filter Subleases</h3>
 
       {/* Lease Name */}
-      <div className="mb-6">
+      <div className="mb-5">
         <label htmlFor="leaseName" className="block text-sm font-medium text-gray-700 mb-1">
           Lease Name
         </label>
@@ -40,16 +40,21 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
           id="leaseName"
           value={filters.leaseName || ""}
           onChange={handleInputChange}
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
           placeholder="e.g., The Standard"
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
         />
       </div>
 
       {/* Max Price */}
       <div className="mb-6">
-        <label htmlFor="maxPrice" className="block text-sm font-medium text-gray-700 mb-1">
-          Max Price: ${filters.maxPrice || "Any"}
+        <label htmlFor="maxPrice" className="block text-sm font-medium text-gray-700 mb-2">
+          Max Monthly Price
         </label>
+        <div className="flex items-center justify-between text-sm text-gray-500 mb-1">
+          <span>$100</span>
+          <span className="font-medium text-gray-800">${filters.maxPrice || 30000}</span>
+          <span>$30,000</span>
+        </div>
         <input
           type="range"
           name="maxPrice"
@@ -59,13 +64,13 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
           step="50"
           value={filters.maxPrice || 30000}
           onChange={handleInputChange}
-          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          className="w-full h-2 bg-indigo-100 rounded-lg appearance-none cursor-pointer accent-indigo-600"
         />
       </div>
 
-      {/* School Dropdown (Single Select) */}
+      {/* School Dropdown */}
       <div className="mb-6">
-        <label htmlFor="school" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="school" className="block text-sm font-medium text-gray-700 mb-2">
           School
         </label>
         <select
@@ -78,6 +83,7 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
               school: e.target.value === "" ? undefined : (e.target.value as Schools),
             })
           }
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm"
         >
           <option value="">Any</option>
           {SchoolsArray.map((school) => (
@@ -86,33 +92,39 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
             </option>
           ))}
         </select>
-
       </div>
 
       {/* Amenities */}
       <div className="mb-6">
-        <h4 className="text-md font-semibold text-gray-700 mb-2">Amenities</h4>
-        <div className="space-y-2">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">Amenities</h4>
+        <div className="grid grid-cols-2 gap-2">
           {SubleaseAmenityArray.map((amenity) => (
-            <div key={amenity} className="flex items-center">
+            <label
+              key={amenity}
+              htmlFor={amenity}
+              className="flex items-center space-x-2 text-sm text-gray-600"
+            >
               <input
                 type="checkbox"
                 id={amenity}
                 checked={(filters.amenities ?? []).includes(amenity)}
                 onChange={() => handleAmenityChange(amenity)}
-                className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                className="h-4 w-4 text-indigo-600 border-gray-300 rounded"
               />
-              <label htmlFor={amenity} className="ml-2 text-sm text-gray-600 capitalize">
-                {amenity.replace("_", " ").toLowerCase().replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
-              </label>
-            </div>
+              <span>
+                {amenity
+                  .replace("_", " ")
+                  .toLowerCase()
+                  .replace(/(^\w|\s\w)/g, (m) => m.toUpperCase())}
+              </span>
+            </label>
           ))}
         </div>
       </div>
 
       <button
         onClick={onReset}
-        className="w-full text-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+        className="w-full mt-2 text-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition"
       >
         Reset Filters
       </button>
