@@ -146,6 +146,10 @@ const UpdateSubleasePage = () => {
     if (new Date(form.leaseEndDate) < new Date(form.leaseStartDate)) {
       return alert("End date cannot be before start date.");
     }
+    if (form.leaseSchool.length === 0) {
+      alert("Please select at least one school.");
+      return;
+    }
 
     try {
       await api.put(`/api/v1/owner/accounts/me/subleases/${id}`, form);

@@ -113,6 +113,11 @@ const CreateSubleasePage = () => {
       return alert(`Lease description must be under ${maxChars} characters.`);
     }
 
+    if (form.leaseSchool.length === 0) {
+      alert("Please select at least one school.");
+      return;
+    }
+
     const payload = {
       ...form,
       leasePrice: leasePriceNumber,
