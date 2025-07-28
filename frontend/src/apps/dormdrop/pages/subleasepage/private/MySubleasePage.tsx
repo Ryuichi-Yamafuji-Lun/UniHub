@@ -21,7 +21,7 @@ const MySubleaseListingPage = () => {
   }, []);
 
   return (
-    <div className="bg-white min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative">
+    <div className="bg-[#fef6e4] min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-10 text-center tracking-tight">
           📋 My Subleases
@@ -40,11 +40,11 @@ const MySubleaseListingPage = () => {
             .
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {subleases.map((sublease) => (
               <div
                 key={sublease.id}
-                className="transition transform duration-200"
+                className="w-full flex justify-center sm:block"
               >
                 <SubleaseCard sublease={sublease} />
               </div>

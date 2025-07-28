@@ -21,7 +21,7 @@ const SubleaseListPage = () => {
       try {
         const response = await api.get("/api/v1/public/subleases/all");
         setAllSubleases(response.data);
-        setFilteredSubleases(response.data); 
+        setFilteredSubleases(response.data);
       } catch (err) {
         console.error("Error fetching subleases:", err);
       }
@@ -36,7 +36,7 @@ const SubleaseListPage = () => {
         setFilteredSubleases([]);
         return;
       }
-      
+
       const filtered = allSubleases.filter((sublease) => {
         const matchesName = !filters.leaseName || sublease.leaseName?.toLowerCase().includes(filters.leaseName.toLowerCase());
         const matchesPrice = !filters.maxPrice || sublease.leasePrice <= filters.maxPrice;
@@ -59,25 +59,26 @@ const SubleaseListPage = () => {
   };
 
   const handleReset = () => {
-    const resetFilters: SearchFiltersType = {
+    setFilters({
       leaseName: "",
       maxPrice: 30000,
       amenities: [],
       school: undefined,
-    };
-    setFilters(resetFilters);
+    });
   };
 
   return (
-    <div className="bg-white min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-        {/* Filters Sidebar */}
-        <div className="lg:w-1/4 w-full">
-          <SearchFilters
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onReset={handleReset}
-          />
+    <div className="bg-[#fef6e4] min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 xl:gap-10">
+        {/* Filters Sidebar (sticky on desktop) */}
+        <div className="w-full xl:w-1/4">
+          <div className="xl:sticky xl:top-24">
+            <SearchFilters
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onReset={handleReset}
+            />
+          </div>
         </div>
 
         {/* Sublease Grid */}
@@ -89,11 +90,9 @@ const SubleaseListPage = () => {
           {filteredSubleases.length === 0 ? (
             <div className="text-center text-gray-500 text-lg">No subleases match your filters.</div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
+            <div className="grid place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3">
               {filteredSubleases.map((sublease) => (
-                <div key={sublease.id}>
-                  <SubleaseCard sublease={sublease} />
-                </div>
+                <SubleaseCard key={sublease.id} sublease={sublease} />
               ))}
             </div>
           )}
