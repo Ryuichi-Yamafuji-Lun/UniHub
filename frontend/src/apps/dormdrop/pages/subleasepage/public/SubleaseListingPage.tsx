@@ -68,11 +68,12 @@ const SubleaseListPage = () => {
   };
 
   return (
-    <div className="bg-[#fef6e4] min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto flex flex-col xl:flex-row gap-8 xl:gap-10">
-        {/* Filters Sidebar (sticky on desktop) */}
-        <div className="w-full xl:w-1/4">
-          <div className="xl:sticky xl:top-24">
+    <div className="bg-[#fef6e4] min-h-screen">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-10">
+        
+        {/* Filters Sidebar (sticky on desktop, scrollable) */}
+        <div className="w-full lg:w-1/4">
+          <div className="lg:sticky lg:top-24 max-h-screen overflow-y-auto">
             <SearchFilters
               filters={filters}
               onFilterChange={handleFilterChange}
@@ -81,8 +82,8 @@ const SubleaseListPage = () => {
           </div>
         </div>
 
-        {/* Sublease Grid */}
-        <div className="flex-1">
+        {/* Sublease Grid (scrollable) */}
+        <div className="flex-1 overflow-y-auto max-h-screen">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">
             🏠 Available Subleases
           </h1>
@@ -90,7 +91,7 @@ const SubleaseListPage = () => {
           {filteredSubleases.length === 0 ? (
             <div className="text-center text-gray-500 text-lg">No subleases match your filters.</div>
           ) : (
-            <div className="grid place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3">
               {filteredSubleases.map((sublease) => (
                 <SubleaseCard key={sublease.id} sublease={sublease} />
               ))}

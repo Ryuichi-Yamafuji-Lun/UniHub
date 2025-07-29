@@ -30,11 +30,14 @@ const AppRoutes = () => {
         <Route path="/verify" element={<RouteLoader><AuthLayout><VerifyEmail /></AuthLayout></RouteLoader>} />
         <Route path="/check-email" element={<RouteLoader><AuthLayout><CheckEmailPage /></AuthLayout></RouteLoader>} />
 
+        {/* DormDrop Route */}
+        <Route path="dormdrop/*" element={<DormDropAppRoutes />} />
+
         {/* Routes under MainLayout */}
         <Route path="/" element={<MainLayout />}>
           {/* Public */}
           <Route index element={<Landing />} />
-          <Route path="dormdrop/*" element={<DormDropAppRoutes />} />
+          
           <Route path="account/:userId" element={<PrivateRoute><PublicAccountProfile /></PrivateRoute>} />
 
           {/* Private */}
