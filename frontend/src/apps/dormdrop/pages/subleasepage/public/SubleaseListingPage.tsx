@@ -72,7 +72,7 @@ const SubleaseListPage = () => {
 
   return (
     <div className="bg-[#fef6e4] min-h-screen">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-10">
+      <div className="mx-auto flex flex-col lg:flex-row gap-8 lg:gap-10">
         
         {/* Filters Sidebar */}
         <div className="w-full lg:w-1/4">
