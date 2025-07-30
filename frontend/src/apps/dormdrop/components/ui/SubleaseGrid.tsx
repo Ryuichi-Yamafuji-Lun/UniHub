@@ -15,7 +15,7 @@ const SubleaseGrid = ({ subleases }: SubleaseGridProps) => {
   }
 
   return (
-    <div className="grid place-items-center gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 p-4">
+    <div className="grid grid-cols-[repeat(auto-fit,250px)] gap-2 py-2">
       {subleases.map((sublease) => (
         <SubleaseCard key={sublease.id} sublease={sublease} />
       ))}
