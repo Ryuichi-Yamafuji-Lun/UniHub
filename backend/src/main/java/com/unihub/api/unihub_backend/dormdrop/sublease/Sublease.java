@@ -58,7 +58,7 @@ public class Sublease {
     @ElementCollection(targetClass = SubleaseRoomType.class)
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "sublease_room_type", joinColumns = 
-    @JoinColumn(name = "room_type"))
+    @JoinColumn(name = "sublease_id"))
     private Set<SubleaseRoomType> roomType;
 
     private Double leasePrice;
