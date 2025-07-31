@@ -4,6 +4,7 @@ import { SubleaseAmenityArray } from "@/apps/dormdrop/types/enums/SubleaseAmenit
 import api from "@/lib/axios";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { SubleaseRoomTypeArray, type SubleaseRoomType } from "@/apps/dormdrop/types/enums/SubleaseRoomType";
 
 const CreateSubleasePage = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const CreateSubleasePage = () => {
     leaseStartDate: "",
     leaseEndDate: "",
     leaseImage: "",
+    roomType: [] as SubleaseRoomType[],
     numRoom: "",
     numBath: "",
     roomWidth: "",
@@ -91,6 +93,10 @@ const CreateSubleasePage = () => {
     
     if (isNaN(leasePriceNumber) || leasePriceNumber < 300) {
       return alert("Lease price must be at least $300.");
+    }
+
+    if (form.roomType.length === 0) {
+      return alert("Please select a room type");
     }
 
     if (isNaN(numRoom) || numRoom <= 0) {
@@ -215,6 +221,30 @@ const CreateSubleasePage = () => {
       </div>
 
       {/* Room Details */}
+      <div>
+        <label className="label">Room Type</label>
+        <select
+          name="roomType"
+          value={form.roomType[0] ?? ""}
+          onChange={(e) =>
+            setForm((prev) => ({
+              ...prev,
+              roomType: [e.target.value as SubleaseRoomType], 
+            }))
+          }
+          required
+          className={inputClass}
+        >
+          <option value="" disabled>
+            Select room type
+          </option>
+          {SubleaseRoomTypeArray.map((type) => (
+            <option key={type} value={type}>
+              {type.replace("_", " ").toLowerCase().replace(/^\w/, (c) => c.toUpperCase())}
+            </option>
+          ))}
+        </select>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label className="label">Number of Room</label>

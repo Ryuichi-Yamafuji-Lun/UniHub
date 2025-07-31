@@ -1,5 +1,6 @@
 import type { Schools } from "@/types/enums/Schools";
 import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
+import type { SubleaseRoomType } from "./enums/SubleaseRoomType";
 
 // 1. Create DTO
 export interface SubleaseCreateDTO {
@@ -9,6 +10,7 @@ export interface SubleaseCreateDTO {
   leaseSchool: Schools[];
   amenities: SubleaseAmenity[];
   leasePrice: number;
+  roomType: SubleaseRoomType[];
   numRoom: number;
   numBath: number;
   roomWidth: number;

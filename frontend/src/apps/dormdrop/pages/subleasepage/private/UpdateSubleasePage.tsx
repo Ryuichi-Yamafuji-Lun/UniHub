@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import api from "@/lib/axios";
-import { SchoolsArray, type Schools, schoolDisplayNames, } from "@/types/enums/Schools";
 import { SubleaseAmenityArray, type SubleaseAmenity, } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import type { SubleaseUpdateDTO } from "@/apps/dormdrop/types/Sublease";
+import api from "@/lib/axios";
+import { schoolDisplayNames, SchoolsArray, type Schools, } from "@/types/enums/Schools";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { SubleaseRoomTypeArray, type SubleaseRoomType } from "@/apps/dormdrop/types/enums/SubleaseRoomType";
 
 const UpdateSubleasePage = () => {
   const { subleaseId: id } = useParams();
@@ -18,6 +19,7 @@ const UpdateSubleasePage = () => {
     leaseStartDate: "",
     leaseEndDate: "",
     leaseImage: "",
+    roomType: [],
     numRoom: 0,
     numBath: 0,
     roomWidth: 0,
@@ -51,6 +53,7 @@ const UpdateSubleasePage = () => {
           leaseStartDate: data.leaseStartDate ?? "",
           leaseEndDate: data.leaseEndDate ?? "",
           leaseImage: data.leaseImage ?? "",
+          roomType: data.roomType ?? [],
           numRoom: data.numRoom ?? 0,
           numBath: data.numBath ?? 0,
           roomWidth: data.roomWidth ?? 0,
@@ -136,6 +139,9 @@ const UpdateSubleasePage = () => {
     if ((form.leaseDescription ?? "").length > maxChars) {
       alert(`Lease description must be under ${maxChars} characters.`);
       return;
+    }
+    if ((form.roomType ?? "").length === 0) {
+      return alert("Please select a room type");
     }
     if (form.numRoom <= 0 || form.numBath <= 0) {
       return alert("Rooms and bathrooms must be greater than 0.");
@@ -271,6 +277,30 @@ const UpdateSubleasePage = () => {
             min={form.leaseStartDate || undefined}
           />
         </div>
+      </div>
+      <div>
+        <label className="label mb-2">Room Type</label>
+        <select
+          name="roomType"
+          value={form.roomType[0] ?? ""}
+          onChange={(e) =>
+            setForm((prev) => ({
+              ...prev,
+              roomType: [e.target.value as SubleaseRoomType],
+            }))
+          }
+          className={inputClass}
+          required
+        >
+          <option value="" disabled>
+            Select a room type
+          </option>
+          {SubleaseRoomTypeArray.map((type) => (
+            <option key={type} value={type}>
+              {type.replace("_", " ")}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
