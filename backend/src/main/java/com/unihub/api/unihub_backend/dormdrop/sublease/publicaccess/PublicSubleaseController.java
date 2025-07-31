@@ -17,6 +17,7 @@ import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseService;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
+import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseRoomType;
 
 @RestController
 @RequestMapping(path = "api/v1/public/subleases")
@@ -60,9 +61,10 @@ public class PublicSubleaseController {
         @RequestParam(required = false) String leaseName,
         @RequestParam(required = false) Set<SubleaseAmenity> amenities,
         @RequestParam(required = false)
-        Set<Schools> schools
+        Set<Schools> schools,
+        @RequestParam(required = false) Set<SubleaseRoomType> roomType
     ) {
-        List<SubleaseResponseDTO> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName, amenities, schools);
+        List<SubleaseResponseDTO> subleases = subleaseService.searchSublease(maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName, amenities, schools, roomType);
         return subleases.isEmpty() 
             ? ResponseEntity.noContent().build()
             : ResponseEntity.ok(subleases);

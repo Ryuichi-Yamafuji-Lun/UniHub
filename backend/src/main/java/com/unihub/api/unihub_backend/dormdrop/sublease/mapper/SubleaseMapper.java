@@ -29,6 +29,7 @@ public class SubleaseMapper {
         dto.setRoomDepth(sublease.getRoomDepth());
         dto.setAmenities(sublease.getAmenities());
         dto.setSchool(sublease.getLeaseSchool());
+        dto.setRoomType(sublease.getRoomType());
 
         // Owner
         Account owner = sublease.getAccount();
@@ -50,6 +51,7 @@ public class SubleaseMapper {
         sublease.setLeaseEndDate(request.getLeaseEndDate());
         sublease.setLeaseSchool(request.getLeaseSchool());
         sublease.setAmenities(request.getAmenities());
+        sublease.setRoomType(request.getRoomType());
         sublease.setLeasePrice(request.getLeasePrice());
         sublease.setNumRoom(request.getNumRoom());
         sublease.setNumBath(request.getNumBath());

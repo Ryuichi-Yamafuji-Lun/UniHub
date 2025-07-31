@@ -20,6 +20,7 @@ import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseUpdateRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
+import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseRoomType;
 import com.unihub.api.unihub_backend.security.utils.CurrentAccountProvider;
 
 @Service
@@ -82,6 +83,7 @@ public class SubleaseService {
         if (updatedSublease.getLeaseStartDate() != null) sublease.setLeaseStartDate(updatedSublease.getLeaseStartDate());
         if (updatedSublease.getLeaseEndDate() != null) sublease.setLeaseEndDate(updatedSublease.getLeaseEndDate());
         if (updatedSublease.getAmenities() != null) sublease.setAmenities(updatedSublease.getAmenities());
+        if (updatedSublease.getRoomType() != null) sublease.setRoomType(updatedSublease.getRoomType());
         if (updatedSublease.getLeasePrice() != null) sublease.setLeasePrice(updatedSublease.getLeasePrice());
         if (updatedSublease.getNumRoom() != null) sublease.setNumRoom(updatedSublease.getNumRoom());
         if (updatedSublease.getNumBath() != null) sublease.setNumBath(updatedSublease.getNumBath());
@@ -116,7 +118,7 @@ public class SubleaseService {
 
     @Transactional(readOnly = true)
     public List<SubleaseResponseDTO> searchSublease(
-            Double maxPrice, Double latMin, Double latMax, Double lngMin,Double lngMax, Double widthMin, Double widthMax, Double depthMin, Double depthMax, String leaseName, Set<SubleaseAmenity> requiredAmenities, Set<Schools> schools) {
+            Double maxPrice, Double latMin, Double latMax, Double lngMin,Double lngMax, Double widthMin, Double widthMax, Double depthMin, Double depthMax, String leaseName, Set<SubleaseAmenity> requiredAmenities, Set<Schools> schools, Set<SubleaseRoomType> roomType) {
         if (maxPrice == null || maxPrice <= 0) maxPrice = Double.MAX_VALUE;
         if (latMin == null) latMin = -90.0;
         if (latMax == null) latMax = 90.0;
@@ -142,6 +144,13 @@ public class SubleaseService {
         if (schools != null && !schools.isEmpty()) {
             results = results.stream()
                 .filter(s -> s.getLeaseSchool().containsAll(schools))
+                .toList();
+        }
+
+        // filter by room type
+        if (roomType != null && !roomType.isEmpty()) {
+            results = results.stream()
+                .filter(s -> s.getRoomType().containsAll(roomType))
                 .toList();
         }
 

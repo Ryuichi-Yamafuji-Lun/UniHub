@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
+import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseRoomType;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -54,6 +55,12 @@ public class Sublease {
     @CollectionTable(name = "sublease_amenities", joinColumns = @JoinColumn(name = "sublease_id"))
     private Set<SubleaseAmenity> amenities;
     
+    @ElementCollection(targetClass = SubleaseRoomType.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "sublease_room_type", joinColumns = 
+    @JoinColumn(name = "room_type"))
+    private Set<SubleaseRoomType> roomType;
+
     private Double leasePrice;
     private Byte numRoom;
     private Byte numBath;
@@ -68,7 +75,7 @@ public class Sublease {
     public Sublease(){}
 
     public Sublease(Account account, Long version, LocalDate datePosted, LocalDate leaseStartDate,
-            LocalDate leaseEndDate, String leaseName, Set<Schools> leaseSchool, Set<SubleaseAmenity> amenities,
+            LocalDate leaseEndDate, String leaseName, Set<Schools> leaseSchool, Set<SubleaseAmenity> amenities, Set<SubleaseRoomType> roomType,
             Double leasePrice, Byte numRoom, Byte numBath, Double roomDepth, Double roomWidth,String leaseImage, String leaseDescription, String leaseAddress,
             Double longitude, Double latitude) {
         this.account = account;
@@ -79,6 +86,7 @@ public class Sublease {
         this.leaseName = leaseName;
         this.leaseSchool = leaseSchool;
         this.amenities = amenities;
+        this.roomType = roomType;
         this.leasePrice = leasePrice;
         this.numRoom = numRoom;
         this.numBath = numBath;
@@ -157,6 +165,14 @@ public class Sublease {
 
     public void setAmenities(Set<SubleaseAmenity> amenities) {
         this.amenities = amenities;
+    }
+    
+    public Set<SubleaseRoomType> getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(Set<SubleaseRoomType> roomType) {
+        this.roomType = roomType;
     }
 
     public Double getLeasePrice() {

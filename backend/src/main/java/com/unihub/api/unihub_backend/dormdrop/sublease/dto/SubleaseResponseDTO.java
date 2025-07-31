@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
+import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseRoomType;
 
 public class SubleaseResponseDTO {
     private Long id;
@@ -23,6 +24,7 @@ public class SubleaseResponseDTO {
     private Double longitude;
     private Double latitude;
     private Set<SubleaseAmenity> amenities;
+    private Set<SubleaseRoomType> roomType;
     private Set<Schools> school;
 
     // Minimal Owner Info
@@ -133,6 +135,12 @@ public class SubleaseResponseDTO {
     }
     public void setSchool(Set<Schools> school) {
         this.school = school;
+    }
+    public Set<SubleaseRoomType> getRoomType() {
+        return roomType;
+    }
+    public void setRoomType(Set<SubleaseRoomType> roomType) {
+        this.roomType = roomType;
     }
         public Long getOwnerId() {
         return ownerId;

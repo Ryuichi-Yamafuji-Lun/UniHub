@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
+import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseRoomType;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.DecimalMin;
@@ -32,6 +33,9 @@ public class SubleaseRegistrationRequest {
     @NotNull(message = "Amenities must be provided")
     private Set<SubleaseAmenity> amenities;
 
+    @NotNull(message = "Room Type is required")
+    private Set<SubleaseRoomType> roomType;
+    
     @NotNull(message = "Lease price is required")
     @DecimalMin(value = "300.0", inclusive = false, message = "Lease price must be greater than 300")
     private Double leasePrice;
@@ -111,6 +115,14 @@ public class SubleaseRegistrationRequest {
 
     public void setAmenities(Set<SubleaseAmenity> amenities) {
         this.amenities = amenities;
+    }
+     
+    public Set<SubleaseRoomType> getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(Set<SubleaseRoomType> roomType) {
+        this.roomType = roomType;
     }
 
     public Double getLeasePrice() {
