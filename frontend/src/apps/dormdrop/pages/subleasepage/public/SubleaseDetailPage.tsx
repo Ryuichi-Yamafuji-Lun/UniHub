@@ -80,6 +80,7 @@ const SubleaseDetailPage = () => {
         <div className="lg:w-2/3 space-y-8 text-left">
           <div>
             <p className="text-2xl font-bold text-gray-900 mt-2">Sublease at {sublease.leaseAddress}</p>
+            <p>{sublease.roomType.map(rt => rt.replace(/_/g, " ")).join(", ")}</p>
             <p>{sublease.numRoom} bedrooms · {sublease.numBath} bath</p>
 
           </div>
@@ -109,7 +110,9 @@ const SubleaseDetailPage = () => {
                 Dates: {new Date(sublease.leaseStartDate).toLocaleDateString()} → {new Date(sublease.leaseEndDate).toLocaleDateString()}
               </li>
               <li>Price: ${sublease.leasePrice}/month</li>
-              <li>Room Type: {sublease.numRoom} bedrooms · {sublease.numBath} bath</li>
+              <li>Room Type: {sublease.roomType.map(rt => rt.replace(/_/g, " ")).join(", ")}</li>
+              <li>Number of Rooms: {sublease.numRoom} bedrooms</li>
+              <li>Number of Baths: {sublease.numBath} baths</li>
               <li>Dimensions: {sublease.roomWidth}ft x {sublease.roomDepth}ft</li>
             </ul>
           </div>
