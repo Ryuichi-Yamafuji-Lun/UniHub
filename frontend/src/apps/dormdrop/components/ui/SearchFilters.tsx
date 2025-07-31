@@ -1,15 +1,9 @@
-import { useState, type ChangeEvent } from "react";
-import { X, SlidersHorizontal } from "lucide-react"; // nice icons
+import { useState, type ChangeEvent, useRef, useEffect } from "react";
+import { X, SlidersHorizontal } from "lucide-react";
 import type { SearchFiltersType } from "@/apps/dormdrop/types/SearchFilters";
-import {
-  SubleaseAmenityArray,
-  type SubleaseAmenity,
-} from "@/apps/dormdrop/types/enums/SubleaseAmenity";
-import {
-  SchoolsArray,
-  type Schools,
-  schoolDisplayNames,
-} from "@/types/enums/Schools";
+import { SubleaseAmenityArray, type SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
+import { SchoolsArray, type Schools, schoolDisplayNames } from "@/types/enums/Schools";
+import { SubleaseRoomTypeArray, type SubleaseRoomType } from "@/apps/dormdrop/types/enums/SubleaseRoomType";
 
 interface SearchFiltersProps {
   filters: SearchFiltersType;
@@ -24,13 +18,33 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
   const [schoolSearch, setSchoolSearch] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  const [isRoomTypeOpen, setRoomTypeOpen] = useState(false);
+  const roomTypeRef = useRef<HTMLDivElement>(null);
+
   const filteredSchools = SchoolsArray.filter((school) =>
     schoolDisplayNames[school].toLowerCase().includes(schoolSearch.toLowerCase())
   );
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (roomTypeRef.current && !roomTypeRef.current.contains(event.target as Node)) {
+        setRoomTypeOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const parsedValue = name === "maxPrice" ? parseInt(value) : value;
+    const numericFields = ["maxPrice", "numRoom", "numBath"];
+    
+    const parsedValue = numericFields.includes(name)
+      ? value === "" ? undefined : parseInt(value, 10)
+      : value;
+      
     onFilterChange({ ...filters, [name]: parsedValue });
   };
 
@@ -47,7 +61,20 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
     setSchoolSearch("");
   };
 
-  // reusable filter form content
+  const handleRoomTypeToggle = (roomType: SubleaseRoomType) => {
+    const current = filters.roomType || [];
+    const updated = current.includes(roomType)
+      ? current.filter((r) => r !== roomType)
+      : [...current, roomType];
+    onFilterChange({ ...filters, roomType: updated });
+  };
+  
+  // --- NEW: Helper for dropdown label ---
+  const selectedRoomTypesLabel =
+    filters.roomType && filters.roomType.length > 0
+      ? filters.roomType.map(formatLabel).join(", ")
+      : "Select room types";
+
   const filterContent = (
     <div className="space-y-8 text-left">
       {/* Lease Name */}
@@ -121,6 +148,78 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
           <p className="mt-2 text-sm text-gray-600">Selected: {schoolDisplayNames[filters.school]}</p>
         )}
       </div>
+      
+      {/* Room Type */}
+      <div className="relative" ref={roomTypeRef}>
+        <label className="block text-base font-medium text-gray-800 mb-2">Room Type</label>
+        <button
+          type="button"
+          onClick={() => setRoomTypeOpen(!isRoomTypeOpen)}
+          className="w-full px-4 py-3 text-base text-left bg-white border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 flex justify-between items-center"
+        >
+          <span className="truncate">{selectedRoomTypesLabel}</span>
+          <svg className={`w-5 h-5 text-gray-400 transition-transform ${isRoomTypeOpen ? 'transform rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </button>
+        {isRoomTypeOpen && (
+          <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+            <ul>
+              {SubleaseRoomTypeArray.map((rt) => (
+                <li
+                  key={rt}
+                  className="px-4 py-2 hover:bg-indigo-100 cursor-pointer"
+                  onClick={() => handleRoomTypeToggle(rt)}
+                >
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={filters.roomType?.includes(rt) ?? false}
+                      readOnly
+                      className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                    />
+                    <span className="ml-3 text-base text-gray-700">{formatLabel(rt)}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {/* Bedrooms */}
+      <div>
+        <label htmlFor="numRoom" className="block text-base font-medium text-gray-800 mb-2">
+          Bedrooms
+        </label>
+        <input
+          type="number"
+          name="numRoom"
+          id="numRoom"
+          min={0}
+          value={filters.numRoom ?? ""}
+          onChange={handleInputChange}
+          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+          placeholder="e.g., 1"
+        />
+      </div>
+
+      {/* Bathrooms */}
+      <div>
+        <label htmlFor="numBath" className="block text-base font-medium text-gray-800 mb-2">
+          Bathrooms
+        </label>
+        <input
+          type="number"
+          name="numBath"
+          id="numBath"
+          min={0}
+          value={filters.numBath ?? ""}
+          onChange={handleInputChange}
+          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+          placeholder="e.g., 1"
+        />
+      </div>
 
       {/* Amenities */}
       <div>
@@ -164,9 +263,7 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
       {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 flex">
-          {/* backdrop */}
-          <div className="fixed inset-0 bg-opacity-40" onClick={() => setMobileOpen(false)} />
-          {/* drawer */}
+          <div className="fixed inset-0 bg-black bg-opacity-40" onClick={() => setMobileOpen(false)} />
           <div className="relative ml-auto w-80 bg-white h-full shadow-xl p-6 overflow-y-auto">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold text-gray-900">Filters</h2>
@@ -175,16 +272,19 @@ const SearchFilters = ({ filters, onFilterChange, onReset }: SearchFiltersProps)
               </button>
             </div>
             {filterContent}
-            <div className="mt-6 flex justify-between">
+            <div className="mt-8 flex justify-between">
               <button
-                onClick={onReset}
+                onClick={() => {
+                  onReset();
+                  setMobileOpen(false); // Optionally close on reset
+                }}
                 className="text-base text-gray-500 hover:text-gray-700 underline"
               >
                 Reset All
               </button>
               <button
                 onClick={() => setMobileOpen(false)}
-                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
               >
                 Apply
               </button>

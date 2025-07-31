@@ -1,6 +1,5 @@
 import SearchFilters from "@/apps/dormdrop/components/ui/SearchFilters";
 import SubleaseGrid from "@/apps/dormdrop/components/ui/SubleaseGrid";
-import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import type { SearchFiltersType } from "@/apps/dormdrop/types/SearchFilters";
 import type { SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import api from "@/lib/axios";
@@ -9,11 +8,15 @@ import { useEffect, useState } from "react";
 const SubleaseListPage = () => {
   const [allSubleases, setAllSubleases] = useState<SubleaseResponse[]>([]);
   const [filteredSubleases, setFilteredSubleases] = useState<SubleaseResponse[]>([]);
+  
   const [filters, setFilters] = useState<SearchFiltersType>({
     leaseName: "",
     maxPrice: 30000,
-    amenities: [] as SubleaseAmenity[],
+    amenities: [],
     school: undefined,
+    roomType: [],
+    numRoom: undefined,
+    numBath: undefined,
   });
 
   useEffect(() => {
@@ -32,23 +35,47 @@ const SubleaseListPage = () => {
 
   useEffect(() => {
     const applyFilters = () => {
+      if (allSubleases.length === 0) return;
+
       const filtered = allSubleases.filter((sublease) => {
         const matchesName =
           !filters.leaseName ||
           sublease.leaseName?.toLowerCase().includes(filters.leaseName.toLowerCase());
 
         const matchesPrice =
-          !filters.maxPrice || sublease.leasePrice <= filters.maxPrice;
+          filters.maxPrice === undefined || sublease.leasePrice <= filters.maxPrice;
 
         const matchesAmenities =
-          (filters.amenities ?? []).every((amenity) =>
+          !filters.amenities ||
+          filters.amenities.length === 0 ||
+          filters.amenities.every((amenity) =>
             sublease.amenities?.includes(amenity)
           );
 
         const matchesSchools =
-          !filters.school || sublease.school.includes(filters.school);
+          !filters.school || sublease.school?.includes(filters.school);
 
-        return matchesName && matchesPrice && matchesAmenities && matchesSchools;
+        const matchesRoomType =
+          !filters.roomType ||
+          (Array.isArray(filters.roomType) && filters.roomType.length === 0) ||
+          (sublease.roomType && sublease.roomType.some(rt => filters.roomType!.includes(rt)));  
+
+
+        const matchesNumRoom =
+          filters.numRoom === undefined || sublease.numRoom === filters.numRoom;
+
+        const matchesNumBath =
+          filters.numBath === undefined || sublease.numBath === filters.numBath;
+
+        return (
+          matchesName &&
+          matchesPrice &&
+          matchesAmenities &&
+          matchesSchools &&
+          matchesRoomType &&
+          matchesNumRoom &&
+          matchesNumBath
+        );
       });
 
       setFilteredSubleases(filtered);
@@ -67,6 +94,9 @@ const SubleaseListPage = () => {
       maxPrice: 30000,
       amenities: [],
       school: undefined,
+      roomType: [],
+      numRoom: undefined,
+      numBath: undefined,
     });
   };
 
