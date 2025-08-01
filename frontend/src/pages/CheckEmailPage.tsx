@@ -8,7 +8,7 @@ const CheckEmail = () => {
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
 
   return (
-    <div className="min-h-screen bg-[#fef6e4] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-primary-bg flex items-center justify-center px-4">
       <div className="max-w-md w-full text-center space-y-6">
         <MailCheck size={48} className="mx-auto text-[#084479]" />
         <h2 className="text-2xl font-bold text-gray-900">Check your inbox</h2>

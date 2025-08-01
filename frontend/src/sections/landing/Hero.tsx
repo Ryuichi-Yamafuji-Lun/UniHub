@@ -2,7 +2,7 @@ import HeroBg from "@/apps/dormdrop/assets/dormdrop-hero.png";
 
 export default function HeroSection() {
   return (
-    <section className="bg-[#fef6e4] w-full py-5 px-6">
+    <section className="bg-primary-bg w-full py-5 px-6">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
         {/* Left Text Content */}
         <div className="flex-1 text-center md:text-left">

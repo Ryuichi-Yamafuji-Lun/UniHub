@@ -11,7 +11,7 @@ const RouteLoader = ({ children }: { children: ReactNode }) => {
 
   if (!show) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fef6e4] text-gray-500 text-xl font-medium animate-pulse">
+      <div className="min-h-screen flex items-center justify-center bg-[#f8f9fa] text-[#212529] text-xl font-medium animate-pulse">
         Loading...
       </div>
     );

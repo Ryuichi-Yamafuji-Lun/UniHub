@@ -36,7 +36,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen px-4 bg-[#fef6e4]">
+    <div className="flex flex-col items-center justify-center min-h-screen px-4">
       <div className="w-full max-w-md space-y-6 bg-white shadow-lg rounded-lg p-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-[#1e1e1e]">Log in to UniHub</h1>

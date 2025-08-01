@@ -35,7 +35,7 @@ const VerifyEmail = () => {
 
   if (status === "success") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="min-h-screen flex items-center justify-center bg-primary-bg px-4">
         <div className="text-center space-y-6">
           <CheckCircle size={48} className="text-green-600 mx-auto" />
           <h1 className="text-2xl font-bold text-[#084479]">Email Confirmed!</h1>

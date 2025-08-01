@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 // change later look at amazonkindle
 const SearchLayout = () => {
   return (
-    <div className="bg-[#fef6e4] min-h-screen flex flex-col w-full overflow-x-hidden">
+    <div className="bg-primary-bg min-h-screen flex flex-col w-full overflow-x-hidden">
       <NavBar />
       <main className="flex-grow">
         <Outlet /> 
