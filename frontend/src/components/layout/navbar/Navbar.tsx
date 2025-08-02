@@ -121,9 +121,9 @@ const NavBar = () => {
               </div>
             </div>
 
-            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline mt-2">Furniture (soon)</Link>
+            {/* <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline mt-2">Furniture (soon)</Link>
             <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Books (soon)</Link>
-            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Tutoring (soon)</Link>
+            <Link to="/" onClick={() => setMenuOpen(false)} className="hover:underline">Tutoring (soon)</Link> */}
           </div>
         )}
       </div>
