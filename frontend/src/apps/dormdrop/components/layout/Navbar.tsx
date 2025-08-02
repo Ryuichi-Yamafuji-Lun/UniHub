@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiUser, FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 
 const NavBar = () => {
@@ -10,6 +10,7 @@ const NavBar = () => {
   const [isSubleaseOpen, setIsSubleaseOpen] = useState(false);
   const navigate = useNavigate();
   const subleaseMenuRef = useRef<HTMLDivElement | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,6 +47,12 @@ const NavBar = () => {
     navigate("/");
   };
 
+  // Helper function to get login URL with current page as redirect
+  const getLoginUrl = () => {
+    const currentPath = location.pathname + location.search + location.hash;
+    return `/login?redirect=${encodeURIComponent(currentPath)}`;
+  };
+
   return (
     <header className="w-full z-50 sticky top-0 left-0">
       <div
@@ -69,7 +76,7 @@ const NavBar = () => {
           <div className="hidden md:flex items-center space-x-6 text-sm">
             {!isLoggedIn ? (
               <>
-                <Link to="/login" className="hover:underline whitespace-nowrap">Login</Link>
+                <Link to={getLoginUrl()} className="hover:underline whitespace-nowrap">Login</Link>
                 <Link to="/signup" className="hover:underline whitespace-nowrap">Signup</Link>
               </>
             ) : (
@@ -91,7 +98,7 @@ const NavBar = () => {
           <div className="bg-black text-white flex flex-col px-4 py-4 space-y-3 md:hidden">
             {!isLoggedIn ? (
               <>
-                <Link to="/login" onClick={() => setMenuOpen(false)}>Login</Link>
+                <Link to={getLoginUrl()} onClick={() => setMenuOpen(false)}>Login</Link>
                 <Link to="/signup" onClick={() => setMenuOpen(false)}>Signup</Link>
               </>
             ) : (
@@ -181,6 +188,10 @@ const NavBar = () => {
             </Link>
           </div>
         </div>
+
+        {/* <Link to="/" className="hover:underline">Furniture (soon)</Link>
+        <Link to="/" className="hover:underline">Books (soon)</Link>
+        <Link to="/" className="hover:underline">Tutoring (soon)</Link> */}
       </div>
     </header>
   );

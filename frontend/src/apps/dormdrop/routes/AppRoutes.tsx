@@ -1,4 +1,3 @@
-// src/apps/dormdrop/routes/AppRoutes.tsx
 import Landing from "@/apps/dormdrop/pages/Landing";
 import CreateSubleasePage from "@/apps/dormdrop/pages/subleasepage/private/CreateSubleasePage";
 import UpdateSubleasePage from "@/apps/dormdrop/pages/subleasepage/private/UpdateSubleasePage";

@@ -2,17 +2,30 @@ import api from "@/lib/axios";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
-const LoginPage = () => {
+const LoginPage = () => { 
   const location = useLocation();
-  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
+
+  const getRedirectPath = () => {
+    const params = new URLSearchParams(location.search);
+    const redirectParam = params.get("redirect");
+    
+    if (redirectParam) {
+      const decoded = decodeURIComponent(redirectParam);
+      console.log("Redirect param:", decoded); 
+      return decoded;
+    }
+    
+    return "/"; 
+  };
+
+  const redirectPath = getRedirectPath();
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,14 +37,26 @@ const LoginPage = () => {
 
       const token = response.data.token;
       localStorage.setItem("token", token);
-      navigate(redirect);
+      
+      console.log("Navigating to:", redirectPath); 
+      
+      window.location.href = redirectPath;
+      
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         console.error("Login failed:", err.response?.data);
+        // More specific error handling
+        if (err.response?.status === 401) {
+          setError("Invalid email/username or password.");
+        } else if (err.response?.status === 429) {
+          setError("Too many login attempts. Please try again later.");
+        } else {
+          setError("Login failed. Please try again.");
+        }
       } else {
         console.error("Unexpected error:", err);
+        setError("An unexpected error occurred. Please try again.");
       }
-      setError("Login failed. Please check your credentials.");
     }
   };
 
@@ -90,14 +115,14 @@ const LoginPage = () => {
         </form>
 
         <p className="text-sm text-center text-gray-600">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/signup" className="text-[#084479] font-medium hover:underline">
             Sign up
           </Link>
         </p>
 
         <p className="text-xs text-center text-gray-500 mt-4">
-          By continuing, you agree to UniHub’s{" "}
+          By continuing, you agree to UniHub's{" "}
           <a href="/terms" className="underline hover:text-gray-800">
             Terms & Conditions
           </a>{" "}
