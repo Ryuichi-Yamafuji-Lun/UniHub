@@ -6,7 +6,8 @@ import { SchoolsArray, type Schools, schoolDisplayNames } from "@/types/enums/Sc
 export default function DormDropLandingHero() {
   const [schoolSearch, setSchoolSearch] = useState("");
   const [selectedSchool, setSelectedSchool] = useState<Schools | null>(null);
-  
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const navigate = useNavigate();
 
   const filteredSchools = SchoolsArray.filter((school) =>
@@ -15,19 +16,41 @@ export default function DormDropLandingHero() {
 
   const handleSchoolSelect = (school: Schools) => {
     setSelectedSchool(school);
-    setSchoolSearch("");
+    setSchoolSearch(schoolDisplayNames[school]); 
   };
 
   const handleSearch = () => {
     if (selectedSchool) {
       navigate(`/dormdrop/sublease?school=${selectedSchool}`);
+    } else if (schoolSearch) {
+      const match = SchoolsArray.find(
+        (s) => schoolDisplayNames[s].toLowerCase() === schoolSearch.toLowerCase()
+      );
+      if (match) {
+        navigate(`/dormdrop/sublease?school=${match}`);
+      } else {
+        navigate("/dormdrop/sublease");
+      }
     } else {
-      navigate('/dormdrop/sublease');
+      navigate("/dormdrop/sublease");
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (!filteredSchools.length) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev + 1) % filteredSchools.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((prev) =>
+        prev === 0 ? filteredSchools.length - 1 : prev - 1
+      );
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const school = filteredSchools[activeIndex];
+      handleSchoolSelect(school);
       handleSearch();
     }
   };
@@ -60,14 +83,18 @@ export default function DormDropLandingHero() {
               <input
                 type="text"
                 value={schoolSearch}
-                onChange={(e) => setSchoolSearch(e.target.value)}
-                onKeyPress={handleKeyPress}
+                onChange={(e) => {
+                  setSchoolSearch(e.target.value);
+                  setActiveIndex(0);
+                  setSelectedSchool(null);
+                }}
+                onKeyDown={handleKeyDown}
                 placeholder="Search for your university..."
                 className="w-full bg-transparent text-gray-700 text-lg focus:outline-none px-4"
               />
-              <button 
+              <button
                 onClick={handleSearch}
-                className="bg-[#007AFF] text-white font-semibold rounded-full px-6 py-3 hover:bg-blue-600 transition-colors"
+                className="bg-primary-actions text-white font-semibold rounded-full px-6 py-3 hover:bg-blue-600 transition-colors"
               >
                 Search
               </button>
@@ -75,28 +102,51 @@ export default function DormDropLandingHero() {
 
             {/* Dropdown */}
             {schoolSearch && (
-              <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-md max-h-60 overflow-y-auto text-left z-20">
+              <ul className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto text-left z-20">
                 {filteredSchools.length === 0 ? (
-                  <li className="px-4 py-2 text-gray-500">No schools found</li>
+                  <li className="px-4 py-3 text-gray-500">No schools found</li>
                 ) : (
-                  filteredSchools.map((school) => (
-                    <li
-                      key={school}
-                      onClick={() => handleSchoolSelect(school)}
-                      className="px-4 py-2 hover:bg-blue-100 cursor-pointer"
-                    >
-                      {schoolDisplayNames[school]}
-                    </li>
-                  ))
+                  filteredSchools.map((school, index) => {
+                    const displayName = schoolDisplayNames[school];
+                    const lowerSearch = schoolSearch.toLowerCase();
+                    const matchIndex = displayName
+                      .toLowerCase()
+                      .indexOf(lowerSearch);
+
+                    let highlightedText;
+                    if (matchIndex !== -1) {
+                      highlightedText = (
+                        <>
+                          {displayName.slice(0, matchIndex)}
+                          <span className="font-semibold text-blue-600">
+                            {displayName.slice(
+                              matchIndex,
+                              matchIndex + lowerSearch.length
+                            )}
+                          </span>
+                          {displayName.slice(matchIndex + lowerSearch.length)}
+                        </>
+                      );
+                    } else {
+                      highlightedText = displayName;
+                    }
+
+                    return (
+                      <li
+                        key={school}
+                        onClick={() => handleSchoolSelect(school)}
+                        className={`px-4 py-3 cursor-pointer transition-colors ${
+                          index === activeIndex
+                            ? "bg-blue-500 text-white"
+                            : "hover:bg-gray-100"
+                        }`}
+                      >
+                        {highlightedText}
+                      </li>
+                    );
+                  })
                 )}
               </ul>
-            )}
-
-            {/* Selected school */}
-            {!schoolSearch && selectedSchool && (
-              <p className="mt-3 text-white text-lg font-medium">
-                Selected: {schoolDisplayNames[selectedSchool]}
-              </p>
             )}
           </div>
         </div>
