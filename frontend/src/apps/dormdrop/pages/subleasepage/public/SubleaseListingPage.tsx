@@ -4,16 +4,21 @@ import type { SearchFiltersType } from "@/apps/dormdrop/types/SearchFilters";
 import type { SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import api from "@/lib/axios";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { type Schools } from "@/types/enums/Schools";
 
-const SubleaseListPage = () => {
+const SubleaseListPage = ({ initialSchool }: { initialSchool?: Schools }) => {
   const [allSubleases, setAllSubleases] = useState<SubleaseResponse[]>([]);
   const [filteredSubleases, setFilteredSubleases] = useState<SubleaseResponse[]>([]);
+  
+  const [searchParams] = useSearchParams();
+  const schoolFromUrl = searchParams.get('school') as Schools | null;
   
   const [filters, setFilters] = useState<SearchFiltersType>({
     leaseName: "",
     maxPrice: 30000,
     amenities: [],
-    school: undefined,
+    school: schoolFromUrl || initialSchool,
     roomType: [],
     numRoom: undefined,
     numBath: undefined,
@@ -32,6 +37,16 @@ const SubleaseListPage = () => {
 
     fetchSubleases();
   }, []);
+
+  // Update filters when URL parameter changes
+  useEffect(() => {
+    if (schoolFromUrl) {
+      setFilters(prev => ({
+        ...prev,
+        school: schoolFromUrl
+      }));
+    }
+  }, [schoolFromUrl]);
 
   useEffect(() => {
     const applyFilters = () => {
@@ -59,7 +74,6 @@ const SubleaseListPage = () => {
           !filters.roomType ||
           (Array.isArray(filters.roomType) && filters.roomType.length === 0) ||
           (sublease.roomType && sublease.roomType.some(rt => filters.roomType!.includes(rt)));  
-
 
         const matchesNumRoom =
           filters.numRoom === undefined || sublease.numRoom === filters.numRoom;
@@ -93,7 +107,7 @@ const SubleaseListPage = () => {
       leaseName: "",
       maxPrice: 30000,
       amenities: [],
-      school: undefined,
+      school: undefined, 
       roomType: [],
       numRoom: undefined,
       numBath: undefined,
