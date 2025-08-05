@@ -2,24 +2,23 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type CarouselProps<T> = {
+type SubleaseCarouselMobileProps<T> = {
   title: string;
   listings: T[];
   renderCard: (item: T) => React.ReactNode;
   link?: string;
 };
 
-export default function Carousel<T>({
+export default function SubleaseCarouselMobile<T>({
   title,
   listings,
   renderCard,
   link,
-}: CarouselProps<T>) {
+}: SubleaseCarouselMobileProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
-
     const container = scrollRef.current;
     const card = container.querySelector("[data-card]") as HTMLElement;
     if (!card) return;
@@ -35,19 +34,18 @@ export default function Carousel<T>({
   };
 
   return (
-    <section className="relative w-full px-4 py-10">
+    <section className="relative w-full px-4 py-10 sm:hidden">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         {link ? (
           <Link
             to={link}
-            className="flex items-center gap-1 text-2xl font-bold text-[#1E1E1E] hover:underline group transition"
+            className="flex items-center gap-1 text-xl font-bold text-[#1E1E1E] hover:underline group transition"
           >
             {title}
-            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         ) : (
-          <h2 className="text-2xl font-semibold text-[#1E1E1E]">{title}</h2>
+          <h2 className="text-xl font-semibold text-[#1E1E1E]">{title}</h2>
         )}
 
         <div className="flex gap-2">
@@ -56,34 +54,33 @@ export default function Carousel<T>({
             className="bg-white border border-gray-200 shadow p-2 rounded-full hover:bg-gray-100 transition"
             aria-label="Scroll left"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => scroll("right")}
             className="bg-white border border-gray-200 shadow p-2 rounded-full hover:bg-gray-100 transition"
             aria-label="Scroll right"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {/* Cards */}
       {listings.length === 0 ? (
-        <div className="w-full py-12 text-center text-gray-500 text-base border border-dashed border-gray-300 rounded-md bg-gray-50">
+        <div className="w-full py-10 text-center text-gray-500 text-base border border-dashed border-gray-300 rounded-md bg-gray-50">
           No listings available right now.
         </div>
       ) : (
         <div
           ref={scrollRef}
-          className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
-          style={{ scrollPaddingLeft: "1rem" }}
+          className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide"
         >
           {listings.map((item, idx) => (
             <div
               key={idx}
               data-card
-              className="w-[250px] flex-shrink-0 snap-start"
+              className="min-w-[90%] max-w-[90%] flex-shrink-0 snap-center"
             >
               {renderCard(item)}
             </div>
