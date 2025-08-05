@@ -1,4 +1,4 @@
-import NavBar from "@/apps/dormdrop/components/layout/Navbar";
+import NavBar from "@/apps/dormdrop/components/layout/DormDropNavbar";
 import Footer from "@/components/layout/Footer";
 import { Outlet } from "react-router-dom";
 // change later look at amazonkindle

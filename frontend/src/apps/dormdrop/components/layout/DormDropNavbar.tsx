@@ -35,7 +35,7 @@ const DormdropNavBar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setProfileMenuOpen(false);
-    window.location.href = "/"; 
+    window.location.href = "/dormdrop"; 
   };
 
   const getLoginUrl = () => {
@@ -57,7 +57,7 @@ const DormdropNavBar = () => {
       >
         {/* Left Side: Logo */}
         <div className="text-2xl font-bold tracking-tight">
-          <Link to="/">Dormdrop</Link>
+          <Link to="/dormdrop">Dormdrop</Link>
         </div>
 
         {/* Center: Desktop Links */}
