@@ -14,8 +14,11 @@ export default function ResponsiveListingView<T>({
   renderCard,
   link,
 }: ResponsiveListingViewProps<T>) {
+  // Safeguard: ensure listings is always an array
+  const safeListings = Array.isArray(listings) ? listings : [];
+  
   // We'll show a max of 4 listings in this component
-  const visibleListings = listings.slice(0, 4);
+  const visibleListings = safeListings.slice(0, 4);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
