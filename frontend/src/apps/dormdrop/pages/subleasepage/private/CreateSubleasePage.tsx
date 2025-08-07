@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/lib/axios";
 
-// --- Assuming these are in your project ---
 import { SchoolsArray, type Schools, schoolDisplayNames } from "@/types/enums/Schools";
 import { SubleaseAmenityArray, type SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import { SubleaseRoomTypeArray, type SubleaseRoomType } from "@/apps/dormdrop/types/enums/SubleaseRoomType";
@@ -31,7 +30,6 @@ const CreateSubleasePage = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const maxChars = 1000;
 
-  // --- All State Management (Fixed to match working version) ---
   const [form, setForm] = useState({
     leaseName: "",
     leaseAddress: "",
@@ -40,14 +38,14 @@ const CreateSubleasePage = () => {
     leaseStartDate: "",
     leaseEndDate: "",
     leaseImage: "",
-    roomType: [] as SubleaseRoomType[], // Fixed: Changed to array like working version
+    roomType: [] as SubleaseRoomType[],
     numRoom: "",
     numBath: "",
-    roomWidth: "", // Added missing field
-    roomDepth: "", // Added missing field
+    roomWidth: "", 
+    roomDepth: "", 
     leaseSchool: [] as Schools[],
-    latitude: "", // Added missing field
-    longitude: "", // Added missing field
+    latitude: "", 
+    longitude: "", 
     amenities: [] as SubleaseAmenity[],
   });
 
@@ -134,11 +132,9 @@ const CreateSubleasePage = () => {
 
   const prevStep = () => setCurrentStep(prev => prev - 1);
 
-  // --- Final Submission (Fixed to match working version) ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Convert string values to numbers like the working version
     const numRoom = Number(form.numRoom);
     const numBath = Number(form.numBath);
     const roomWidth = Number(form.roomWidth);
