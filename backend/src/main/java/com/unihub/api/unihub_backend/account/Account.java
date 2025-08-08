@@ -30,7 +30,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    
     // User private information 
     private String firstName;
     private String lastName;
