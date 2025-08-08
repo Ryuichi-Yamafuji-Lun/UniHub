@@ -2,12 +2,14 @@ import api from "@/lib/axios";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Import useNavigate
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 
 const LoginPage = () => {
   const location = useLocation();
+  const navigate = useNavigate(); // Get the navigate function
 
+  // Helper function to get the redirect path from URL parameters
   const getRedirectPath = () => {
     const params = new URLSearchParams(location.search);
     const redirectParam = params.get("redirect");
@@ -23,12 +25,12 @@ const LoginPage = () => {
 
   const handleLoginSuccess = (token: string) => {
     localStorage.setItem("token", token);
-    window.location.href = redirectPath;
+    navigate(redirectPath, { replace: true });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError(""); 
     try {
       const response = await api.post("/api/v1/public/auth/login", {
         identifier,
@@ -60,7 +62,6 @@ const LoginPage = () => {
       const response = await api.post("/api/v1/public/auth/google-login", {
         credential: credentialResponse.credential,
       });
-
       handleLoginSuccess(response.data.token);
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -101,11 +102,11 @@ const LoginPage = () => {
           <GoogleLogin
             onSuccess={handleGoogleSuccess}
             onError={handleGoogleError}
-            useOneTap 
+            useOneTap
             shape="rectangular"
             theme="outline"
             size="large"
-            width="320px" 
+            width="320px"
           />
         </div>
 
