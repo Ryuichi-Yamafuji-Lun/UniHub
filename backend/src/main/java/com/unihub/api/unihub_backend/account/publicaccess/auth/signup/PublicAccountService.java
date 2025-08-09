@@ -1,16 +1,26 @@
-package com.unihub.api.unihub_backend.account.publicaccess;
+package com.unihub.api.unihub_backend.account.publicaccess.auth.signup;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.account.dto.AccountRegistrationRequest;
+import com.unihub.api.unihub_backend.account.dto.GoogleSignupRequest;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
+import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.common.util.EmailDomainUtil;
 import com.unihub.api.unihub_backend.verification.EmailService;
 import com.unihub.api.unihub_backend.verification.VerificationTokenService;
+
+import java.time.LocalDate;
+import java.util.Collections;
 
 @Service
 public class PublicAccountService {
@@ -19,6 +29,9 @@ public class PublicAccountService {
     private final AccountMapper accountMapper;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String googleClientId;
 
     public PublicAccountService(AccountRepository accountRepository, AccountMapper accountMapper,
             VerificationTokenService verificationTokenService, EmailService emailService) {
@@ -34,29 +47,65 @@ public class PublicAccountService {
         if (!Schools.isValidDomain(domain)) {
             throw new IllegalArgumentException("Email domain is not supported");
         }
-
+        // Add checks for existing email/username here if not handled by exceptions
+        
         Account account = accountMapper.fromRegistrationRequest(request);
+        account.setAccountStatus(AccountStatus.UNVERIFIED);;
         Account savedAccount = accountRepository.save(account);
 
+        // Create and send verification email
         String token = java.util.UUID.randomUUID().toString();
-        verificationTokenService.createToken(savedAccount, token, 60); // 60 minutes expiry
-
+        verificationTokenService.createToken(savedAccount, token, 60);
         String verificationLink = "http://localhost:8080/api/v1/verify?token=" + token;
-
         String emailBody = buildEmail(savedAccount.getFirstName(), verificationLink);
-        
-        emailService.sendEmail(
-            savedAccount.getEmail(), 
-            "Confirm your UniHub Account", 
-            emailBody
-        );
+        emailService.sendEmail(savedAccount.getEmail(), "Confirm your UniHub Account", emailBody);
 
         return savedAccount;
     }
 
-    /**
-     * Helper method to build the HTML content for the verification email.
-     */
+    @Transactional
+    public Account registerGoogleAccount(GoogleSignupRequest request) {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
+            
+            GoogleIdToken idToken = verifier.verify(request.getCredential());
+            if (idToken == null) {
+                throw new IllegalArgumentException("Invalid Google ID token.");
+            }
+
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            
+            String domain = EmailDomainUtil.extractDomainFromEmail(email);
+            if (!Schools.isValidDomain(domain)) {
+                throw new IllegalArgumentException("Email domain is not supported");
+            }
+
+            if (accountRepository.findByEmail(email).isPresent()) {
+                throw new IllegalStateException("An account with this email already exists.");
+            }
+            if (accountRepository.findByUsername(request.getUsername()).isPresent()) {
+                throw new IllegalStateException("This username is already taken.");
+            }
+
+            Account newAccount = new Account();
+            newAccount.setEmail(email);
+            newAccount.setUsername(request.getUsername());
+            newAccount.setFirstName((String) payload.get("given_name"));
+            newAccount.setLastName((String) payload.get("family_name"));
+            newAccount.setDateOfBirth(LocalDate.parse(request.getDateOfBirth()));
+            newAccount.setPassword(null);
+            newAccount.setAccountStatus(AccountStatus.ACTIVE);
+            newAccount.setSchool(Schools.fromDomain(EmailDomainUtil.extractDomainFromEmail(email)));
+            return accountRepository.save(newAccount);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Google signup failed: " + e.getMessage(), e);
+        }
+    }
+
     private String buildEmail(String name, String link) {
         return "<!DOCTYPE html><html><head><style>" +
             "body {font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333;}" +

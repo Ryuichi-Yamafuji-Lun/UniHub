@@ -4,6 +4,14 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { isAllowedEmail } from "@/types/enums/Email";
+import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+
+interface GoogleJwtPayload {
+  given_name: string;
+  family_name: string;
+  email: string;
+}
 
 const Signup = () => {
   const location = useLocation();
@@ -20,50 +28,74 @@ const Signup = () => {
     dateOfBirth: "",
   });
 
+  const [googleCredential, setGoogleCredential] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState({
-    pass: false,
-    confirm: false,
-  });
+  const [showPassword, setShowPassword] = useState({ pass: false, confirm: false });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleGoogleSuccess = (credentialResponse: CredentialResponse) => {
+    if (credentialResponse.credential) {
+      const decoded: GoogleJwtPayload = jwtDecode(credentialResponse.credential);
+      
+      if (!isAllowedEmail(decoded.email)) {
+        setError("Sorry, UniHub is not available for your school or email domain.");
+        return;
+      }
+
+      setGoogleCredential(credentialResponse.credential);
+      setForm(prev => ({
+        ...prev,
+        email: decoded.email,
+        firstName: decoded.given_name,
+        lastName: decoded.family_name,
+        password: "",
+        confirmPassword: "",
+      }));
+      setError(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
-
     setError(null);
 
-    if (!form.firstName || !form.lastName)
-      return setError("First and last name are required.");
-    if (!form.dateOfBirth)
-      return setError("Date of birth is required.");
-    if (!form.email.includes("@"))
-      return setError("Please enter a valid email.");
-    if (!isAllowedEmail(form.email))
-      return setError("Only school emails are allowed, or UniHub is not available for your school.");
-    if (form.username.length < 3 || form.username.length > 20)
-      return setError("Username must be between 3 and 20 characters.");
-    if (form.password.length < 8)
-      return setError("Password must be at least 8 characters long.");
-    if (form.password !== form.confirmPassword)
-      return setError("Passwords do not match.");
-    if (new Date(form.dateOfBirth) > new Date()) {
-      return setError("Date of birth cannot be in the future.");
-}
+    if (!form.firstName || !form.lastName) return setError("First and last name are required.");
+    if (!form.dateOfBirth) return setError("Date of birth is required.");
+    if (!form.username) return setError("Username is required.");
+    if (form.username.length < 3 || form.username.length > 20) return setError("Username must be between 3 and 20 characters.");
+    if (new Date(form.dateOfBirth) > new Date()) return setError("Date of birth cannot be in the future.");
+
+    if (!googleCredential) {
+      if (!isAllowedEmail(form.email)) return setError("Only school emails are allowed, or UniHub is not available for your school.");
+      if (form.password.length < 8) return setError("Password must be at least 8 characters long.");
+      if (form.password !== form.confirmPassword) return setError("Passwords do not match.");
+    }
     
     setIsSubmitting(true);
-
     try {
-      await api.post("api/v2/public/account", form);
-      navigate(`/check-email?redirect=${redirect}`);
+      if (googleCredential) {
+
+        await api.post("api/v2/public/account/google", {
+          credential: googleCredential,
+          username: form.username,
+          dateOfBirth: form.dateOfBirth,
+        });
+
+        navigate(`/login?source=google-signup`);
+      } else {
+
+        await api.post("api/v2/public/account", form);
+        navigate(`/check-email?redirect=${redirect}`);
+      }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || "Signup failed. Try again.");
+        setError(err.response?.data?.message || "Signup failed. Please try again.");
       } else {
         setError("An unexpected error occurred.");
       }
@@ -77,132 +109,51 @@ const Signup = () => {
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 space-y-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-[#1e1e1e]">Create your account</h2>
-          <p className="text-gray-600 text-sm mt-1">
-            Join UniHub and start using DormDrop.
-          </p>
+          <p className="text-gray-600 text-sm mt-1">Join UniHub and get started.</p>
         </div>
 
-        {error && (
-          <div className="text-red-600 text-sm text-center -mt-2">{error}</div>
+        {!googleCredential && (
+          <>
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => setError("Google signup failed. Please try again.")}
+                text="signup_with"
+                shape="rectangular"
+                theme="outline"
+                size="large"
+                width="320px"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="w-full border-t border-gray-300" />
+              <span className="px-3 text-sm text-gray-500">or</span>
+              <div className="w-full border-t border-gray-300" />
+            </div>
+          </>
         )}
 
+        {error && <div className="text-red-600 text-sm text-center -mt-2">{error}</div>}
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            name="email"
-            placeholder="School Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
-          />
+          <input type="email" name="email" placeholder="School Email" value={form.email} onChange={handleChange} required disabled={!!googleCredential} className={`w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479] ${googleCredential ? 'bg-gray-100' : ''}`} />
+          <input type="text" name="firstName" placeholder="First Name" value={form.firstName} onChange={handleChange} required disabled={!!googleCredential} className={`w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479] ${googleCredential ? 'bg-gray-100' : ''}`} />
+          <input type="text" name="lastName" placeholder="Last Name" value={form.lastName} onChange={handleChange} required disabled={!!googleCredential} className={`w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479] ${googleCredential ? 'bg-gray-100' : ''}`} />
+          
+          <input type="text" name="username" placeholder="Username" value={form.username} onChange={handleChange} required className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]" />
+          <input type="date" name="dateOfBirth" value={form.dateOfBirth} max={new Date().toISOString().split("T")[0]} onChange={handleChange} required className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]" />
 
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={form.username}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
-          />
+          {!googleCredential && (
+            <>
+              <div className="relative"><input type={showPassword.pass ? "text" : "password"} name="password" placeholder="Password" value={form.password} onChange={handleChange} required className="w-full border border-gray-300 px-4 py-2 rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-[#084479]" /><span onClick={() => setShowPassword(p => ({ ...p, pass: !p.pass }))} className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500">{showPassword.pass ? <EyeOff size={20} /> : <Eye size={20} />}</span></div>
+              <div className="relative"><input type={showPassword.confirm ? "text" : "password"} name="confirmPassword" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange} required className="w-full border border-gray-300 px-4 py-2 rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-[#084479]" /><span onClick={() => setShowPassword(p => ({ ...p, confirm: !p.confirm }))} className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500">{showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}</span></div>
+            </>
+          )}
 
-          <div className="relative">
-            <input
-              type={showPassword.pass ? "text" : "password"}
-              name="password"
-              placeholder="Password"
-              value={form.password}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 px-4 py-2 rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-[#084479]"
-            />
-            <span
-              onClick={() => setShowPassword(prev => ({ ...prev, pass: !prev.pass }))}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-            >
-              {showPassword.pass ? <EyeOff size={20} /> : <Eye size={20} />}
-            </span>
-          </div>
-
-          <div className="relative">
-            <input
-              type={showPassword.confirm ? "text" : "password"}
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 px-4 py-2 rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-[#084479]"
-            />
-            <span
-              onClick={() => setShowPassword(prev => ({ ...prev, confirm: !prev.confirm }))}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
-            >
-              {showPassword.confirm ? <EyeOff size={20} /> : <Eye size={20} />}
-            </span>
-          </div>
-
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            value={form.firstName}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
-          />
-
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            value={form.lastName}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
-          />
-
-          <input
-            type="date"
-            name="dateOfBirth"
-            value={form.dateOfBirth}
-            max={new Date().toISOString().split("T")[0]}
-            onChange={handleChange}
-            required
-            className="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-[#084479]"
-          />
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className={`w-full text-white py-2 rounded-md transition ${
-              isSubmitting
-                ? "bg-[#084479]/50 cursor-not-allowed"
-                : "bg-[#084479] hover:bg-[#06345d]"
-            }`}
-          >
-            {isSubmitting ? "Creating account..." : "Sign Up"}
-          </button>
+          <button type="submit" disabled={isSubmitting} className={`w-full text-white py-2 rounded-md transition ${isSubmitting ? "bg-[#084479]/50 cursor-not-allowed" : "bg-[#084479] hover:bg-[#06345d]"}`}>{isSubmitting ? "Creating..." : (googleCredential ? "Complete Signup" : "Sign Up")}</button>
         </form>
 
-        <p className="text-sm text-center text-gray-600">
-          Already have an account?{" "}
-          <Link to="/login" className="text-[#084479] font-medium hover:underline">
-            Log in
-          </Link>
-        </p>
-
-        <p className="text-xs text-center text-gray-500">
-          By continuing, you agree to UniHub’s{" "}
-          <a href="/terms" className="underline hover:text-gray-800">
-            Terms & Conditions
-          </a>{" "}
-          and{" "}
-          <a href="/privacy" className="underline hover:text-gray-800">
-            Privacy Policy
-          </a>.
-        </p>
+        <p className="text-sm text-center text-gray-600">Already have an account? <Link to="/login" className="text-[#084479] font-medium hover:underline">Log in</Link></p>
       </div>
     </div>
   );

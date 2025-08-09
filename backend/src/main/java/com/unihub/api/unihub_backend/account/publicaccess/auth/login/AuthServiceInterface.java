@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.account.publicaccess.auth;
+package com.unihub.api.unihub_backend.account.publicaccess.auth.login;
 
 import com.unihub.api.unihub_backend.account.dto.AccountLoginRequest;
 import com.unihub.api.unihub_backend.account.dto.AccountLoginResponse;

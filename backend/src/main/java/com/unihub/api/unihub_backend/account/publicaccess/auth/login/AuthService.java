@@ -1,4 +1,4 @@
-package com.unihub.api.unihub_backend.account.publicaccess.auth;
+package com.unihub.api.unihub_backend.account.publicaccess.auth.login;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;

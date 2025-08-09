@@ -1,7 +1,8 @@
-package com.unihub.api.unihub_backend.account.publicaccess.auth;
+package com.unihub.api.unihub_backend.account.publicaccess.auth.login;
 
 import com.unihub.api.unihub_backend.account.dto.AccountLoginRequest;
 import com.unihub.api.unihub_backend.account.dto.AccountLoginResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

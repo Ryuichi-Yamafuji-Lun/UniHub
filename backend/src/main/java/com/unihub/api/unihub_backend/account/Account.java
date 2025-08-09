@@ -53,7 +53,7 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String username;
     // User Password
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     // User account track

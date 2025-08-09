@@ -29,11 +29,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(role -> new SimpleGrantedAuthority(role.name()))
                 .collect(Collectors.toList());
 
+        String password = account.getPassword() != null ? account.getPassword() : "";
+
         return new org.springframework.security.core.userdetails.User(
                 account.getEmail(),
-                account.getPassword(),
+                password,
                 authorities
         );
     }
 } 
-
