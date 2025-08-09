@@ -3,7 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { FiMenu, FiX, FiChevronDown } from "react-icons/fi";
 import { useUserProfile } from "@/hooks/useUserProfile";
 
-const DormdropNavBar = () => {
+const DormdropLandingNavBar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
@@ -15,6 +16,12 @@ const DormdropNavBar = () => {
   const isLoggedIn = !!account;
 
   // --- Event Listeners ---
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       // Close profile menu if click is outside
@@ -39,7 +46,6 @@ const DormdropNavBar = () => {
     setMenuOpen(false);
   }, [location.pathname]);
 
-  // --- Handlers ---
   const handleLogout = () => {
     localStorage.removeItem("token");
     setProfileMenuOpen(false);
@@ -56,9 +62,10 @@ const DormdropNavBar = () => {
   };
 
   const navBarClass = `
-    w-full fixed top-0 left-0 z-50 transition-all duration-300 bg-white shadow-md
+    w-full fixed top-0 left-0 z-50 transition-all duration-300
+    ${isScrolled || menuOpen ? "bg-white shadow-md" : "bg-transparent"}
   `;
-  const navBarTextColor = "text-black";
+  const navBarTextColor = isScrolled || menuOpen ? "text-black" : "text-white";
 
   return (
     <header className={navBarClass} ref={mobileMenuRef}>
@@ -73,7 +80,7 @@ const DormdropNavBar = () => {
 
         {/* Right Side: Desktop Actions */}
         <div className="hidden md:flex items-center gap-4">
-          <Link to="/dormdrop/sublease/new" className="font-semibold py-2 px-4 rounded-full transition-colors border-2 text-primary-actions hover:bg-blue-50">
+          <Link to="/dormdrop/sublease/new" className={`font-semibold py-2 px-4 rounded-full transition-colors border-2 ${isScrolled ? "text-primary-actions hover:bg-blue-50" : "text-white border-white hover:bg-white hover:text-primary-actions"}`}>
             List Your Space
           </Link>
           {!isLoggedIn ? (
@@ -114,7 +121,6 @@ const DormdropNavBar = () => {
         </div>
       </div>
 
-      {/* --- Full-Featured Mobile Dropdown --- */}
       {menuOpen && (
         <div className="md:hidden bg-white text-black absolute top-full left-0 w-full shadow-lg p-6 flex flex-col gap-4 border-t border-gray-200">
           <Link to="/dormdrop/sublease/new" className="border-2 border-primary-actions text-primary-actions font-semibold py-3 px-5 rounded-full text-center hover:bg-blue-50 transition-colors">
@@ -148,4 +154,4 @@ const DormdropNavBar = () => {
   );
 };
 
-export default DormdropNavBar;
+export default DormdropLandingNavBar;

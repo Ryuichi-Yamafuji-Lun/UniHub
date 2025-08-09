@@ -1,12 +1,12 @@
 import NavBar from "@/apps/dormdrop/components/layout/DormDropNavbar";
 import Footer from "@/components/layout/Footer";
 import { Outlet } from "react-router-dom";
-// change later look at amazonkindle
-const MainLayout = () => {
+
+const DormDropMainLayout = () => {
   return (
     <div className="bg-primary-bg min-h-screen flex flex-col w-full overflow-x-hidden">
       <NavBar />
-      <main className="flex-grow">
+      <main className="flex-grow pt-20"> 
         <Outlet /> 
       </main>
       <Footer />
@@ -14,4 +14,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default DormDropMainLayout;

@@ -19,12 +19,13 @@ import PublicAccountProfile from "@/pages/profilepage/PublicProfilePage";
 import DormDropAppRoutes from "@/apps/dormdrop/routes/AppRoutes";
 import MySubleaseListingPage from "@/apps/dormdrop/pages/subleasepage/private/MySubleasePage";
 import RouteLoader from "./RouteLoader";
+import DormDropMainLayout from "@/apps/dormdrop/layout/DormDropMainLayout";
 
 const AppRoutes = () => {
   return (
     <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#fef6e4] text-gray-500">Loading...</div>}>
       <Routes>
-        {/* Auth Pages - no MainLayout */}
+        {/* Auth Pages */}
         <Route path="/login" element={<RouteLoader><AuthLayout><LoginPage /></AuthLayout></RouteLoader>} />
         <Route path="/signup" element={<RouteLoader><AuthLayout><Signup /></AuthLayout></RouteLoader>} />
         <Route path="/verify" element={<RouteLoader><AuthLayout><VerifyEmail /></AuthLayout></RouteLoader>} />
@@ -32,7 +33,10 @@ const AppRoutes = () => {
 
         {/* DormDrop Route */}
         <Route path="dormdrop/*" element={<DormDropAppRoutes />} />
-
+        <Route path="/" element={<DormDropMainLayout />}>
+          <Route path="account/me/sublease" element={<PrivateRoute><MySubleaseListingPage /></PrivateRoute>} />
+        </Route>
+        
         {/* Routes under MainLayout */}
         <Route path="/" element={<MainLayout />}>
           {/* Public */}
@@ -43,7 +47,6 @@ const AppRoutes = () => {
           {/* Private */}
           <Route path="account/me" element={<PrivateRoute><UserProfilePage /></PrivateRoute>} />
           <Route path="account/me/edit" element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
-          <Route path="account/me/sublease" element={<PrivateRoute><MySubleaseListingPage /></PrivateRoute>} />
         </Route>
 
         {/* Fallback */}

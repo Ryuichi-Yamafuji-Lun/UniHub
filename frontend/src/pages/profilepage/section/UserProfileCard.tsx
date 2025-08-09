@@ -24,11 +24,7 @@ const UserProfileCard = ({ account }: Props) => {
         </Link>
 
         <div className="flex flex-col items-center gap-3">
-          <img
-            src={account.profilePicture || "/default-avatar.png"}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow-sm"
-          />
+          <img src={account?.profilePicture || `https://ui-avatars.com/api/?name=${account?.firstName}+${account?.lastName}&background=random`} alt="Profile" className="w-32 h-32 rounded-full border-2 border-gray-300 object-cover" />
           <h1 className="text-2xl font-bold text-gray-900">
             {fullName || "Unnamed User"}
           </h1>

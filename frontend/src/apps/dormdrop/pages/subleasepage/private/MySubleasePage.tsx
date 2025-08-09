@@ -21,7 +21,7 @@ const MySubleaseListingPage = () => {
   }, []);
 
   return (
-    <div className="bg-[#fef6e4] min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative">
+    <div className="bg-primary-bg min-h-screen py-16 px-4 sm:px-6 lg:px-8 relative">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-10 text-center tracking-tight">
           📋 My Subleases
