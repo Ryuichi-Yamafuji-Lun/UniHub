@@ -40,6 +40,7 @@ public class AccountMapper {
         dto.setCreatedAt(account.getCreatedAt());
         dto.setUpdatedAt(account.getUpdatedAt());
 
+        dto.setHasPassword(account.getPassword() != null && !account.getPassword().isBlank());
         if (includeAdminFields) {
             dto.setRoles(account.getRoles());
             dto.setAccountStatus(account.getAccountStatus());

@@ -9,4 +9,5 @@ export interface UserAccount {
   sumOfRatings: number;
   numberOfRatings: number;
   createdAt: string;
+  hasPassword: boolean;
 }

@@ -22,7 +22,9 @@ public class AccountPrivateResponseDTO {
 
     private LocalDateTime createdAt;          
     private LocalDateTime updatedAt;
- 
+    
+    private boolean hasPassword;
+
     // ADMIN Only Dynamically Apply Restrictions
     private Set<Role> roles;                  
     private AccountStatus accountStatus;
@@ -110,5 +112,11 @@ public class AccountPrivateResponseDTO {
     }
     public void setAccountStatus(AccountStatus accountStatus) {
         this.accountStatus = accountStatus;
+    }
+    public boolean isHasPassword() {
+        return hasPassword;
+    }
+    public void setHasPassword(boolean hasPassword) {
+        this.hasPassword = hasPassword;
     }
 }

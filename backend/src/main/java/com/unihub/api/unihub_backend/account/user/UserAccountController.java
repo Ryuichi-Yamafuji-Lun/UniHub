@@ -16,6 +16,7 @@ import com.unihub.api.unihub_backend.account.AccountService;
 import com.unihub.api.unihub_backend.account.dto.AccountPrivateResponseDTO;
 import com.unihub.api.unihub_backend.account.dto.AccountPublicResponseDTO;
 import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
+import com.unihub.api.unihub_backend.account.dto.DeleteAccountRequest;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 
 import jakarta.validation.Valid;
@@ -57,9 +58,9 @@ public class UserAccountController {
     }
     
     @DeleteMapping("/me/delete")
-    public ResponseEntity<Void> deleteAccount() {  
+    public ResponseEntity<Void> deleteAccount(@RequestBody(required = false) DeleteAccountRequest request) {  
         try {
-            userAccountService.deleteOwnAccount();
+            userAccountService.deleteOwnAccount(request == null ? new DeleteAccountRequest() : request);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
+import com.unihub.api.unihub_backend.account.dto.DeleteAccountRequest;
 import com.unihub.api.unihub_backend.security.utils.CurrentAccountProvider;
 
 @Service
@@ -52,6 +53,14 @@ public class UserAccountService {
         }
 
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            if (account.getPassword() != null && !account.getPassword().isBlank()) {
+                if (request.getCurrentPassword() == null || request.getCurrentPassword().isBlank()) {
+                    throw new IllegalArgumentException("Current password is required to set a new password.");
+                }
+                if (!passwordEncoder.matches(request.getCurrentPassword(), account.getPassword())) {
+                    throw new IllegalArgumentException("Incorrect current password.");
+                }
+            }
             if (request.getPassword().length() < 8) {
                 throw new IllegalArgumentException("Password must be at least 8 characters");
             }
@@ -62,8 +71,14 @@ public class UserAccountService {
     }
 
     @Transactional
-    public void deleteOwnAccount() {
+    public void deleteOwnAccount(DeleteAccountRequest request) {
         Account account = currentAccountProvider.getCurrentUserAccount();
+
+        if (account.getPassword() != null && !account.getPassword().isBlank()) {
+            if (request.getPassword() == null || !passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+                throw new IllegalArgumentException("Incorrect password. Account deletion failed.");
+            }
+        } 
         accountRepository.delete(account);
     }
 }
