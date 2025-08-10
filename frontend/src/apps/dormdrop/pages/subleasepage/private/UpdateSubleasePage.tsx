@@ -204,11 +204,11 @@ const UpdateSubleasePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label className={labelClass}>Start Date</label>
-              <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} required className={inputClass} />
+              <input type="date" name="leaseStartDate" value={form.leaseStartDate} onChange={handleChange} max={form.leaseEndDate || undefined} required className={inputClass} />
             </div>
             <div>
               <label className={labelClass}>End Date</label>
-              <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} required className={inputClass} />
+              <input type="date" name="leaseEndDate" value={form.leaseEndDate} onChange={handleChange} min={form.leaseStartDate || undefined} required className={inputClass} />
             </div>
           </div>
           <div ref={wrapperRef} className="relative">
