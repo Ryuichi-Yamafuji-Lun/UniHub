@@ -2,16 +2,19 @@ package com.unihub.api.unihub_backend.account;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.accountstatusrole.Role;
 import com.unihub.api.unihub_backend.common.enums.Schools;
-import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
+import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -22,6 +25,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -73,6 +77,10 @@ public class Account {
     // check for suspension
     private Byte unsafeFlag = 0;
     private Byte suspensionCount = 0;
+
+    // Listings
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Sublease> subleases;
     
     // For JPA
     public Account(){}
@@ -227,6 +235,14 @@ public class Account {
 
     public void setSuspensionCount(Byte suspensionCount) {
         this.suspensionCount = suspensionCount;
+    }
+
+    public List<Sublease> getSubleases() {
+        return subleases;
+    }
+
+    public void setSubleases(List<Sublease> subleases) {
+        this.subleases = subleases;
     }
 
     // Return user information in string format

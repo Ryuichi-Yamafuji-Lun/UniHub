@@ -64,8 +64,9 @@ const EditProfilePage = () => {
   const handleDeleteAccount = async () => {
     setError(null);
     try {
-      const payload = { password: deletePassword };
+      const payload = form?.hasPassword ? { password: deletePassword } : {};
       await api.delete("/api/v2/user/account/me/delete", { data: payload });
+
       localStorage.removeItem("token");
       navigate("/?account_deleted=true");
     } catch (err: unknown) {
