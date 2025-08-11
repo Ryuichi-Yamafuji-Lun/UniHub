@@ -1,24 +1,28 @@
 import { useNewestSubleases } from "@/hooks/useNewestSubleases";
 import Hero from "@/sections/landing/Hero";
+import Product from "@/sections/landing/Product";
+import About from "@/sections/landing/About";
 import NewestSubleaseCarousel from "@/sections/landing/listings/NewestSubleaseCarasoul";
 
 const Landing = () => {
   const { data: subleases, loading } = useNewestSubleases();
 
   return (
-    <>
-      {/* Hero Section */}
+    <div className="bg-gray-50">
       <Hero />
+      <Product />
 
-      {/* Listings */}
-      <div className="relative z-20 bg-[#E2E6E6]">
+      {/* Featured Listings Section */}
+      <div className="bg-white">
         {loading ? (
           <NewestSubleaseCarousel.Skeleton />
         ) : (
           <NewestSubleaseCarousel subleases={subleases} />
         )}
       </div>
-    </>
+      
+      <About />
+    </div>
   );
 };
 

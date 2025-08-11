@@ -47,7 +47,6 @@ const NavBar = () => {
     navigate("/");
   };
 
-  // Helper function to get login URL with current page as redirect
   const getLoginUrl = () => {
     const currentPath = location.pathname + location.search + location.hash;
     return `/login?redirect=${encodeURIComponent(currentPath)}`;
@@ -61,7 +60,7 @@ const NavBar = () => {
         }`}
       >
         {/* Top Bar */}
-        <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
+        <div className="bg-gray-900 text-white px-4 py-3 flex items-center justify-between">
           <div className="text-2xl font-bold tracking-tight">
             <Link to="/">Unihub</Link>
           </div>
@@ -130,7 +129,7 @@ const NavBar = () => {
 
       {/* Bottom Links */}
       <div
-        className={`bg-[#fef6e4] px-6 py-2 text-sm font-medium text-black transition-opacity duration-300 hidden md:flex ${
+        className={`bg-primary-bg px-6 py-2 text-sm font-medium text-black transition-opacity duration-300 hidden md:flex ${
           scrollY <= 10 ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         style={{ position: "relative", zIndex: 50, gap: "1.5rem" }}
