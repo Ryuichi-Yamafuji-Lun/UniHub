@@ -1,9 +1,17 @@
 import type { SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
+import type { UserAccount } from "@/types/UserAccount";
+import { ImageCarousel } from "@/components/ui/ImageCarousel";
 import api from "@/lib/axios";
-// import { Heart, Share2 } from "lucide-react";
+import { Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import type { UserAccount } from "@/types/UserAccount";
+
+const DetailSection: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <div>
+    <h2 className="text-xl font-semibold text-gray-800">{title}</h2>
+    {children}
+  </div>
+);
 
 const SubleaseDetailPage = () => {
   const { id } = useParams();
@@ -33,117 +41,132 @@ const SubleaseDetailPage = () => {
   }, [id]);
 
   if (error) return <p className="text-center mt-20 text-red-600">{error}</p>;
-  if (!sublease) return <p className="text-center mt-20">Loading...</p>;
+  if (!sublease) {
+    return <p className="text-center mt-20">Loading...</p>;
+  }
+
+  const images = sublease.leaseImage ? [sublease.leaseImage] : ["/default-placeholder.png"];
+
+  const displayImages = Array(5).fill(images[0]);
+
+  const rating = sublease.numberOfRatings && sublease.numberOfRatings > 0
+    ? (sublease.sumOfRatings! / sublease.numberOfRatings!).toFixed(1)
+    : "New";
+  const reviewCount = sublease.numberOfRatings || 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      {/* Title Row */}
-      <div className="flex justify-between items-start mb-1">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
+      {/* --- Title Section --- */}
+      <div className="mb-4">
         <h1 className="text-3xl font-bold text-gray-900 text-left">{sublease.leaseName}</h1>
-        <div className="flex gap-4">
-          {account && sublease && account.id === sublease.ownerId && (
-            <Link
-              to={`/dormdrop/sublease/${sublease.id}/edit`}
-              className="inline-block bg-[#084479] text-white px-4 py-2 rounded-lg hover:bg-[#06345d] text-sm font-semibold"
-            >
-              Edit Sublease
-            </Link>
-          )}
-          {/* <button className="flex hover:text-black hover:bg-gray-400flex items-center gap-1 text-sm text-gray-700 hover:bg-gray-100 hover:shadow px-3 py-2 rounded-lg transition">
-            <Share2 className="w-4 h-4" /> Share
-          </button>
-          <button className="flex hover:text-black hover:bg-gray-400flex items-center gap-1 text-sm text-gray-700 hover:bg-gray-100 hover:shadow px-3 py-2 rounded-lg transition">
-            <Heart className="w-4 h-4" /> Save
-          </button> */}
+        <div className="flex justify-between items-center mt-2 text-sm">
+            <p className="text-gray-600 underline cursor-pointer hover:text-blue-600">
+              {sublease.leaseAddress}
+            </p>
+            <div className="flex gap-2 sm:gap-4">
+                 {/* <button className="flex items-center gap-2 font-medium hover:bg-gray-100 p-2 rounded-lg transition-colors">
+                    <Share2 className="w-4 h-4" /> <span className="hidden sm:inline">Share</span>
+                </button>
+                <button className="flex items-center gap-2 font-medium hover:bg-gray-100 p-2 rounded-lg transition-colors">
+                    <Heart className="w-4 h-4" /> <span className="hidden sm:inline">Save</span>
+                </button> */}
+            </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-        <img
-          src={sublease.leaseImage}
-          alt={sublease.leaseName}
-          className="w-full h-64 object-cover rounded-lg md:col-span-2"
-        />
-        <div className="grid grid-cols-2 gap-2">
-          {[1, 2, 3, 4].map((i) => (
-            <img
-              key={i}
-              src={sublease.leaseImage}
-              alt={`${sublease.leaseName}-${i}`}
-              className="w-full h-32 object-cover rounded-md"
-            />
-          ))}
+      {/* --- Image Gallery --- */}
+      {/* Mobile: Carousel (visible on screens smaller than md) */}
+      <div className="md:hidden">
+        <ImageCarousel images={images} altText={sublease.leaseName} />
+      </div>
+      
+      {/* Desktop: Grid (hidden on screens smaller than md) */}
+      <div className="hidden md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2 h-[450px] rounded-xl overflow-hidden">
+        <div className="col-span-2 row-span-2">
+            <img src={displayImages[0]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
         </div>
+        <img src={displayImages[1]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
+        <img src={displayImages[2]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
+        <img src={displayImages[3]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
+        <img src={displayImages[4]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
       </div>
 
-      <div className="mt-10 flex flex-col lg:flex-row gap-10">
+      {/* --- Main Content --- */}
+      <div className="mt-10 flex flex-col lg:flex-row gap-12">
+        {/* Left Column: Details */}
         <div className="lg:w-2/3 space-y-8 text-left">
           <div>
-            <p className="text-2xl font-bold text-gray-900 mt-2">Sublease at {sublease.leaseAddress}</p>
-            <p>{sublease.roomType.map(rt => rt.replace(/_/g, " ")).join(", ")}</p>
-            <p>{sublease.numRoom} bedrooms · {sublease.numBath} bath</p>
+            <div className="flex justify-between items-start">
+                <div>
+                    <h2 className="text-2xl font-semibold text-gray-900">
+                        {sublease.roomType.map(rt => rt.replace(/_/g, " ")).join(", ")} Sublease
+                    </h2>
+                    <p className="text-gray-600">{sublease.numRoom} bedrooms · {sublease.numBath} bath</p>
+                </div>
+                {account && account.id === sublease.ownerId && (
+                  <Link
+                    to={`/dormdrop/sublease/${sublease.id}/edit`}
+                    className="bg-[#084479] text-white px-4 py-2 rounded-lg hover:bg-[#06345d] text-sm font-semibold whitespace-nowrap"
+                  >
+                    Edit Sublease
+                  </Link>
+                )}
+            </div>
+          </div>
+          
+          <hr />
 
-          </div>
-          <div className="w-full border-t border-gray-300 my-6"/>
-          <div>
-            <h2 className="text-xl font-semibold">Preferred Universities</h2>
-            <ul className="flex flex-wrap gap-2 mt-2 text-sm text-gray-700">
-              {Array.from(sublease.school).map((school) => (
-                <li
-                  key={school}
-                  className="px-3 py-1 border rounded-full bg-gray-50 capitalize"
-                >
-                  {school}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="w-full border-t border-gray-300 my-6"/>
-          <div>
-            <p className="text-gray-700 mt-2">{sublease.leaseDescription}</p>
-          </div>
-          <div className="w-full border-t border-gray-300 my-6"/>
-          <div>
-            <h2 className="text-xl font-semibold">Lease Info</h2>
-            <ul className="text-gray-700 mt-2 space-y-1 text-sm">
-              <li>
-                Dates: {new Date(sublease.leaseStartDate).toLocaleDateString()} → {new Date(sublease.leaseEndDate).toLocaleDateString()}
-              </li>
-              <li>Price: ${sublease.leasePrice}/month</li>
-              <li>Room Type: {sublease.roomType.map(rt => rt.replace(/_/g, " ")).join(", ")}</li>
-              <li>Number of Rooms: {sublease.numRoom} bedrooms</li>
-              <li>Number of Baths: {sublease.numBath} baths</li>
-              <li>Dimensions: {sublease.roomWidth}ft x {sublease.roomDepth}ft</li>
-            </ul>
-          </div>
-          <div className="w-full border-t border-gray-300 my-6"/>
-          <div>
-            <h2 className="text-xl font-semibold">What this place offers</h2>
-            <ul className="flex flex-wrap gap-2 mt-2 text-sm text-gray-700">
+          <DetailSection title="Description">
+            <p className="text-gray-700 mt-2 whitespace-pre-wrap">{sublease.leaseDescription}</p>
+          </DetailSection>
+          
+          <hr />
+          
+          <DetailSection title="Lease Details">
+             <ul className="text-gray-700 mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <li><strong>Dates:</strong> {new Date(sublease.leaseStartDate).toLocaleDateString()} → {new Date(sublease.leaseEndDate).toLocaleDateString()}</li>
+                <li><strong>Price:</strong> ${sublease.leasePrice}/month</li>
+                <li><strong>Rooms:</strong> {sublease.numRoom} bedrooms</li>
+                <li><strong>Baths:</strong> {sublease.numBath} baths</li>
+                <li><strong>Dimensions:</strong> {sublease.roomWidth}ft x {sublease.roomDepth}ft</li>
+             </ul>
+          </DetailSection>
+          
+          <hr />
+
+          <DetailSection title="What this place offers">
+            <ul className="flex flex-wrap gap-3 mt-4 text-sm">
               {Array.from(sublease.amenities).map((amenity) => (
-                <li
-                  key={amenity}
-                  className="px-3 py-1 border rounded-full bg-gray-50 capitalize"
-                >
+                <li key={amenity} className="px-4 py-2 border rounded-md bg-gray-50 capitalize">
                   {amenity.replace(/_/g, " ").toLowerCase()}
                 </li>
               ))}
             </ul>
-          </div>
+          </DetailSection>
+
+          <hr />
+
+          <DetailSection title="Preferred Universities">
+            <ul className="flex flex-wrap gap-2 mt-4 text-sm">
+              {Array.from(sublease.school).map((school) => (
+                <li key={school} className="px-3 py-1 border rounded-full bg-blue-50 text-blue-800 font-medium capitalize">
+                  {school}
+                </li>
+              ))}
+            </ul>
+          </DetailSection>
         </div>
 
-        <div className="lg:w-1/3 relative">
-          <div className="sticky top-28 border rounded-lg shadow-sm p-6 space-y-6">
-            <div>
-              <div className="text-2xl font-bold text-gray-900">
-                ${sublease.leasePrice}
-              </div>
-              <p className="text-sm text-gray-500">per month</p>
+        {/* Right Column: Sticky Contact Card */}
+        <div className="lg:w-1/3">
+          <div className="sticky top-28 border rounded-xl shadow-lg p-6 space-y-6">
+            <div className="text-2xl font-bold text-gray-900">
+              ${sublease.leasePrice} <span className="font-normal text-base text-gray-600">/ month</span>
             </div>
 
             <Link
               to={`/account/${sublease.ownerId}`}
-              className="flex items-center gap-4 hover:bg-gray-50 p-3 rounded-lg transition"
+              className="flex items-center gap-4 hover:bg-gray-50 p-3 rounded-lg transition -m-3"
             >
               <img
                 src={sublease.ownerProfilePicture || "/default-profile.png"}
@@ -151,16 +174,16 @@ const SubleaseDetailPage = () => {
                 className="w-12 h-12 rounded-full object-cover"
               />
               <div>
-                <p className="text-md font-medium text-gray-900">{sublease.ownerUsername}</p>
-                <p className="text-sm text-yellow-600">
-                  ⭐ {sublease.numberOfRatings && sublease.numberOfRatings > 0
-                    ? (sublease.sumOfRatings! / sublease.numberOfRatings!).toFixed(1)
-                    : "5.0"} ({sublease.numberOfRatings || 1})
+                <p className="font-semibold text-gray-900">Hosted by {sublease.ownerUsername}</p>
+                 <p className="text-sm text-gray-600 flex items-center gap-1">
+                  <Star className="w-4 h-4 text-yellow-500 fill-current" /> 
+                  <span className="font-bold">{rating}</span> 
+                  ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
                 </p>
               </div>
             </Link>
 
-            <button className="w-full bg-[#084479] text-white py-3 rounded-lg hover:bg-[#06345d] text-sm font-semibold">
+            <button className="w-full bg-[#084479] text-white py-3 rounded-lg hover:bg-[#06345d] font-semibold text-base transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#084479]">
               Contact Subleaser
             </button>
           </div>
