@@ -25,10 +25,10 @@ public class VerificationController {
     private final AccountRepository accountRepository;
 
     // need to insert create frontend page for verification comfirmation
-    @Value("${http://localhost:5173/check-email?redirect=/}")
+    @Value("${verification.redirect.success-url}")
     private String successUrl;
 
-    @Value("${http://localhost:5173/check-email?redirect=/}")
+    @Value("${verification.redirect.failure-url}")
     private String failureUrl;
 
     public VerificationController(VerificationTokenService verificationTokenService,
