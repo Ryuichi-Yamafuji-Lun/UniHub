@@ -5,7 +5,7 @@ const DormDropSearchLayout = () => {
   return (
     <div className="bg-primary-bg min-h-screen flex flex-col w-full overflow-x-hidden">
       <NavBar />
-      <main className="flex-grow">
+      <main className="flex-grow pt-20">
         <Outlet /> 
       </main>
     </div>
