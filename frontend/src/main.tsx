@@ -4,7 +4,11 @@ import './index.css';
 import App from './App.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-const googleClientId = "424890256065-kvvgj81ffm6ah00bkvumbgq4n3irudln.apps.googleusercontent.com";
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+if (!googleClientId) {
+  throw new Error("Missing Google Client ID. Did you set VITE_GOOGLE_CLIENT_ID in your .env file?");
+}
 
 const rootElement = document.getElementById('root');
 
