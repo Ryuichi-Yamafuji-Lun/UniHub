@@ -8,6 +8,7 @@ import { useSearchParams } from "react-router-dom";
 import { type Schools } from "@/types/enums/Schools";
 
 const SubleaseListPage = ({ initialSchool }: { initialSchool?: Schools }) => {
+  // --- All of your existing state and useEffect hooks remain the same ---
   const [allSubleases, setAllSubleases] = useState<SubleaseResponse[]>([]);
   const [filteredSubleases, setFilteredSubleases] = useState<SubleaseResponse[]>([]);
   
@@ -28,73 +29,40 @@ const SubleaseListPage = ({ initialSchool }: { initialSchool?: Schools }) => {
     const fetchSubleases = async () => {
       try {
         const response = await api.get("/api/v1/public/subleases/all");
-        setAllSubleases(response.data);
-        setFilteredSubleases(response.data);
+        // Safeguard to ensure we always have an array
+        const data = Array.isArray(response.data) ? response.data : [];
+        setAllSubleases(data);
+        setFilteredSubleases(data);
       } catch (err) {
         console.error("Error fetching subleases:", err);
       }
     };
-
     fetchSubleases();
   }, []);
 
-  // Update filters when URL parameter changes
   useEffect(() => {
     if (schoolFromUrl) {
-      setFilters(prev => ({
-        ...prev,
-        school: schoolFromUrl
-      }));
+      setFilters(prev => ({ ...prev, school: schoolFromUrl }));
     }
   }, [schoolFromUrl]);
 
   useEffect(() => {
     const applyFilters = () => {
-      if (allSubleases.length === 0) return;
-
+      if (!Array.isArray(allSubleases)) return;
       const filtered = allSubleases.filter((sublease) => {
-        const matchesName =
-          !filters.leaseName ||
-          sublease.leaseName?.toLowerCase().includes(filters.leaseName.toLowerCase());
-
-        const matchesPrice =
-          filters.maxPrice === undefined || sublease.leasePrice <= filters.maxPrice;
-
-        const matchesAmenities =
-          !filters.amenities ||
-          filters.amenities.length === 0 ||
-          filters.amenities.every((amenity) =>
-            sublease.amenities?.includes(amenity)
-          );
-
-        const matchesSchools =
-          !filters.school || sublease.school?.includes(filters.school);
-
-        const matchesRoomType =
-          !filters.roomType ||
-          (Array.isArray(filters.roomType) && filters.roomType.length === 0) ||
-          (sublease.roomType && sublease.roomType.some(rt => filters.roomType!.includes(rt)));  
-
-        const matchesNumRoom =
-          filters.numRoom === undefined || sublease.numRoom === filters.numRoom;
-
-        const matchesNumBath =
-          filters.numBath === undefined || sublease.numBath === filters.numBath;
-
+        const { leaseName, maxPrice, amenities, school, roomType, numRoom, numBath } = filters;
         return (
-          matchesName &&
-          matchesPrice &&
-          matchesAmenities &&
-          matchesSchools &&
-          matchesRoomType &&
-          matchesNumRoom &&
-          matchesNumBath
+          (!leaseName || sublease.leaseName?.toLowerCase().includes(leaseName.toLowerCase())) &&
+          (maxPrice === undefined || sublease.leasePrice <= maxPrice) &&
+          (!amenities || amenities.length === 0 || amenities.every((a) => sublease.amenities?.includes(a))) &&
+          (!school || sublease.school?.includes(school)) &&
+          (!roomType || roomType.length === 0 || sublease.roomType?.some(rt => roomType.includes(rt))) &&
+          (numRoom === undefined || sublease.numRoom === numRoom) &&
+          (numBath === undefined || sublease.numBath === numBath)
         );
       });
-
       setFilteredSubleases(filtered);
     };
-
     applyFilters();
   }, [filters, allSubleases]);
 
@@ -104,36 +72,35 @@ const SubleaseListPage = ({ initialSchool }: { initialSchool?: Schools }) => {
 
   const handleReset = () => {
     setFilters({
-      leaseName: "",
-      maxPrice: 30000,
-      amenities: [],
-      school: undefined, 
-      roomType: [],
-      numRoom: undefined,
-      numBath: undefined,
+      leaseName: "", maxPrice: 30000, amenities: [], school: undefined, 
+      roomType: [], numRoom: undefined, numBath: undefined,
     });
   };
 
   return (
-    <div className="bg-[#fef6e4] min-h-screen">
-      <div className="mx-auto flex flex-col lg:flex-row gap-8 lg:gap-10">
-        
-        {/* Filters Sidebar */}
-        <div className="w-full lg:w-1/4">
-          <div className="lg:sticky lg:top-24 max-h-screen overflow-y-auto">
-            <SearchFilters
+    <div className="lg:flex lg:h-screen lg:overflow-hidden">
+      
+      {/* --- Left Panel (Filters) --- */}
+      <aside className="hidden lg:block lg:w-1/4 bg-[#EAEBEB] p-6 overflow-y-auto">
+        <SearchFilters
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onReset={handleReset}
+        />
+      </aside>
+
+      {/* --- Right Panel (Grid) --- */}
+      <main className="flex-1 p-6 lg:overflow-y-auto">
+        {/* Mobile-only: Show a button to open the filter drawer */}
+        <div className="lg:hidden mb-4">
+           <SearchFilters
               filters={filters}
               onFilterChange={handleFilterChange}
               onReset={handleReset}
             />
-          </div>
         </div>
-
-        {/* Sublease Grid */}
-        <div className="flex-1 overflow-y-auto max-h-screen">
-          <SubleaseGrid subleases={filteredSubleases} />
-        </div>
-      </div>
+        <SubleaseGrid subleases={filteredSubleases} />
+      </main>
     </div>
   );
 };
