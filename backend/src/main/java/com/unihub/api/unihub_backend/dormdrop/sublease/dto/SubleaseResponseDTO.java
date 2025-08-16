@@ -1,6 +1,7 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import com.unihub.api.unihub_backend.common.enums.Schools;
@@ -14,7 +15,7 @@ public class SubleaseResponseDTO {
     private Double leasePrice;
     private LocalDate leaseStartDate;
     private LocalDate leaseEndDate;
-    private String leaseImage;
+    private List<String> leaseImages;
     private Byte numRoom;
     private Byte numBath;
     private Double roomWidth;
@@ -70,11 +71,11 @@ public class SubleaseResponseDTO {
     public void setLeaseEndDate(LocalDate leaseEndDate) {
         this.leaseEndDate = leaseEndDate;
     }
-    public String getLeaseImage() {
-        return leaseImage;
+    public List<String> getLeaseImages() {
+        return leaseImages;
     }
-    public void setLeaseImage(String leaseImage) {
-        this.leaseImage = leaseImage;
+    public void setLeaseImages(List<String> leaseImages) {
+        this.leaseImages = leaseImages;
     }
     public Byte getNumRoom() {
         return numRoom;

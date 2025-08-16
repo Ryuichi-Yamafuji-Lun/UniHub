@@ -87,7 +87,7 @@ public class SubleaseService {
         if (updatedSublease.getLeasePrice() != null) sublease.setLeasePrice(updatedSublease.getLeasePrice());
         if (updatedSublease.getNumRoom() != null) sublease.setNumRoom(updatedSublease.getNumRoom());
         if (updatedSublease.getNumBath() != null) sublease.setNumBath(updatedSublease.getNumBath());
-        if (updatedSublease.getLeaseImage() != null) sublease.setLeaseImage(updatedSublease.getLeaseImage());
+        // if (updatedSublease.getLeaseImage() != null) sublease.setLeaseImage(updatedSublease.getLeaseImage()); UPDATE THIS FOR S3
         if (updatedSublease.getLeaseDescription() != null) sublease.setLeaseDescription(updatedSublease.getLeaseDescription());
         if (updatedSublease.getLeaseAddress() != null) sublease.setLeaseAddress(updatedSublease.getLeaseAddress());
         if (updatedSublease.getLongitude() != null) sublease.setLongitude(updatedSublease.getLongitude());

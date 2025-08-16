@@ -1,6 +1,7 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import org.hibernate.annotations.OnDelete;
@@ -61,12 +62,17 @@ public class Sublease {
     @JoinColumn(name = "sublease_id"))
     private Set<SubleaseRoomType> roomType;
 
+    @ElementCollection
+    @CollectionTable(name = "sublease_images", joinColumns = 
+    @JoinColumn(name = "sublease_id"))
+    @Column(name = "image_url")
+    private List<String> leaseImages;
+    
     private Double leasePrice;
     private Byte numRoom;
     private Byte numBath;
     private Double roomDepth;
     private Double roomWidth;
-    private String leaseImage;
     private String leaseDescription;
     private String leaseAddress;
     private Double longitude;
@@ -76,7 +82,7 @@ public class Sublease {
 
     public Sublease(Account account, Long version, LocalDate datePosted, LocalDate leaseStartDate,
             LocalDate leaseEndDate, String leaseName, Set<Schools> leaseSchool, Set<SubleaseAmenity> amenities, Set<SubleaseRoomType> roomType,
-            Double leasePrice, Byte numRoom, Byte numBath, Double roomDepth, Double roomWidth,String leaseImage, String leaseDescription, String leaseAddress,
+            Double leasePrice, Byte numRoom, Byte numBath, Double roomDepth, Double roomWidth,List<String> leaseImages, String leaseDescription, String leaseAddress,
             Double longitude, Double latitude) {
         this.account = account;
         this.version = version;
@@ -92,7 +98,7 @@ public class Sublease {
         this.numBath = numBath;
         this.roomDepth = roomDepth;
         this.roomWidth = roomWidth;
-        this.leaseImage = leaseImage;
+        this.leaseImages = leaseImages;
         this.leaseDescription = leaseDescription;
         this.leaseAddress = leaseAddress;
         this.longitude = longitude;
@@ -215,12 +221,12 @@ public class Sublease {
         this.roomWidth = roomWidth;
     }
 
-    public String getLeaseImage() {
-        return leaseImage;
+    public List<String> getLeaseImages() {
+        return leaseImages;
     }
 
-    public void setLeaseImage(String leaseImage) {
-        this.leaseImage = leaseImage;
+    public void setLeaseImages(List<String> leaseImages) {
+        this.leaseImages = leaseImages;
     }
 
     public String getLeaseDescription() {
@@ -270,7 +276,7 @@ public class Sublease {
                ", numBath=" + numBath + 
                ", Width=" + roomDepth +
                ", Depth=" + roomWidth +
-               ", leaseImage" + leaseImage +
+               ", leaseImage" + leaseImages +
                ", startDate=" + leaseStartDate +
                ", endDate=" + leaseEndDate +
                ", Address=" + leaseAddress +

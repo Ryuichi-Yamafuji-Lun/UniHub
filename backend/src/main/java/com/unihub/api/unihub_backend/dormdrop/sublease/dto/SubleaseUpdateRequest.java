@@ -40,8 +40,6 @@ public class SubleaseUpdateRequest {
 
     @DecimalMin(value = "1.0", inclusive = true, message = "Room depth must be at least 1 ft")
     private Double roomDepth;
-
-    private String leaseImage;
     
     @Column(name = "lease_description", length = 1000)
     @Size(max = 1000, message = "Lease description must be under 1000 characters")
@@ -140,14 +138,6 @@ public class SubleaseUpdateRequest {
 
     public void setRoomDepth(Double roomDepth) {
         this.roomDepth = roomDepth;
-    }
-
-    public String getLeaseImage() {
-        return leaseImage;
-    }
-
-    public void setLeaseImage(String leaseImage) {
-        this.leaseImage = leaseImage;
     }
 
     public String getLeaseDescription() {
