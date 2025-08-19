@@ -6,7 +6,9 @@ import { useNavigate } from "react-router-dom";
 import type { UserAccount } from "@/types/UserAccount";
 
 const EditProfilePage = () => {
+  // --- STATE MANAGEMENT ---
   const [form, setForm] = useState<UserAccount | null>(null);
+  const [newProfilePicture, setNewProfilePicture] = useState<File | null>(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -14,7 +16,6 @@ const EditProfilePage = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState("");
 
@@ -48,10 +49,20 @@ const EditProfilePage = () => {
     if (!form?.username) return setError("Username is required.");
 
     try {
+      // Step 1: Upload the new profile picture IF one has been selected
+      if (newProfilePicture) {
+        const formData = new FormData();
+        formData.append('file', newProfilePicture);
+        await api.post("/api/v2/user/account/me/profile-picture", formData);
+      }
+
+      // Step 2: Update the text-based data
       const payload = { ...form, currentPassword: currentPassword || undefined, password: password || undefined };
       await api.put("/api/v2/user/account/me/update", payload);
+      
       setSuccess("Profile updated successfully!");
-      setTimeout(() => navigate("/account/me"), 1500);
+      setTimeout(() => window.location.reload(), 1500);
+
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Failed to update profile.");
@@ -95,15 +106,33 @@ const EditProfilePage = () => {
             <p className="mt-1 text-sm text-gray-500">Manage your profile, password, and account settings.</p>
           </header>
 
-          {/* --- Profile Details Section --- */}
           <form onSubmit={handleSubmit} className="bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden">
             <div className="p-6 sm:p-8">
               <h2 className="text-lg font-semibold text-gray-800">Profile Details</h2>
               <div className="mt-6 flex flex-col sm:flex-row gap-8 items-start">
+                
                 <div className="flex flex-col items-center gap-2 w-full sm:w-40 flex-shrink-0">
-                  <img src={form.profilePicture || `https://ui-avatars.com/api/?name=${form.firstName}+${form.lastName}&background=random`} alt="Profile" className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-sm" />
-                  <input name="profilePicture" value={form.profilePicture || ''} onChange={handleChange} placeholder="Image URL" className="mt-2 text-sm w-full border border-gray-300 rounded-md px-2 py-1 text-center" />
+                  <img 
+                    src={newProfilePicture ? URL.createObjectURL(newProfilePicture) : form.profilePicture || `https://ui-avatars.com/api/?name=${form.firstName}+${form.lastName}&background=random`} 
+                    alt="Profile" 
+                    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-sm" 
+                  />
+                  <label htmlFor="picture-upload" className="cursor-pointer mt-2 text-sm text-blue-600 hover:text-blue-800 font-semibold">
+                    Change Photo
+                  </label>
+                  <input
+                    id="picture-upload"
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setNewProfilePicture(e.target.files[0]);
+                      }
+                    }}
+                  />
                 </div>
+                
                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div><label className="block text-sm font-medium text-gray-700">First Name</label><input name="firstName" value={form.firstName} onChange={handleChange} className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" /></div>
                   <div><label className="block text-sm font-medium text-gray-700">Last Name</label><input name="lastName" value={form.lastName} onChange={handleChange} className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" /></div>
@@ -112,7 +141,6 @@ const EditProfilePage = () => {
               </div>
             </div>
             
-            {/* --- Password Section --- */}
             <div className="bg-gray-50 p-6 sm:p-8 border-t">
               <h2 className="text-lg font-semibold text-gray-800">Change Password</h2>
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -136,7 +164,6 @@ const EditProfilePage = () => {
               </div>
             </div>
 
-            {/* --- Actions and Messages --- */}
             <div className="p-6 sm:p-8 bg-gray-50 border-t flex justify-between items-center">
               <div className="flex-grow">
                 {error && <p className="text-red-600 text-sm">{error}</p>}
@@ -149,7 +176,6 @@ const EditProfilePage = () => {
             </div>
           </form>
 
-          {/* --- Delete Account Section --- */}
           <div className="bg-white border border-red-300 shadow-sm rounded-xl p-6 sm:p-8">
             <h2 className="text-lg font-semibold text-red-800">Delete Account</h2>
             <p className="mt-1 text-sm text-gray-600">Permanently delete your account and all of your content. This action is not reversible.</p>
@@ -160,7 +186,6 @@ const EditProfilePage = () => {
         </div>
       </div>
 
-      {/* --- Delete Account Modal --- */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">

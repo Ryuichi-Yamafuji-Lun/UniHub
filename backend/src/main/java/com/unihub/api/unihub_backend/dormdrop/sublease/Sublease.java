@@ -1,7 +1,7 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.OnDelete;
@@ -12,6 +12,7 @@ import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseRoomType;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -23,6 +24,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Version;
 
 @Entity
@@ -62,11 +64,8 @@ public class Sublease {
     @JoinColumn(name = "sublease_id"))
     private Set<SubleaseRoomType> roomType;
 
-    @ElementCollection
-    @CollectionTable(name = "sublease_images", joinColumns = 
-    @JoinColumn(name = "sublease_id"))
-    @Column(name = "image_url")
-    private List<String> leaseImages;
+    @OneToMany(mappedBy = "sublease", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private Set<SubleaseImage> leaseImages = new HashSet<>();
     
     private Double leasePrice;
     private Byte numRoom;
@@ -82,7 +81,7 @@ public class Sublease {
 
     public Sublease(Account account, Long version, LocalDate datePosted, LocalDate leaseStartDate,
             LocalDate leaseEndDate, String leaseName, Set<Schools> leaseSchool, Set<SubleaseAmenity> amenities, Set<SubleaseRoomType> roomType,
-            Double leasePrice, Byte numRoom, Byte numBath, Double roomDepth, Double roomWidth,List<String> leaseImages, String leaseDescription, String leaseAddress,
+            Double leasePrice, Byte numRoom, Byte numBath, Double roomDepth, Double roomWidth,Set<SubleaseImage> leaseImages, String leaseDescription, String leaseAddress,
             Double longitude, Double latitude) {
         this.account = account;
         this.version = version;
@@ -221,11 +220,11 @@ public class Sublease {
         this.roomWidth = roomWidth;
     }
 
-    public List<String> getLeaseImages() {
+    public Set<SubleaseImage> getLeaseImages() {
         return leaseImages;
     }
 
-    public void setLeaseImages(List<String> leaseImages) {
+    public void setLeaseImages(Set<SubleaseImage> leaseImages) {
         this.leaseImages = leaseImages;
     }
 

@@ -3,6 +3,9 @@ package com.unihub.api.unihub_backend.account.publicaccess.auth.signup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.util.UUID;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -16,6 +19,7 @@ import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
 import com.unihub.api.unihub_backend.common.enums.Schools;
 import com.unihub.api.unihub_backend.common.util.EmailDomainUtil;
+import com.unihub.api.unihub_backend.service.S3Service;
 import com.unihub.api.unihub_backend.verification.EmailService;
 import com.unihub.api.unihub_backend.verification.VerificationTokenService;
 
@@ -29,31 +33,38 @@ public class PublicAccountService {
     private final AccountMapper accountMapper;
     private final VerificationTokenService verificationTokenService;
     private final EmailService emailService;
+    private final S3Service s3Service;
 
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
 
     public PublicAccountService(AccountRepository accountRepository, AccountMapper accountMapper,
-            VerificationTokenService verificationTokenService, EmailService emailService) {
+            VerificationTokenService verificationTokenService, EmailService emailService, S3Service s3Service) {
         this.accountRepository = accountRepository;
         this.accountMapper = accountMapper;
         this.verificationTokenService = verificationTokenService;
         this.emailService = emailService;
+        this.s3Service = s3Service;
     }
 
     @Transactional
-    public Account registerAccount(AccountRegistrationRequest request) {
+    public Account registerAccount(AccountRegistrationRequest request, MultipartFile profilePictureFile) throws IOException {
         String domain = EmailDomainUtil.extractDomainFromEmail(request.getEmail());
         if (!Schools.isValidDomain(domain)) {
             throw new IllegalArgumentException("Email domain is not supported");
         }
-        // Add checks for existing email/username here if not handled by exceptions
         
         Account account = accountMapper.fromRegistrationRequest(request);
-        account.setAccountStatus(AccountStatus.UNVERIFIED);;
+        account.setAccountStatus(AccountStatus.UNVERIFIED);
+
+        if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
+            String key = "profile-pictures/" + UUID.randomUUID().toString() + "-" + profilePictureFile.getOriginalFilename();
+            String imageUrl = s3Service.uploadFile(key, profilePictureFile.getBytes());
+            account.setProfilePicture(imageUrl);
+        }
+        
         Account savedAccount = accountRepository.save(account);
 
-        // Create and send verification email
         String token = java.util.UUID.randomUUID().toString();
         verificationTokenService.createToken(savedAccount, token, 60);
         String verificationLink = "http://localhost:8080/api/v1/verify?token=" + token;
@@ -64,7 +75,7 @@ public class PublicAccountService {
     }
 
     @Transactional
-    public Account registerGoogleAccount(GoogleSignupRequest request) {
+    public Account registerGoogleAccount(GoogleSignupRequest request, MultipartFile profilePictureFile) throws IOException {
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(googleClientId))
@@ -99,6 +110,13 @@ public class PublicAccountService {
             newAccount.setPassword(null);
             newAccount.setAccountStatus(AccountStatus.ACTIVE);
             newAccount.setSchool(Schools.fromDomain(EmailDomainUtil.extractDomainFromEmail(email)));
+
+            if (profilePictureFile != null && !profilePictureFile.isEmpty()) {
+                String key = "profile-pictures/" + UUID.randomUUID().toString() + "-" + profilePictureFile.getOriginalFilename();
+                String imageUrl = s3Service.uploadFile(key, profilePictureFile.getBytes());
+                newAccount.setProfilePicture(imageUrl);
+            }
+
             return accountRepository.save(newAccount);
 
         } catch (Exception e) {

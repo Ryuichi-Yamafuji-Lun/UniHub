@@ -2,14 +2,16 @@ package com.unihub.api.unihub_backend.account.publicaccess.auth.signup;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.dto.AccountRegistrationRequest;
 import com.unihub.api.unihub_backend.account.dto.AccountPrivateResponseDTO;
-import com.unihub.api.unihub_backend.account.dto.GoogleSignupRequest; // <-- New Import
+import com.unihub.api.unihub_backend.account.dto.GoogleSignupRequest;
 import com.unihub.api.unihub_backend.account.mapper.AccountMapper;
 
 import jakarta.validation.Valid;
@@ -26,15 +28,21 @@ public class PublicAccountController {
         this.accountMapper = accountMapper;
     }
 
-    @PostMapping
-    public ResponseEntity<AccountPrivateResponseDTO> createAccount(@Valid @RequestBody AccountRegistrationRequest request) {
-        Account createdAccount = accountService.registerAccount(request);
+    @PostMapping(consumes = { "multipart/form-data" })
+    public ResponseEntity<AccountPrivateResponseDTO> createAccount(
+        @RequestPart("userData") @Valid AccountRegistrationRequest request,
+        @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
+    ) throws IOException {
+        Account createdAccount = accountService.registerAccount(request, profilePicture);
         return ResponseEntity.status(201).body(accountMapper.toResponse(createdAccount, false));
     }
 
-    @PostMapping("/google")
-    public ResponseEntity<AccountPrivateResponseDTO> createGoogleAccount(@Valid @RequestBody GoogleSignupRequest request) {
-        Account createdAccount = accountService.registerGoogleAccount(request);
+    @PostMapping(path = "/google", consumes = { "multipart/form-data" })
+    public ResponseEntity<AccountPrivateResponseDTO> createGoogleAccount(
+        @RequestPart("googleData") @Valid GoogleSignupRequest request,
+        @RequestPart(value = "profilePicture", required = false) MultipartFile profilePicture
+    ) throws IOException {
+        Account createdAccount = accountService.registerGoogleAccount(request, profilePicture);
         return ResponseEntity.status(201).body(accountMapper.toResponse(createdAccount, false));
     }
 }

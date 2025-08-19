@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Size;
 public class AccountUpdateRequest {
     private String firstName;
     private String lastName;
-    private String profilePicture;
 
     @Size(min = 3, max = 20, message = "Username must be between 3-20 characters")
     private String username;
@@ -25,12 +24,6 @@ public class AccountUpdateRequest {
     }
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
     }
     public String getUsername() {
         return username;

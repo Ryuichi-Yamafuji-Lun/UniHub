@@ -1,15 +1,20 @@
 package com.unihub.api.unihub_backend.account.user;
 
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountService;
@@ -54,6 +59,16 @@ public class UserAccountController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @PostMapping("/me/profile-picture")
+    public ResponseEntity<AccountPrivateResponseDTO> updateOwnProfilePicture(@RequestParam("file") MultipartFile file) {
+        try {
+            Account updatedAccount = userAccountService.updateOwnProfilePicture(file);
+            return ResponseEntity.ok(accountMapper.toResponse(updatedAccount, false));
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     

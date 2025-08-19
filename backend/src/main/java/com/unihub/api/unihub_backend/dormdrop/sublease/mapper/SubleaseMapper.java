@@ -1,9 +1,12 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease.mapper;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
+import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseImage;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 
@@ -18,7 +21,6 @@ public class SubleaseMapper {
         dto.setLeasePrice(sublease.getLeasePrice());
         dto.setLeaseStartDate(sublease.getLeaseStartDate());
         dto.setLeaseEndDate(sublease.getLeaseEndDate());
-        dto.setLeaseImages(sublease.getLeaseImages());
         dto.setNumRoom(sublease.getNumRoom());
         dto.setNumBath(sublease.getNumBath());
         dto.setLeaseDescription(sublease.getLeaseDescription());
@@ -39,6 +41,14 @@ public class SubleaseMapper {
             dto.setOwnerProfilePicture(owner.getProfilePicture());
             dto.setSumOfRatings(owner.getSumOfRatings());
             dto.setNumberOfRatings(owner.getNumberOfRatings()); 
+        }
+
+        if (sublease.getLeaseImages() != null) {
+            List<String> imageUrls = sublease.getLeaseImages().stream()
+                    .map(SubleaseImage::getImageUrl)
+                    .toList();
+                    
+            dto.setLeaseImages(imageUrls);
         }
 
         return dto;

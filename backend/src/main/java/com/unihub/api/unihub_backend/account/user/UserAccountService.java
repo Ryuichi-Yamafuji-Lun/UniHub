@@ -1,14 +1,19 @@
 package com.unihub.api.unihub_backend.account.user;
 
+import java.io.IOException;
+import java.util.UUID;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
 import com.unihub.api.unihub_backend.account.dto.AccountUpdateRequest;
 import com.unihub.api.unihub_backend.account.dto.DeleteAccountRequest;
 import com.unihub.api.unihub_backend.security.utils.CurrentAccountProvider;
+import com.unihub.api.unihub_backend.service.S3Service;
 
 @Service
 public class UserAccountService {
@@ -16,11 +21,13 @@ public class UserAccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final CurrentAccountProvider currentAccountProvider;
+    private final S3Service s3Service;
 
-    public UserAccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder, CurrentAccountProvider currentAccountProvider) {
+    public UserAccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder, CurrentAccountProvider currentAccountProvider, S3Service s3Service) {
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.currentAccountProvider = currentAccountProvider;
+        this.s3Service = s3Service;
     }
 
 
@@ -39,10 +46,6 @@ public class UserAccountService {
 
         if (request.getLastName() != null) {
             account.setLastName(request.getLastName());
-        }
-
-        if (request.getProfilePicture() != null) {
-            account.setProfilePicture(request.getProfilePicture());
         }
 
         if (request.getUsername() != null && !request.getUsername().equals(account.getUsername())) {
@@ -67,6 +70,26 @@ public class UserAccountService {
             account.setPassword(passwordEncoder.encode(request.getPassword())); 
         }
 
+        return accountRepository.save(account);
+    }
+
+    @Transactional
+    public Account updateOwnProfilePicture(MultipartFile file) throws IOException {
+        Account account = currentAccountProvider.getCurrentUserAccount();
+
+        if (account.getProfilePicture() != null && !account.getProfilePicture().isEmpty()) {
+            try {
+                String oldKey = account.getProfilePicture().substring(account.getProfilePicture().indexOf("profile-pictures/"));
+                s3Service.deleteFile(oldKey);
+            } catch (Exception e) {
+                System.err.println("Failed to delete old profile picture: " + e.getMessage());
+            }
+        }
+
+        String key = "profile-pictures/" + account.getId() + "/" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        String imageUrl = s3Service.uploadFile(key, file.getBytes());
+
+        account.setProfilePicture(imageUrl);
         return accountRepository.save(account);
     }
 

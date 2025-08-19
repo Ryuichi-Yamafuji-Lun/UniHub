@@ -1,9 +1,11 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.unihub.api.unihub_backend.account.Account;
@@ -22,6 +25,7 @@ import com.unihub.api.unihub_backend.dormdrop.sublease.mapper.SubleaseMapper;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseAmenity;
 import com.unihub.api.unihub_backend.dormdrop.subleasestatus.SubleaseRoomType;
 import com.unihub.api.unihub_backend.security.utils.CurrentAccountProvider;
+import com.unihub.api.unihub_backend.service.S3Service;
 
 @Service
 public class SubleaseService {
@@ -29,11 +33,15 @@ public class SubleaseService {
     private final SubleaseRepository subleaseRepository;
     private final SubleaseMapper subleaseMapper;
     private final CurrentAccountProvider currentAccountProvider;
+    private final S3Service s3Service;
+    private final SubleaseImageRepository subleaseImageRepository;
 
-    public SubleaseService(SubleaseRepository subleaseRepository, SubleaseMapper subleaseMapper, CurrentAccountProvider currentAccountProvider) {
+    public SubleaseService(SubleaseRepository subleaseRepository, SubleaseMapper subleaseMapper, CurrentAccountProvider currentAccountProvider, S3Service s3Service, SubleaseImageRepository subleaseImageRepository) {
         this.subleaseRepository = subleaseRepository;
         this.subleaseMapper = subleaseMapper;
         this.currentAccountProvider = currentAccountProvider;
+        this.s3Service = s3Service;
+        this.subleaseImageRepository = subleaseImageRepository;
     }
     
     // check if user is the owner of the listing
@@ -43,13 +51,25 @@ public class SubleaseService {
 
     // create sublease
     @Transactional
-    public Sublease createSublease(SubleaseRegistrationRequest request) {
+    public Sublease createSublease(SubleaseRegistrationRequest request, List<MultipartFile> files) throws IOException {
         Account account = currentAccountProvider.getCurrentUserAccount();
 
-        // do a double take on accound and date posted
         Sublease sublease = subleaseMapper.fromRegistrationRequest(request);
         sublease.setAccount(account);
         sublease.setDatePosted(LocalDate.now());
+
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                String key = "sublease-images/" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+                String imageUrl = s3Service.uploadFile(key, file.getBytes());
+
+                SubleaseImage image = new SubleaseImage();
+                image.setImageUrl(imageUrl);
+                image.setSublease(sublease);
+
+                sublease.getLeaseImages().add(image);
+            }
+        }
         
         return subleaseRepository.save(sublease);
     }
@@ -87,7 +107,6 @@ public class SubleaseService {
         if (updatedSublease.getLeasePrice() != null) sublease.setLeasePrice(updatedSublease.getLeasePrice());
         if (updatedSublease.getNumRoom() != null) sublease.setNumRoom(updatedSublease.getNumRoom());
         if (updatedSublease.getNumBath() != null) sublease.setNumBath(updatedSublease.getNumBath());
-        // if (updatedSublease.getLeaseImage() != null) sublease.setLeaseImage(updatedSublease.getLeaseImage()); UPDATE THIS FOR S3
         if (updatedSublease.getLeaseDescription() != null) sublease.setLeaseDescription(updatedSublease.getLeaseDescription());
         if (updatedSublease.getLeaseAddress() != null) sublease.setLeaseAddress(updatedSublease.getLeaseAddress());
         if (updatedSublease.getLongitude() != null) sublease.setLongitude(updatedSublease.getLongitude());
@@ -97,6 +116,37 @@ public class SubleaseService {
         if (updatedSublease.getRoomDepth() != null) sublease.setRoomDepth(updatedSublease.getRoomDepth());
 
         return subleaseRepository.save(sublease);
+    }
+
+    @Transactional
+    public Sublease replaceSubleaseImage(Long subleaseId, Long imageId, MultipartFile newFile) throws IOException {
+        Sublease sublease = subleaseRepository.findById(subleaseId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sublease not found"));
+        Account account = currentAccountProvider.getCurrentUserAccount();
+        if (!isOwnerOfSublease(sublease, account)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized");
+        }
+
+        SubleaseImage oldImage = subleaseImageRepository.findById(imageId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Image not found"));
+        if (!oldImage.getSublease().getId().equals(subleaseId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image does not belong to this sublease");
+        }
+
+        // 2. Delete the old file from S3
+        String oldUrl = oldImage.getImageUrl();
+        String oldKey = oldUrl.substring(oldUrl.indexOf("sublease-images/"));
+        s3Service.deleteFile(oldKey);
+
+        // 3. Upload the new file to S3
+        String newKey = "sublease-images/" + subleaseId + "/" + UUID.randomUUID().toString() + "-" + newFile.getOriginalFilename();
+        String newImageUrl = s3Service.uploadFile(newKey, newFile.getBytes());
+
+        // 4. Update the URL in the database
+        oldImage.setImageUrl(newImageUrl);
+        subleaseImageRepository.save(oldImage);
+
+        return sublease; // Return the parent sublease
     }
 
     /*

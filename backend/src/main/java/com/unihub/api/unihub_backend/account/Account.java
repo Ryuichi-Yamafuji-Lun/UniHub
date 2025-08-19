@@ -39,6 +39,8 @@ public class Account {
     private String firstName;
     private String lastName;
     private LocalDate dateOfBirth;
+    
+    @Column(nullable = true)
     private String profilePicture;
 
     private Float sumOfRatings = 5.0f;
