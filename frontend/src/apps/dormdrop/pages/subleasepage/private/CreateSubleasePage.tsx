@@ -28,6 +28,17 @@ const validateStep = (step: number, form: ISubleaseForm): IFormErrors => {
       if (uploadedFiles.length !== 5) {
           errors.leaseImages = "Exactly 5 image files must be uploaded.";
       }
+            if (!form.numRoom || Number(form.numRoom) <= 0) {
+        errors.numRooms = "Please specify at least 1 bedroom.";
+      }
+
+      if (!form.numBath || Number(form.numBath) <= 0) {
+        errors.numBathrooms = "Please specify at least 0.5 bathrooms.";
+      }
+      
+      if (form.amenities.length === 0) {
+        errors.amenities = "Please select at least one amenity.";
+      }
       if (form.roomType.length === 0) errors.roomType = "Room type is required.";
       if (!form.leaseDescription) errors.leaseDescription = "Description is required.";
     }
