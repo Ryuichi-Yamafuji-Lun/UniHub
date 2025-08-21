@@ -15,7 +15,7 @@ public class SubleaseResponseDTO {
     private Double leasePrice;
     private LocalDate leaseStartDate;
     private LocalDate leaseEndDate;
-    private List<String> leaseImages;
+    private List<SubleaseImageDTO> leaseImages;
     private Byte numRoom;
     private Byte numBath;
     private Double roomWidth;
@@ -71,10 +71,10 @@ public class SubleaseResponseDTO {
     public void setLeaseEndDate(LocalDate leaseEndDate) {
         this.leaseEndDate = leaseEndDate;
     }
-    public List<String> getLeaseImages() {
+    public List<SubleaseImageDTO> getLeaseImages() {
         return leaseImages;
     }
-    public void setLeaseImages(List<String> leaseImages) {
+    public void setLeaseImages(List<SubleaseImageDTO> leaseImages) {
         this.leaseImages = leaseImages;
     }
     public Byte getNumRoom() {

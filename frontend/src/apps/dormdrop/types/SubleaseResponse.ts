@@ -2,6 +2,12 @@ import type { Schools } from "@/types/enums/Schools";
 import type { SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import type { SubleaseRoomType } from "./enums/SubleaseRoomType";
 
+export interface SubleaseImage {
+  id: number;
+  imagePosition: number;
+  imageUrl: string;
+}
+
 export interface SubleaseResponse {
   id: number;
   ownerId: number;
@@ -10,7 +16,7 @@ export interface SubleaseResponse {
   leasePrice: number;
   leaseStartDate: string;
   leaseEndDate: string;
-  leaseImage: string;
+  leaseImages: SubleaseImage[];
   roomType: SubleaseRoomType[];
   numRoom: number;
   numBath: number;

@@ -45,9 +45,26 @@ const SubleaseDetailPage = () => {
     return <p className="text-center mt-20">Loading...</p>;
   }
 
-  const images = sublease.leaseImage ? [sublease.leaseImage] : ["/default-placeholder.png"];
+  const placeholderImage = "/default-placeholder.png";
 
-  const displayImages = Array(5).fill(images[0]);
+  const realImages = sublease.leaseImages
+    ? [...sublease.leaseImages]
+        .sort((a, b) => a.imagePosition - b.imagePosition)
+        .map(img => img.imageUrl)
+    : [];
+
+  const getImageUrlByPosition = (pos: number): string => {
+    const image = sublease.leaseImages?.find(img => img.imagePosition === pos);
+    return image ? image.imageUrl : placeholderImage;
+  };
+
+  const galleryImages = [
+    getImageUrlByPosition(0), 
+    getImageUrlByPosition(1),
+    getImageUrlByPosition(2),
+    getImageUrlByPosition(3),
+    getImageUrlByPosition(4),
+  ];
 
   const rating = sublease.numberOfRatings && sublease.numberOfRatings > 0
     ? (sublease.sumOfRatings! / sublease.numberOfRatings!).toFixed(1)
@@ -63,32 +80,27 @@ const SubleaseDetailPage = () => {
             <p className="text-gray-600 underline cursor-pointer hover:text-blue-600">
               {sublease.leaseAddress}
             </p>
-            <div className="flex gap-2 sm:gap-4">
-                 {/* <button className="flex items-center gap-2 font-medium hover:bg-gray-100 p-2 rounded-lg transition-colors">
-                    <Share2 className="w-4 h-4" /> <span className="hidden sm:inline">Share</span>
-                </button>
-                <button className="flex items-center gap-2 font-medium hover:bg-gray-100 p-2 rounded-lg transition-colors">
-                    <Heart className="w-4 h-4" /> <span className="hidden sm:inline">Save</span>
-                </button> */}
-            </div>
         </div>
       </div>
 
       {/* --- Image Gallery --- */}
-      {/* Mobile: Carousel (visible on screens smaller than md) */}
       <div className="md:hidden">
-        <ImageCarousel images={images} altText={sublease.leaseName} />
+        <ImageCarousel images={realImages.length > 0 ? realImages : [placeholderImage]} altText={sublease.leaseName} />
       </div>
       
-      {/* Desktop: Grid (hidden on screens smaller than md) */}
       <div className="hidden md:grid md:grid-cols-4 md:grid-rows-2 md:gap-2 h-[450px] rounded-xl overflow-hidden">
-        <div className="col-span-2 row-span-2">
-            <img src={displayImages[0]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
-        </div>
-        <img src={displayImages[1]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
-        <img src={displayImages[2]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
-        <img src={displayImages[3]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
-        <img src={displayImages[4]} alt={sublease.leaseName} className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" />
+        {galleryImages.map((imageUrl, index) => (
+          <div
+            key={index}
+            className={index === 0 ? "col-span-2 row-span-2" : ""}
+          >
+            <img 
+              src={imageUrl} 
+              alt={`${sublease.leaseName} image ${index + 1}`} 
+              className="w-full h-full object-cover cursor-pointer hover:opacity-95 transition" 
+            />
+          </div>
+        ))}
       </div>
 
       {/* --- Main Content --- */}

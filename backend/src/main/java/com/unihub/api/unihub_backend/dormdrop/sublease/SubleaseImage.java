@@ -7,7 +7,7 @@ public class SubleaseImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private int imagePosition;
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,5 +38,13 @@ public class SubleaseImage {
 
     public void setSublease(Sublease sublease) {
         this.sublease = sublease;
+    }
+
+    public int getImagePosition() {
+        return imagePosition;
+    }
+
+    public void setImagePosition(int imagePosition) {
+        this.imagePosition = imagePosition;
     }
 }

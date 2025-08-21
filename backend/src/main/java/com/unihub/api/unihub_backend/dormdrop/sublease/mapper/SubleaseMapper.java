@@ -1,12 +1,15 @@
 package com.unihub.api.unihub_backend.dormdrop.sublease.mapper;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.dormdrop.sublease.Sublease;
 import com.unihub.api.unihub_backend.dormdrop.sublease.SubleaseImage;
+import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseImageDTO;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseRegistrationRequest;
 import com.unihub.api.unihub_backend.dormdrop.sublease.dto.SubleaseResponseDTO;
 
@@ -44,11 +47,16 @@ public class SubleaseMapper {
         }
 
         if (sublease.getLeaseImages() != null) {
-            List<String> imageUrls = sublease.getLeaseImages().stream()
-                    .map(SubleaseImage::getImageUrl)
-                    .toList();
+            List<SubleaseImageDTO> imageDTOs = sublease.getLeaseImages().stream()
+                .sorted(Comparator.comparingInt(SubleaseImage::getImagePosition))
+                .map(image -> new SubleaseImageDTO(
+                    image.getId(),
+                    image.getImageUrl(),
+                    image.getImagePosition()
+                ))
+                .collect(Collectors.toList());
                     
-            dto.setLeaseImages(imageUrls);
+            dto.setLeaseImages(imageDTOs);
         }
 
         return dto;

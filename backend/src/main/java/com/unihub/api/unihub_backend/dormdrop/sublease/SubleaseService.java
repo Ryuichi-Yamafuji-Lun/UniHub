@@ -58,7 +58,9 @@ public class SubleaseService {
         sublease.setAccount(account);
         sublease.setDatePosted(LocalDate.now());
 
-        for (MultipartFile file : files) {
+        for (int i = 0; i < files.size(); ++i) {
+            MultipartFile file = files.get(i);
+
             if (!file.isEmpty()) {
                 String key = "sublease-images/" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
                 String imageUrl = s3Service.uploadFile(key, file.getBytes());
@@ -66,6 +68,7 @@ public class SubleaseService {
                 SubleaseImage image = new SubleaseImage();
                 image.setImageUrl(imageUrl);
                 image.setSublease(sublease);
+                image.setImagePosition(i);
 
                 sublease.getLeaseImages().add(image);
             }
