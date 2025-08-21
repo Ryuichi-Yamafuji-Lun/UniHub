@@ -181,7 +181,7 @@ const SubleaseDetailPage = () => {
               className="flex items-center gap-4 hover:bg-gray-50 p-3 rounded-lg transition -m-3"
             >
               <img
-                src={sublease.ownerProfilePicture || "/default-profile.png"}
+                src={account?.profilePicture || `https://ui-avatars.com/api/?name=${account?.firstName}+${account?.lastName}&background=random`}
                 alt={sublease.ownerUsername}
                 className="w-12 h-12 rounded-full object-cover"
               />
