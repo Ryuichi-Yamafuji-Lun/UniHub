@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FiChevronDown } from "react-icons/fi";
+import { FiChevronDown, FiUploadCloud } from "react-icons/fi";
 import api from "@/lib/axios";
 
+import { type SubleaseImage, type SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import { SchoolsArray, type Schools, schoolDisplayNames } from "@/types/enums/Schools";
 import { SubleaseAmenityArray, type SubleaseAmenity } from "@/apps/dormdrop/types/enums/SubleaseAmenity";
 import { SubleaseRoomTypeArray, type SubleaseRoomType } from "@/apps/dormdrop/types/enums/SubleaseRoomType";
@@ -44,13 +45,18 @@ const UpdateSubleasePage = () => {
     leaseDescription: "",
     leaseStartDate: "",
     leaseEndDate: "",
-    leaseImage: "",
+    leaseImages: [] as SubleaseImage[],
     roomType: [] as SubleaseRoomType[],
     numRoom: 1,
     numBath: 1,
     leaseSchool: [] as Schools[],
     amenities: [] as SubleaseAmenity[],
   });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<SubleaseImage | null>(null);
+  const [newImageFile, setNewImageFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [isLoading, setIsLoading] = useState(true);
   const [leaseDescriptionError, setLeaseDescriptionError] = useState("");
@@ -67,7 +73,7 @@ const UpdateSubleasePage = () => {
       setIsLoading(true);
       try {
         const res = await api.get(`/api/v1/public/subleases/${subleaseId}`);
-        const data = res.data;
+        const data: SubleaseResponse = res.data;
         setForm({
           leaseName: data.leaseName ?? "",
           leaseAddress: data.leaseAddress ?? "",
@@ -75,7 +81,7 @@ const UpdateSubleasePage = () => {
           leaseDescription: data.leaseDescription ?? "",
           leaseStartDate: data.leaseStartDate ? new Date(data.leaseStartDate).toISOString().split('T')[0] : "",
           leaseEndDate: data.leaseEndDate ? new Date(data.leaseEndDate).toISOString().split('T')[0] : "",
-          leaseImage: data.leaseImage ?? "",
+          leaseImages: data.leaseImages ?? [],
           roomType: data.roomType ?? [],
           numRoom: data.numRoom ?? 1,
           numBath: data.numBath ?? 1,
@@ -92,6 +98,48 @@ const UpdateSubleasePage = () => {
       fetchSublease();
     }
   }, [subleaseId]);
+
+  const handleOpenModal = (image: SubleaseImage) => {
+    setSelectedImage(image);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedImage(null);
+    setNewImageFile(null);
+    setIsUploading(false);
+  };
+
+  const handleFileChangeForReplacement = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewImageFile(e.target.files[0]);
+    }
+  };
+
+  const handleImageReplace = async () => {
+    if (!newImageFile || !selectedImage) return;
+
+    const formData = new FormData();
+    formData.append("file", newImageFile);
+    setIsUploading(true);
+
+    try {
+      const res = await api.put(`/api/v1/owner/accounts/me/subleases/${subleaseId}/images/${selectedImage.id}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      
+      const updatedSublease: SubleaseResponse = res.data;
+      setForm(prev => ({ ...prev, leaseImages: updatedSublease.leaseImages }));
+
+      alert("Image replaced successfully!");
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error replacing image", error);
+      alert("Failed to replace image.");
+      setIsUploading(false);
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -136,10 +184,12 @@ const UpdateSubleasePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { leaseImages, ...updateData } = form;
     try {
-      await api.put(`/api/v1/owner/accounts/me/subleases/${subleaseId}`, form);
-      alert("Sublease updated successfully!");
-      navigate("/account/me/sublease");
+      await api.put(`/api/v1/owner/accounts/me/subleases/${subleaseId}`, updateData);
+      alert("Sublease details updated successfully!");
+      navigate("/account/me/subleases");
     } catch (error) {
       console.error("Error updating sublease", error);
       alert("Failed to update sublease.");
@@ -151,7 +201,7 @@ const UpdateSubleasePage = () => {
       try {
         await api.delete(`/api/v1/owner/accounts/me/subleases/${subleaseId}`);
         alert("Sublease deleted successfully.");
-        navigate("/account/me/sublease");
+        navigate("/account/me/subleases");
       } catch (error) {
         console.error("Error deleting sublease:", error);
       }
@@ -239,10 +289,25 @@ const UpdateSubleasePage = () => {
 
         <AccordionSection title="The Space & Details" isOpen={openSection === 'space'} onToggle={() => handleToggleSection('space')}>
           <div>
-            <label className={labelClass} htmlFor="leaseImage">Primary Image URL</label>
-            <input id="leaseImage" name="leaseImage" type="text" value={form.leaseImage} onChange={handleChange} required className={inputClass} />
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <label className={labelClass}>Manage Images</label>
+              <p className="text-sm text-gray-500 mb-4">Click on an image to replace it. The first image is the primary one.</p>
+              <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+                {[...form.leaseImages]
+                  .sort((a, b) => a.imagePosition - b.imagePosition)
+                  .map(image => (
+                    <div key={image.id} className="relative aspect-square group cursor-pointer" onClick={() => handleOpenModal(image)}>
+                      <img src={image.imageUrl} alt={`Image ${image.imagePosition + 1}`} className="w-full h-full object-cover rounded-lg" />
+                      <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-50 group-hover:bg-black/50 flex items-center justify-center transition-all duration-300 rounded-lg">
+                        <span className="text-white opacity-0 group-hover:opacity-100 font-semibold">Replace</span>
+                      </div>
+                      {image.imagePosition === 0 && (
+                        <div className="absolute top-1 left-1 text-white text-xs px-2 py-0.5 rounded-full">Primary</div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
             <div>
               <label className={labelClass}>Room Type</label>
               <select name="roomType" value={form.roomType[0] || ""} onChange={handleRoomTypeChange} required className={inputClass}>
@@ -285,6 +350,35 @@ const UpdateSubleasePage = () => {
           </button>
         </div>
       </form>
+
+      {isModalOpen && selectedImage && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-8 rounded-lg max-w-lg w-full">
+            <h2 className="text-2xl font-bold mb-4">Replace Image #{selectedImage.imagePosition + 1}</h2>
+            <img src={selectedImage.imageUrl} alt="Current" className="w-full h-64 object-cover rounded-lg mb-4" />
+            
+            <label htmlFor="file-upload" className="w-full flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+              <FiUploadCloud className="w-10 h-10 text-gray-400 mb-2" />
+              <span className="text-gray-600 font-semibold">{newImageFile ? newImageFile.name : 'Click to upload a new image'}</span>
+              <input id="file-upload" type="file" className="hidden" onChange={handleFileChangeForReplacement} accept="image/*" />
+            </label>
+            
+            <div className="flex justify-end gap-4 mt-8">
+              <button type="button" onClick={handleCloseModal} className="px-6 py-2 rounded-lg text-gray-700 font-semibold border hover:bg-gray-100">
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                onClick={handleImageReplace} 
+                disabled={!newImageFile || isUploading}
+                className="px-6 py-2 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {isUploading ? 'Uploading...' : 'Confirm Replacement'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
