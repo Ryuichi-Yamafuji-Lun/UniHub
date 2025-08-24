@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "@/lib/axios";
-import { ProgressBar } from "@/components/ui/ProgressBar";
+import imageCompression from 'browser-image-compression';
 
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import { SubleaseFormProvider } from "@/apps/dormdrop/pages/subleasepage/private/createsubleasecontent/SubleaseFormProvider";
 import { useSubleaseForm } from "@/apps/dormdrop/pages/subleasepage/private/createsubleasecontent/useSubleaseForm";
 import { type ISubleaseForm, type IFormErrors } from "@/apps/dormdrop/pages/subleasepage/private/createsubleasecontent/SubleaseFormContext";
@@ -89,13 +90,33 @@ const CreateSubleaseContent = () => {
       }
   
       setIsSubmitting(true);
-      const formData = new FormData();
-
+      
       const filesToUpload = form.leaseImages
           .map(img => img.source)
           .filter((source): source is File => source instanceof File);
 
-      // Your backend does not use image URLs, so we don't include them here.
+      const compressionOptions = {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true,
+      };
+
+      console.log("Compressing images...");
+      const compressedFiles = await Promise.all(
+        filesToUpload.map(async (file) => {
+          try {
+            const compressedFile = await imageCompression(file, compressionOptions);
+            console.log(`Compressed ${file.name} from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`);
+            return compressedFile;
+          } catch (error) {
+            console.error("Error compressing image:", error);
+            return file;
+          }
+        })
+      );
+      console.log("Image compression complete.");
+
+      const formData = new FormData();
       const subleaseDataObject = {
         leaseName: form.leaseName,
         leaseAddress: form.leaseAddress,
@@ -117,8 +138,8 @@ const CreateSubleaseContent = () => {
       const subleaseDataBlob = new Blob([JSON.stringify(subleaseDataObject)], { type: "application/json" });
       formData.append('subleaseData', subleaseDataBlob);
       
-      filesToUpload.forEach(file => {
-          // The key MUST be 'files' to match your backend @RequestPart("files")
+      // Use the newly compressed files for the upload
+      compressedFiles.forEach(file => {
           formData.append('files', file);
       });
   
