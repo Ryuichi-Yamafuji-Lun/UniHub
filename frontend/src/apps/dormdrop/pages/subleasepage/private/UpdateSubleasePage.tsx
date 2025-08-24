@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FiChevronDown, FiUploadCloud } from "react-icons/fi";
 import api from "@/lib/axios";
+import imageCompression from 'browser-image-compression'; // 1. IMPORT THE LIBRARY
 
 import { type SubleaseImage, type SubleaseResponse } from "@/apps/dormdrop/types/SubleaseResponse";
 import { SchoolsArray, type Schools, schoolDisplayNames } from "@/types/enums/Schools";
@@ -120,9 +121,27 @@ const UpdateSubleasePage = () => {
   const handleImageReplace = async () => {
     if (!newImageFile || !selectedImage) return;
 
-    const formData = new FormData();
-    formData.append("file", newImageFile);
     setIsUploading(true);
+    console.log(`Original file size: ${(newImageFile.size / 1024 / 1024).toFixed(2)} MB`);
+
+    const compressionOptions = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+
+    let fileToUpload: File;
+    try {
+      const compressedFile = await imageCompression(newImageFile, compressionOptions);
+      console.log(`Compressed file size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+      fileToUpload = compressedFile;
+    } catch (error) {
+      console.error("Image compression failed, uploading original file instead:", error);
+      fileToUpload = newImageFile;
+    }
+    
+    const formData = new FormData();
+    formData.append("file", fileToUpload);
 
     try {
       const res = await api.put(`/api/v1/owner/accounts/me/subleases/${subleaseId}/images/${selectedImage.id}`, formData, {
@@ -301,7 +320,7 @@ const UpdateSubleasePage = () => {
                         <span className="text-white opacity-0 group-hover:opacity-100 font-semibold">Replace</span>
                       </div>
                       {image.imagePosition === 0 && (
-                        <div className="absolute top-1 left-1 text-white text-xs px-2 py-0.5 rounded-full">Primary</div>
+                        <div className="absolute top-1 left-1 bg-black/50 text-white text-xs px-2 py-0.5 rounded-full">Primary</div>
                       )}
                     </div>
                   ))}
