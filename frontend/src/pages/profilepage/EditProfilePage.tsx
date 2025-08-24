@@ -4,6 +4,7 @@ import { Eye, EyeOff, ShieldAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { UserAccount } from "@/types/UserAccount";
+import imageCompression from 'browser-image-compression'; // 1. IMPORT THE LIBRARY
 
 const EditProfilePage = () => {
   // --- STATE MANAGEMENT ---
@@ -36,6 +37,7 @@ const EditProfilePage = () => {
     setForm((prev) => (prev ? { ...prev, [name]: value } : prev));
   };
 
+  // 2. UPDATE THIS FUNCTION
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -49,10 +51,26 @@ const EditProfilePage = () => {
     if (!form?.username) return setError("Username is required.");
 
     try {
-      // Step 1: Upload the new profile picture IF one has been selected
+      // Step 1: Compress and upload the new profile picture IF one has been selected
       if (newProfilePicture) {
+        console.log(`Original profile picture size: ${(newProfilePicture.size / 1024 / 1024).toFixed(2)} MB`);
+        const options = {
+            maxSizeMB: 0.5,
+            maxWidthOrHeight: 512,
+            useWebWorker: true,
+        };
+        
+        let fileToUpload = newProfilePicture;
+        try {
+            const compressedFile = await imageCompression(newProfilePicture, options);
+            console.log(`Compressed profile picture size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+            fileToUpload = compressedFile;
+        } catch (compressionError) {
+            console.error("Error compressing profile picture, using original.", compressionError);
+        }
+
         const formData = new FormData();
-        formData.append('file', newProfilePicture);
+        formData.append('file', fileToUpload);
         await api.post("/api/v2/user/account/me/profile-picture", formData);
       }
 
