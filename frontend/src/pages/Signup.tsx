@@ -6,6 +6,7 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import { isAllowedEmail } from "@/types/enums/Email";
 import { GoogleLogin, type CredentialResponse } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import imageCompression from 'browser-image-compression'; // 1. IMPORT THE LIBRARY
 
 interface GoogleJwtPayload {
   given_name: string;
@@ -61,6 +62,7 @@ const Signup = () => {
     }
   };
 
+  // 2. UPDATE THIS FUNCTION
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -82,6 +84,23 @@ const Signup = () => {
     setIsSubmitting(true);
     try {
       const formData = new FormData();
+      
+      let finalProfilePicture = profilePictureFile;
+      if (profilePictureFile) {
+        console.log(`Original profile picture size: ${(profilePictureFile.size / 1024 / 1024).toFixed(2)} MB`);
+        const options = {
+          maxSizeMB: 0.5,
+          maxWidthOrHeight: 512,
+          useWebWorker: true,
+        };
+        try {
+          const compressedFile = await imageCompression(profilePictureFile, options);
+          console.log(`Compressed profile picture size: ${(compressedFile.size / 1024 / 1024).toFixed(2)} MB`);
+          finalProfilePicture = compressedFile;
+        } catch (compressionError) {
+          console.error("Error compressing profile picture, using original file.", compressionError);
+        }
+      }
 
       if (googleCredential) {
         // --- Handle Google Signup Submission ---
@@ -92,8 +111,8 @@ const Signup = () => {
         };
         formData.append('googleData', new Blob([JSON.stringify(googleData)], { type: 'application/json' }));
         
-        if (profilePictureFile) {
-          formData.append('profilePicture', profilePictureFile);
+        if (finalProfilePicture) {
+          formData.append('profilePicture', finalProfilePicture);
         }
 
         await api.post("api/v2/public/account/google", formData);
@@ -103,8 +122,8 @@ const Signup = () => {
         // --- Handle Standard Signup Submission ---
         formData.append('userData', new Blob([JSON.stringify(form)], { type: 'application/json' }));
 
-        if (profilePictureFile) {
-          formData.append('profilePicture', profilePictureFile);
+        if (finalProfilePicture) {
+          formData.append('profilePicture', finalProfilePicture);
         }
 
         await api.post("api/v2/public/account", formData);
