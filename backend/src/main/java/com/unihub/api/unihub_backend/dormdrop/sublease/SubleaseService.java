@@ -88,6 +88,18 @@ public class SubleaseService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized: not your listing");
         }
 
+        for (SubleaseImage image : sublease.getLeaseImages()) {
+            try {
+                String imageURL = image.getImageUrl();
+                if (imageURL != null && !imageURL.isBlank()) {
+                    String key = imageURL.substring(imageURL.indexOf("sublease-images/"));
+                    s3Service.deleteFile(key);
+                }
+            } catch (Exception e) {
+            System.err.println("Failed to delete S3 object for image URL: " + image.getImageUrl());
+        }
+        }
+
         subleaseRepository.delete(sublease);
     }
 
