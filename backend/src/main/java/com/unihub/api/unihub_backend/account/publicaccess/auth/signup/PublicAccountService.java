@@ -38,6 +38,9 @@ public class PublicAccountService {
     @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
 
+    @Value("${API_BASE_URL:http://localhost:8080}")
+    private String apiBaseUrl;
+
     public PublicAccountService(AccountRepository accountRepository, AccountMapper accountMapper,
             VerificationTokenService verificationTokenService, EmailService emailService, S3Service s3Service) {
         this.accountRepository = accountRepository;
@@ -67,7 +70,7 @@ public class PublicAccountService {
 
         String token = java.util.UUID.randomUUID().toString();
         verificationTokenService.createToken(savedAccount, token, 60);
-        String verificationLink = "http://localhost:8080/api/v1/verify?token=" + token;
+        String verificationLink = apiBaseUrl + "/api/v1/verify?token=" + token;
         String emailBody = buildEmail(savedAccount.getFirstName(), verificationLink);
         emailService.sendEmail(savedAccount.getEmail(), "Confirm your UniHub Account", emailBody);
 

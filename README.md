@@ -157,6 +157,7 @@ EMAIL_PASS=
 **Front end** (consumed at build time as Docker build args)
 
 ```
+API_BASE_URL=            # optional, defaults to http://localhost:8080; used in verification emails
 FRONTEND_BASE_URL=
 VITE_API_BASE_URL=
 VITE_GOOGLE_CLIENT_ID=
