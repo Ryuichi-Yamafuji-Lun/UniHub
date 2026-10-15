@@ -46,7 +46,7 @@ public class SubleaseService {
     
     // check if user is the owner of the listing
     public boolean isOwnerOfSublease(Sublease sublease, Account account) {
-        return sublease.getAccount().equals(account);
+        return sublease.getAccount().getId().equals(account.getId());
     }
 
     // create sublease
@@ -80,9 +80,9 @@ public class SubleaseService {
     // delete sublease
     @Transactional
     public void deleteSubLease(Long subleaseId) {
-        Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
+        Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sublease not found"));
         //need to add delete images
-        Account account = currentAccountProvider.getCurrentUserAccount();;
+        Account account = currentAccountProvider.getCurrentUserAccount();
 
         if (!isOwnerOfSublease(sublease, account)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Unauthorized: not your listing");
@@ -106,9 +106,9 @@ public class SubleaseService {
     // update sublease
     @Transactional
     public Sublease updateSublease(Long subleaseId, SubleaseUpdateRequest updatedSublease) {
-        Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new IllegalArgumentException("Sublease not found"));
+        Sublease sublease = subleaseRepository.findById(subleaseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sublease not found"));
 
-        Account account = currentAccountProvider.getCurrentUserAccount();;
+        Account account = currentAccountProvider.getCurrentUserAccount();
 
         if (!isOwnerOfSublease(sublease, account)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to update this sublease");
@@ -190,9 +190,11 @@ public class SubleaseService {
         if (lngMin == null) lngMin = -180.0;
         if (lngMax == null) lngMax = 180.0;
         if (widthMin == null) widthMin = 0.0;
-        if (widthMax == null || widthMax < widthMin) widthMax = widthMin;
+        if (widthMax == null) widthMax = Double.MAX_VALUE;
+        if (widthMax < widthMin) widthMax = widthMin;
         if (depthMin == null) depthMin = 0.0;
-        if (depthMax == null || depthMax < depthMin) depthMax = depthMin;
+        if (depthMax == null) depthMax = Double.MAX_VALUE;
+        if (depthMax < depthMin) depthMax = depthMin;
 
         List<Sublease> results = subleaseRepository.searchWithOptionalNameAndLocation(
             maxPrice, latMin, latMax, lngMin, lngMax, widthMin, widthMax, depthMin, depthMax, leaseName

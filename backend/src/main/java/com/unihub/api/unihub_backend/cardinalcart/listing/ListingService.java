@@ -4,49 +4,64 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.unihub.api.unihub_backend.account.Account;
-import com.unihub.api.unihub_backend.account.AccountRepository;
-import com.unihub.api.unihub_backend.accountstatusrole.AccountStatus;
+import com.unihub.api.unihub_backend.cardinalcart.listing.dto.ListingRequest;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
 import com.unihub.api.unihub_backend.common.enums.Schools;
+import com.unihub.api.unihub_backend.security.utils.CurrentAccountProvider;
 
 @Service
 public class ListingService {
 
     private final ListingRepository listingRepository;
-    private final AccountRepository accountRepository;
+    private final CurrentAccountProvider currentAccountProvider;
 
-
-    public ListingService(ListingRepository listingRepository, AccountRepository accountRepository) {
+    public ListingService(ListingRepository listingRepository, CurrentAccountProvider currentAccountProvider) {
         this.listingRepository = listingRepository;
-        this.accountRepository = accountRepository;
+        this.currentAccountProvider = currentAccountProvider;
     }
 
-    // check if account is active
-    private void validateAccount(Account account) {
-        if (!account.getAccountStatus().equals(AccountStatus.ACTIVE)) {
-            throw new IllegalArgumentException("Account is invalid");
-        }
-    }
-    
     // check if user is the owner of the listing
     public boolean isOwnerOfListing(Listing listing, Account account) {
-        return listing.getAccount().equals(account);
+        return listing.getAccount().getId().equals(account.getId());
+    }
+
+    // load a listing and confirm the caller owns it
+    private Listing findOwnedListing(Long listingId) {
+        Listing listing = listingRepository.findById(listingId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing not found"));
+        Account account = currentAccountProvider.getCurrentUserAccount();
+
+        if (!isOwnerOfListing(listing, account)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not authorized to modify this listing");
+        }
+        return listing;
+    }
+
+    private void applyRequest(Listing listing, ListingRequest request) {
+        listing.setListingName(request.getListingName());
+        listing.setListingPrice(request.getListingPrice());
+        listing.setListingSchool(request.getListingSchool());
+        listing.setListingCategory(request.getListingCategory());
+        listing.setListingImages(request.getListingImages());
+        listing.setListingDescription(request.getListingDescription());
     }
 
     // create listing
     @Transactional
-    public Listing createListing(Listing listing, Long accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Create Listing: account not found"));
+    public Listing createListing(ListingRequest request) {
+        Account account = currentAccountProvider.getCurrentUserAccount();
 
-        validateAccount(account);
-
-        // Do a double take on account and date posted
+        Listing listing = new Listing();
+        applyRequest(listing, request);
         listing.setAccount(account);
         listing.setDatePosted(LocalDateTime.now());
+        listing.setBoostedDate(listing.getDatePosted());
         listing.setIsSold(false);
 
         return listingRepository.save(listing);
@@ -54,17 +69,11 @@ public class ListingService {
 
     // delete listing
     @Transactional
-    public void deleteListing(Long listingId, Long accountId) {
-        Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing not found"));
-
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Delete Listing: account not found"));
-
-        if (!isOwnerOfListing(listing, account)) {
-            throw new IllegalArgumentException("You are not authorized to delete this listing");
-        }
+    public void deleteListing(Long listingId) {
+        Listing listing = findOwnedListing(listingId);
 
         if (listing.getIsSold()) {
-            throw new IllegalArgumentException("Cannot delete sold listing");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot delete sold listing");
         }
 
         listingRepository.delete(listing);
@@ -72,29 +81,25 @@ public class ListingService {
 
     // update listing
     @Transactional
-    public Listing updateListing(Long listingId, Listing updatedlisting, Long accountId) {
-        Listing listing = listingRepository.findById(listingId).orElseThrow(() -> new IllegalArgumentException("Listing is not found"));
-
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Update Listing: account not found"));
-
-        if (!isOwnerOfListing(listing, account)) {
-            throw new IllegalArgumentException("You are not authorized to update this listing");
-        }
+    public Listing updateListing(Long listingId, ListingRequest request) {
+        Listing listing = findOwnedListing(listingId);
 
         if (listing.getIsSold()) {
-            throw new IllegalArgumentException("Cannot update sold listing");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cannot update sold listing");
         }
 
-        listing.setListingName(updatedlisting.getListingName());
-        listing.setListingPrice(updatedlisting.getListingPrice());
-        listing.setIsSold(updatedlisting.getIsSold());
-        listing.setListingImages(updatedlisting.getListingImages());
-        listing.setListingDescription(updatedlisting.getListingDescription());
-        listing.setListingCategory(updatedlisting.getListingCategory());
-        listing.setListingSchool(updatedlisting.getListingSchool());
-        
+        applyRequest(listing, request);
         return listingRepository.save(listing);
     }
+
+    // mark listing as sold
+    @Transactional
+    public Listing markListingSold(Long listingId) {
+        Listing listing = findOwnedListing(listingId);
+        listing.setIsSold(true);
+        return listingRepository.save(listing);
+    }
+
     /*
      * PUBLIC USER ACCESS
      * findListingById (finds specific listing by listing id)
@@ -116,6 +121,7 @@ public class ListingService {
     // retrieve all listing with name and price range
     @Transactional(readOnly = true)
     public List<Listing> searchListing(String listName, Double minPrice, Double maxPrice, Schools school, ListingCategory category) {
+        if (listName == null) listName = "";
         if (minPrice == null || minPrice < 0) minPrice = 0.0;
         if (maxPrice == null) maxPrice = Double.MAX_VALUE;
         if (maxPrice < minPrice) maxPrice = minPrice;
@@ -125,21 +131,21 @@ public class ListingService {
 
     /*
      * OWNER LISTING ACCESS
-     * getListingByAccountSortedBySold (get all listings including sold ones for owners)
-     * getActiveListingsByAccount (get unsold listings for owners)
+     * getOwnListingsSortedBySold (get all listings including sold ones for owners)
+     * getOwnActiveListings (get unsold listings for owners)
      */
 
-    // get all listings for an account sorted by sold status
+    // get all of the caller's listings sorted by sold status
     @Transactional(readOnly = true)
-    public List<Listing> getListingByAccountSortedBySold(Long accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get All Owned Listing: account not found"));
+    public List<Listing> getOwnListingsSortedBySold() {
+        Account account = currentAccountProvider.getCurrentUserAccount();
         return listingRepository.findByAccountOrderByIsSold(account);
     }
 
-    // get only active (unsold) listing for an account, sorted by date posted
+    // get only the caller's active (unsold) listings, sorted by date posted
     @Transactional(readOnly = true)
-    public List<Listing> getActiveListingsByAccount(Long accountId) {
-        Account account = accountRepository.findById(accountId).orElseThrow(() -> new RuntimeException("Get All Owned Unsold Listing: account not found"));
+    public List<Listing> getOwnActiveListings() {
+        Account account = currentAccountProvider.getCurrentUserAccount();
         return listingRepository.findByAccountAndIsSoldFalseOrderByBoostedDateDesc(account);
     }
 }

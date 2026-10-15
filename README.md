@@ -49,13 +49,13 @@ session to forge, since every authenticated request carries a bearer token.
 
 ## API surface
 
-33 REST endpoints across 9 controllers:
+34 REST endpoints across 9 controllers:
 
 | Method | Count |
 |---|---|
 | `GET` | 16 |
 | `POST` | 7 |
-| `PUT` | 6 |
+| `PUT` | 7 |
 | `DELETE` | 4 |
 
 Controllers are grouped by access tier rather than by entity, so the authorization boundary is
@@ -72,6 +72,9 @@ dormdrop/sublease/publicaccess/PublicSubleaseController
 dormdrop/sublease/owneraccess/OwnerSubleaseController
 verification/VerificationController
 ```
+
+CardinalCart's two controllers are currently locked with `@PreAuthorize("denyAll()")` until that product
+launches; their ownership checks and DTOs are already in place.
 
 Public routes are `/api/v1/public/**`, `/api/v2/public/**`, `/api/auth/**`, `/api/v1/verify*`, and
 `/oauth2/**`. Everything else requires authentication.
@@ -158,6 +161,16 @@ FRONTEND_BASE_URL=
 VITE_API_BASE_URL=
 VITE_GOOGLE_CLIENT_ID=
 ```
+
+### Tests
+
+```bash
+cd backend && ./mvnw test
+```
+
+Tests run against in-memory H2 with dummy credentials, so they need no `.env`. The authorization suite
+covers the owner tier (another account cannot update or delete your resources), unverified accounts,
+and the JWT filter treating expired or malformed tokens as anonymous rather than failing the request.
 
 ### Running the pieces directly
 

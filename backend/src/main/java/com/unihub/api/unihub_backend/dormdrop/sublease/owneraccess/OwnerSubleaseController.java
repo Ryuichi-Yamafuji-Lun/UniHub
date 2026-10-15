@@ -56,24 +56,14 @@ public class OwnerSubleaseController {
 
     @DeleteMapping("/me/subleases/{subleaseId}")
     public ResponseEntity<Void> deleteSublease(@PathVariable Long subleaseId) {
-        try {
-            subleaseService.deleteSubLease(subleaseId);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        subleaseService.deleteSubLease(subleaseId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/me/subleases/{subleaseId}")
     public ResponseEntity<SubleaseResponseDTO> updateSublease( @PathVariable Long subleaseId, @Valid @RequestBody SubleaseUpdateRequest updatedSublease) {
-        try {
-            Sublease updated = subleaseService.updateSublease(subleaseId, updatedSublease);
-            return ResponseEntity.ok(subleaseMapper.toResponse(updated));
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        Sublease updated = subleaseService.updateSublease(subleaseId, updatedSublease);
+        return ResponseEntity.ok(subleaseMapper.toResponse(updated));
     }
 
     @PutMapping("/me/subleases/{subleaseId}/images/{imageId}")

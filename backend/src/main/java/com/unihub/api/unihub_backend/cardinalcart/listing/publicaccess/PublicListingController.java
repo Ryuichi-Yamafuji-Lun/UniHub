@@ -1,7 +1,6 @@
 package com.unihub.api.unihub_backend.cardinalcart.listing.publicaccess;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,13 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
 import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
+import com.unihub.api.unihub_backend.cardinalcart.listing.dto.ListingResponseDTO;
 import com.unihub.api.unihub_backend.cardinalcart.listingstatus.ListingCategory;
 import com.unihub.api.unihub_backend.common.enums.Schools;
 
 @RestController
 @RequestMapping(path = "api/v2/public/listing")
+// CardinalCart is not launched yet; remove denyAll() to enable these routes.
 @PreAuthorize("denyAll()")
 public class PublicListingController {
 
@@ -28,14 +28,15 @@ public class PublicListingController {
     }
 
     @GetMapping("/{listingId}")
-    public ResponseEntity<Listing> getListingById(@PathVariable Long listingId) {
-        Optional<Listing> listing = listingService.findListingById(listingId);
-        return listing.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<ListingResponseDTO> getListingById(@PathVariable Long listingId) {
+        return listingService.findListingById(listingId)
+            .map(listing -> ResponseEntity.ok(ListingResponseDTO.from(listing)))
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Listing>> getAllListing() {
-        List<Listing> listings = listingService.getAllListings();
+    public ResponseEntity<List<ListingResponseDTO>> getAllListing() {
+        List<ListingResponseDTO> listings = listingService.getAllListings().stream().map(ListingResponseDTO::from).toList();
         if (listings.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
@@ -43,14 +44,15 @@ public class PublicListingController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Listing>> searchListing(
-        @RequestParam String listingName,
-        @RequestParam Double minPrice,
-        @RequestParam Double maxPrice,
-        @RequestParam Schools school,
-        @RequestParam ListingCategory category
+    public ResponseEntity<List<ListingResponseDTO>> searchListing(
+        @RequestParam(required = false) String listingName,
+        @RequestParam(required = false) Double minPrice,
+        @RequestParam(required = false) Double maxPrice,
+        @RequestParam(required = false) Schools school,
+        @RequestParam(required = false) ListingCategory category
     ) {
-        List<Listing> listings = listingService.searchListing(listingName, minPrice, maxPrice, school, category);
+        List<ListingResponseDTO> listings = listingService.searchListing(listingName, minPrice, maxPrice, school, category)
+            .stream().map(ListingResponseDTO::from).toList();
         return listings.isEmpty()
             ? ResponseEntity.noContent().build()
             : ResponseEntity.ok(listings);
