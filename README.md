@@ -205,6 +205,10 @@ UniHub/
 
 ## Status
 
-A personal full-stack project, not a deployed service. It is public as a code sample — the areas
-worth looking at are the tiered authorization model in `security/` and `account/`, and the
-repository layer that keeps persistence logic out of the controllers.
+**No longer in active development.** UniHub was a personal full-stack project built in 2025 and was
+never deployed as a live service. It stays public as a code sample. The areas worth looking at are the
+tiered authorization model in `security/` and `account/`, its integration tests in
+`backend/src/test/`, and the repository layer that keeps persistence logic out of the controllers.
+
+The backend's `application.properties` is not committed, so a fresh clone will not start without
+recreating it from the variables listed above. The test suite runs on its own config and needs no setup.
