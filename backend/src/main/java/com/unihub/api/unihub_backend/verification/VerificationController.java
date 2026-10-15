@@ -42,7 +42,7 @@ public class VerificationController {
         Optional<VerificationToken> verificationTokenOpt = verificationTokenService.getByToken(token);
 
         if (verificationTokenOpt.isEmpty() || verificationTokenOpt.get().getExpiryDate().isBefore(LocalDateTime.now())) {
-            return redirect(failureUrl + "?error=invalid_token");
+            return redirect(failureUrl + (failureUrl.contains("?") ? "&" : "?") + "error=invalid_token");
         }
 
         VerificationToken verificationToken = verificationTokenOpt.get();

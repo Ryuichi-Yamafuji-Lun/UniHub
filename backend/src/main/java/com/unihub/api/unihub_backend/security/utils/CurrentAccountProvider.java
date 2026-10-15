@@ -1,7 +1,9 @@
 package com.unihub.api.unihub_backend.security.utils;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.unihub.api.unihub_backend.account.Account;
 import com.unihub.api.unihub_backend.account.AccountRepository;
@@ -18,14 +20,13 @@ public class CurrentAccountProvider {
 
     public Account getCurrentUserAccount() {
         String identifier = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("Authenticated identifier: " + identifier);
-        
+
         Account account = accountRepository.findByEmail(identifier)
             .or(() -> accountRepository.findByUsername(identifier))
-            .orElseThrow(() -> new RuntimeException("Authenticated account not found"));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authenticated account not found"));
         
         if (account.getAccountStatus() != AccountStatus.ACTIVE) {
-            throw new RuntimeException("Account is not active. Please confirm your email.");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Account is not active. Please confirm your email.");
         }
 
         return account;

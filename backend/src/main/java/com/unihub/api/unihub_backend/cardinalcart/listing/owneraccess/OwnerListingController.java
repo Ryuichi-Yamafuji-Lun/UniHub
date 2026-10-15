@@ -2,7 +2,6 @@ package com.unihub.api.unihub_backend.cardinalcart.listing.owneraccess;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.unihub.api.unihub_backend.cardinalcart.listing.Listing;
 import com.unihub.api.unihub_backend.cardinalcart.listing.ListingService;
+import com.unihub.api.unihub_backend.cardinalcart.listing.dto.ListingRequest;
+import com.unihub.api.unihub_backend.cardinalcart.listing.dto.ListingResponseDTO;
 
+import jakarta.validation.Valid;
+
+// CardinalCart is not launched yet; remove denyAll() to enable these routes.
+// Ownership is always resolved from the authenticated caller, never from the path.
 @RestController
 @RequestMapping(path = "api/v2/owner/accounts")
 @PreAuthorize("denyAll()")
@@ -28,49 +33,43 @@ public class OwnerListingController {
         this.listingService = listingService;
     }
 
-    @PostMapping("/{accountId}/listings")
-    public ResponseEntity<Listing> createListing(@RequestBody Listing newlisting, @PathVariable Long accountId) {
-        Listing createdListing = listingService.createListing(newlisting, accountId);
-        return ResponseEntity.status(201).body(createdListing);
+    @PostMapping("/me/listings")
+    public ResponseEntity<ListingResponseDTO> createListing(@Valid @RequestBody ListingRequest newListing) {
+        Listing createdListing = listingService.createListing(newListing);
+        return ResponseEntity.status(201).body(ListingResponseDTO.from(createdListing));
     }
 
-    @DeleteMapping("/{accountId}/listings/{listingId}")
-    public ResponseEntity<Void> deleteListing(@PathVariable Long accountId, @PathVariable Long listingId) {
-        try {
-            listingService.deleteListing(listingId, accountId);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-    }
-
-    @PutMapping("/{accountId}/listings/{listingId}")
-    public ResponseEntity<Listing> updateListing(@PathVariable Long accountId, @PathVariable Long listingId, @RequestBody Listing updatedListing) {
-        try {
-            Listing updated = listingService.updateListing(listingId, updatedListing, accountId);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
-
-    @GetMapping("/{accountId}/listings")
-    public ResponseEntity<List<Listing>> searchOwnListing(@PathVariable Long accountId) {
-    List<Listing> listings = listingService.getListingByAccountSortedBySold(accountId);
-    if (listings.isEmpty()) {
+    @DeleteMapping("/me/listings/{listingId}")
+    public ResponseEntity<Void> deleteListing(@PathVariable Long listingId) {
+        listingService.deleteListing(listingId);
         return ResponseEntity.noContent().build();
     }
-    return ResponseEntity.ok(listings);
+
+    @PutMapping("/me/listings/{listingId}")
+    public ResponseEntity<ListingResponseDTO> updateListing(@PathVariable Long listingId, @Valid @RequestBody ListingRequest updatedListing) {
+        Listing updated = listingService.updateListing(listingId, updatedListing);
+        return ResponseEntity.ok(ListingResponseDTO.from(updated));
     }
 
-    @GetMapping("{accountId}/listings/unsold")
-    public ResponseEntity<List<Listing>> searchOwnActiveListing(@PathVariable Long accountId) {
-    List<Listing> listings = listingService.getActiveListingsByAccount(accountId);
-    if (listings.isEmpty()) {
-        return ResponseEntity.noContent().build();
+    @PutMapping("/me/listings/{listingId}/sold")
+    public ResponseEntity<ListingResponseDTO> markListingSold(@PathVariable Long listingId) {
+        Listing sold = listingService.markListingSold(listingId);
+        return ResponseEntity.ok(ListingResponseDTO.from(sold));
     }
-    return ResponseEntity.ok(listings);
+
+    @GetMapping("/me/listings")
+    public ResponseEntity<List<ListingResponseDTO>> searchOwnListing() {
+        List<ListingResponseDTO> listings = listingService.getOwnListingsSortedBySold().stream()
+            .map(ListingResponseDTO::from)
+            .toList();
+        return listings.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listings);
+    }
+
+    @GetMapping("/me/listings/unsold")
+    public ResponseEntity<List<ListingResponseDTO>> searchOwnActiveListing() {
+        List<ListingResponseDTO> listings = listingService.getOwnActiveListings().stream()
+            .map(ListingResponseDTO::from)
+            .toList();
+        return listings.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(listings);
     }
 }

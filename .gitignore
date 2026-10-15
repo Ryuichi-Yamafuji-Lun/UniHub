@@ -64,3 +64,6 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Test config holds only dummy values
+!backend/src/test/resources/application.properties
